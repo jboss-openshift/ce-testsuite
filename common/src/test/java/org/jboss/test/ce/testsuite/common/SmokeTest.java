@@ -21,7 +21,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.test.ce.testsuite.wildfly;
+package org.jboss.test.ce.testsuite.common;
 
 import java.util.logging.Logger;
 
