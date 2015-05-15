@@ -61,6 +61,12 @@
 
         <!-- Tests - add any external existing tests here -->
 
+        <dependency>
+            <groupId>org.jboss.ce.testsuite</groupId>
+            <artifactId>tests-ce-testsuite</artifactId>
+            <type>test-jar</type>
+        </dependency>
+
         <!-- Test Utils -->
 
         <dependency>
