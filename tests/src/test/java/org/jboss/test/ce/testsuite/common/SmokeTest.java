@@ -26,6 +26,7 @@ package org.jboss.test.ce.testsuite.common;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -49,4 +50,9 @@ public class SmokeTest {
         log.info("Poke!!");
     }
 
+    @Test
+    @TargetsContainer("pod1")
+    public void testCluster() throws Exception {
+        log.info("Cluster!!");
+    }
 }
