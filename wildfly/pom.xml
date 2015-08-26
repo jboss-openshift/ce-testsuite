@@ -136,6 +136,11 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-api</artifactId>
+        </dependency>
+
     </dependencies>
 
     <profiles>

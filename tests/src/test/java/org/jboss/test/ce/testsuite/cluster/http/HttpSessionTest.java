@@ -26,6 +26,7 @@ package org.jboss.test.ce.testsuite.cluster.http;
 import java.io.InputStream;
 
 import org.jboss.arquillian.ce.api.Client;
+import org.jboss.arquillian.ce.api.Replicas;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.container.test.api.TargetsContainer;
@@ -42,6 +43,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
+@Replicas(2)
 public class HttpSessionTest {
 
     @ArquillianResource
@@ -53,11 +55,6 @@ public class HttpSessionTest {
         war.setWebXML("web.xml");
         war.addClass(ResponseFilter.class);
         return war;
-    }
-
-    @Test
-    @TargetsContainer("node1")
-    public void configure2nodes() {
     }
 
     @Test
