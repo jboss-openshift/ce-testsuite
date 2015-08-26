@@ -29,13 +29,13 @@ import org.jboss.arquillian.ce.api.Client;
 import org.jboss.arquillian.ce.api.Replicas;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.ce.testsuite.cluster.http.support.ResponseFilter;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -62,7 +62,7 @@ public class HttpSessionTest {
     @InSequence(1)
     public void testFirstNode() throws Exception {
         InputStream response = client.execute(0, "test/foo");
-        response.close();
+        Assert.assertEquals("OK", ResponseFilter.readInputStream(response));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class HttpSessionTest {
     @InSequence(2)
     public void testSecondNode() throws Exception {
         InputStream response = client.execute(1, "test/foo");
-        response.close();
+        Assert.assertEquals("CE!!", ResponseFilter.readInputStream(response));
     }
 
 }

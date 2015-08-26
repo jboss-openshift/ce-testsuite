@@ -24,6 +24,7 @@
 package org.jboss.test.ce.testsuite.cluster.http.support;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 import javax.servlet.Filter;
@@ -57,13 +58,25 @@ public class ResponseFilter implements Filter {
         Object attrib = session.getAttribute(KEY);
         if (attrib != null) {
             hsrp.getWriter().write(String.valueOf(attrib));
-            return;
         } else {
             session.setAttribute(KEY, "CE!!");
+            hsrp.getWriter().write("OK");
         }
-        chain.doFilter(request, response);
     }
 
     public void destroy() {
+    }
+
+    public static String readInputStream(InputStream is) throws Exception {
+        try {
+            String content = "";
+            int ch;
+            while ((ch = is.read()) != -1) {
+                content += ((char) ch);
+            }
+            return content;
+        } finally {
+            is.close();
+        }
     }
 }
