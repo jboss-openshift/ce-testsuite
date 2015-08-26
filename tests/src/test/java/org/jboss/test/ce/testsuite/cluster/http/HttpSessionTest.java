@@ -34,6 +34,7 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.test.ce.testsuite.cluster.http.support.FooServlet;
 import org.jboss.test.ce.testsuite.cluster.http.support.ResponseFilter;
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,6 +55,7 @@ public class HttpSessionTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
         war.setWebXML("web.xml");
         war.addClass(ResponseFilter.class);
+        war.addClass(FooServlet.class);
         return war;
     }
 
@@ -61,7 +63,7 @@ public class HttpSessionTest {
     @RunAsClient
     @InSequence(1)
     public void testFirstNode() throws Exception {
-        InputStream response = client.execute(0, "test/foo");
+        InputStream response = client.execute(0, "/test/foo");
         Assert.assertEquals("OK", ResponseFilter.readInputStream(response));
     }
 
@@ -69,7 +71,7 @@ public class HttpSessionTest {
     @RunAsClient
     @InSequence(2)
     public void testSecondNode() throws Exception {
-        InputStream response = client.execute(1, "test/foo");
+        InputStream response = client.execute(1, "/test/foo");
         Assert.assertEquals("CE!!", ResponseFilter.readInputStream(response));
     }
 
