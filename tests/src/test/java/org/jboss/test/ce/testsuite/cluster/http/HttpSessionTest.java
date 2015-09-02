@@ -35,7 +35,6 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.ce.testsuite.cluster.http.support.FooServlet;
-import org.jboss.test.ce.testsuite.cluster.http.support.ResponseFilter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +53,6 @@ public class HttpSessionTest {
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
         war.setWebXML("web.xml");
-        war.addClass(ResponseFilter.class);
         war.addClass(FooServlet.class);
         return war;
     }
@@ -64,15 +62,17 @@ public class HttpSessionTest {
     @InSequence(1)
     public void testFirstNode() throws Exception {
         InputStream response = client.execute(0, "/test/foo");
-        Assert.assertEquals("OK", ResponseFilter.readInputStream(response));
+        Assert.assertEquals("OK", FooServlet.readInputStream(response));
     }
 
     @Test
     @RunAsClient
     @InSequence(2)
     public void testSecondNode() throws Exception {
+        Thread.sleep(2000); // wait 2sec to sync on the server-side??
+
         InputStream response = client.execute(1, "/test/foo");
-        Assert.assertEquals("CE!!", ResponseFilter.readInputStream(response));
+        Assert.assertEquals("CE!!", FooServlet.readInputStream(response));
     }
 
 }

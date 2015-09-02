@@ -24,18 +24,44 @@
 package org.jboss.test.ce.testsuite.cluster.http.support;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class FooServlet extends HttpServlet {
+    private static final String KEY = "__attrib";
+
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write("FOO!!");
+        HttpSession session = req.getSession();
+        log("SessionID: " + session.getId());
+
+        Object attrib = session.getAttribute(KEY);
+        if (attrib != null) {
+            resp.getWriter().write(String.valueOf(attrib));
+        } else {
+            session.setAttribute(KEY, "CE!!");
+            resp.getWriter().write("OK");
+        }
+    }
+
+    public static String readInputStream(InputStream is) throws Exception {
+        try {
+            String content = "";
+            int ch;
+            while ((ch = is.read()) != -1) {
+                content += ((char) ch);
+            }
+            return content;
+        } finally {
+            is.close();
+        }
     }
 }

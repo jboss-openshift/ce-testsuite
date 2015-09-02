@@ -3,20 +3,10 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
-    <filter>
-        <filter-name>RF</filter-name>
-        <filter-class>org.jboss.test.ce.testsuite.cluster.http.support.ResponseFilter</filter-class>
-    </filter>
-
     <servlet>
         <servlet-name>Foo</servlet-name>
         <servlet-class>org.jboss.test.ce.testsuite.cluster.http.support.FooServlet</servlet-class>
     </servlet>
-
-    <filter-mapping>
-        <filter-name>RF</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
 
     <servlet-mapping>
         <servlet-name>Foo</servlet-name>
