@@ -45,8 +45,10 @@ public class FooServlet extends HttpServlet {
 
         Object attrib = session.getAttribute(KEY);
         if (attrib != null) {
+            log("Found attribute " + attrib);
             resp.getWriter().write(String.valueOf(attrib));
         } else {
+            log("Adding attribute CE!!");
             session.setAttribute(KEY, "CE!!");
             resp.getWriter().write("OK");
         }

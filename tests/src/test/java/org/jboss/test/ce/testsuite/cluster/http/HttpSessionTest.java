@@ -61,6 +61,8 @@ public class HttpSessionTest {
     @RunAsClient
     @InSequence(1)
     public void testFirstNode() throws Exception {
+        Thread.sleep(2000); // wait 2sec to sync on the server-side??
+
         InputStream response = client.execute(0, "/test/foo");
         Assert.assertEquals("OK", FooServlet.readInputStream(response));
     }
