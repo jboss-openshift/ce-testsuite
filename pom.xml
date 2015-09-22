@@ -27,6 +27,9 @@
         <version.junit>4.10</version.junit>
         <version.javax.servlet.api>3.1.0</version.javax.servlet.api>
         <version.slf4j>1.7.5</version.slf4j>
+        <!-- EAP testunit deps -->
+        <version.logging>3.1.4.GA</version.logging>
+        <version.httpclient>4.3.6</version.httpclient>
     </properties>
 
     <modules>
@@ -60,7 +63,36 @@
                         <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-testsuite-shared</artifactId>
+                <version>${version.eap}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency -->
+
+            <!-- EAP testunit deps -->
+
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>${version.logging}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${version.httpclient}</version>
+                <scope>test</scope>
+            </dependency>
 
             <!-- Deps -->
 

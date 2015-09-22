@@ -71,7 +71,24 @@
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-ts-integ-basic</artifactId>
             <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-testsuite-shared</artifactId>
         </dependency -->
+
+        <!-- EAP testunit deps -->
+
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 
         <!-- Test Utils -->
 
