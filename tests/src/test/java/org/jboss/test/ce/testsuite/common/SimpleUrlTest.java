@@ -54,7 +54,7 @@ public class SimpleUrlTest {
     public void testBasic(@ArquillianResource URL baseURL) throws Exception {
         log.info("Injected URL: " + baseURL);
         String response = "";
-        try (InputStream stream = new URL(baseURL + "/_poke").openStream()) {
+        try (InputStream stream = new URL(baseURL + "_poke").openStream()) {
             int b;
             while ((b = stream.read()) != -1) {
                 response += ((char) b);
