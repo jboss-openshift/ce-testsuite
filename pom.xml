@@ -23,6 +23,7 @@
     <properties>
         <version.ce-arq>1.0.0-SNAPSHOT</version.ce-arq>
         <version.arquillian>1.1.8.Final</version.arquillian>
+        <version.eap>7.5.1.Final-redhat-SNAPSHOT</version.eap>
         <version.junit>4.10</version.junit>
         <version.javax.servlet.api>3.1.0</version.javax.servlet.api>
         <version.slf4j>1.7.5</version.slf4j>
@@ -37,12 +38,31 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- External tests -->
+
             <dependency>
                 <groupId>org.jboss.ce.testsuite</groupId>
                 <artifactId>tests-ce-testsuite</artifactId>
                 <type>test-jar</type>
                 <version>${project.version}</version>
             </dependency>
+
+            <!-- Uncomment this if you want to run EAP tests - they need to be built first in your local repo -->
+
+            <!-- dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-ts-integ-basic</artifactId>
+                <type>test-jar</type>
+                <version>${version.eap}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency -->
+
+            <!-- Deps -->
 
             <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>

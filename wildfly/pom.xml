@@ -67,6 +67,12 @@
             <type>test-jar</type>
         </dependency>
 
+        <!-- dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-ts-integ-basic</artifactId>
+            <type>test-jar</type>
+        </dependency -->
+
         <!-- Test Utils -->
 
         <dependency>
