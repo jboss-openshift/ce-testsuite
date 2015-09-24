@@ -68,8 +68,8 @@ public class SimpleEarTest {
     @Test
     @RunAsClient
     public void testModules(@ArquillianResource URL baseUrl) throws Exception {
-        Assert.assertEquals("Hello JBoss!", getResponse(new URL(baseUrl, "web1/hello?user=JBoss")));
-        Assert.assertEquals("Hello RedHat!", getResponse(new URL(baseUrl, "web2/hello?user=RedHat")));
+        Assert.assertEquals("Hello JBoss!", getResponse(new URL(baseUrl + "web1/hello?user=JBoss")));
+        Assert.assertEquals("Hello RedHat!", getResponse(new URL(baseUrl + "web2/hello?user=RedHat")));
     }
 
     private static String getResponse(URL url) throws IOException {
