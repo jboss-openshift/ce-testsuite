@@ -105,6 +105,20 @@
 
             <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-openshift</artifactId>
+                <version>${version.ce-arq}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-fabric8</artifactId>
+                <version>${version.ce-arq}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
                 <artifactId>arquillian-ce-wildfly</artifactId>
                 <version>${version.ce-arq}</version>
                 <scope>test</scope>
