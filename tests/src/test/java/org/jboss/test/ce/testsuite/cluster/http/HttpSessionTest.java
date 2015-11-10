@@ -52,7 +52,7 @@ public class HttpSessionTest {
     @Deployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
-        war.setWebXML("web.xml");
+        war.setWebXML("web-foo.xml");
         war.addClass(FooServlet.class);
         return war;
     }

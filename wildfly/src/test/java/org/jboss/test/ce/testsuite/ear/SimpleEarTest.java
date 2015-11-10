@@ -54,13 +54,13 @@ public class SimpleEarTest {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "web1.war");
         ear.addAsModule(war1);
         war1.addClass(HelloServlet.class);
-        war1.setWebXML("web.xml");
+        war1.setWebXML("web-hello.xml");
 
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "web2.war");
         ear.addAsModule(war2);
         war2.addClass(HelloServlet.class);
-        war2.setWebXML("web.xml");
+        war2.setWebXML("web-hello.xml");
 
         return ear;
     }
