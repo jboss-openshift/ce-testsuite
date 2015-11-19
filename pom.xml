@@ -136,6 +136,13 @@
             </dependency>
 
             <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-template</artifactId>
+                <version>${version.ce-arq}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${version.javax.servlet.api}</version>

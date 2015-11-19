@@ -86,7 +86,7 @@
 
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-wildfly</artifactId>
+            <artifactId>arquillian-ce-template</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -107,11 +107,6 @@
             <artifactId>shrinkwrap-api</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- dependency>
-            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-            <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
-        </dependency -->
 
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
@@ -138,7 +133,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- Import the Spy memcached dependency -->
         <dependency>
             <groupId>com.google.code.simple-spring-memcached</groupId>
             <artifactId>spymemcached</artifactId>
