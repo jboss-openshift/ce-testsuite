@@ -27,6 +27,9 @@
         <version.junit>4.10</version.junit>
         <version.javax.servlet.api>3.1.0</version.javax.servlet.api>
         <version.slf4j>1.7.5</version.slf4j>
+        <!-- JDG -->
+        <version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
+        <spymemcached.version>2.8.1</spymemcached.version>
         <!-- EAP testunit deps -->
         <version.logging>3.1.4.GA</version.logging>
         <version.httpclient>4.3.6</version.httpclient>
@@ -34,6 +37,7 @@
 
     <modules>
         <module>tests</module>
+        <module>jdg</module>
         <module>web</module>
         <module>wildfly</module>
     </modules>
@@ -142,6 +146,24 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>${version.slf4j}</version>
+            </dependency>
+
+            <!-- JDG -->
+
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-bom</artifactId>
+                <version>${version.org.infinispan}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Manage the Spy memcached version -->
+            <dependency>
+                <groupId>com.google.code.simple-spring-memcached</groupId>
+                <artifactId>spymemcached</artifactId>
+                <version>${spymemcached.version}</version>
+                <scope>compile</scope>
             </dependency>
 
             <!-- ARQ -->
