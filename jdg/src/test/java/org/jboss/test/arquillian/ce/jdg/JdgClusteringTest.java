@@ -26,13 +26,11 @@ package org.jboss.test.arquillian.ce.jdg;
 import static junit.framework.Assert.assertEquals;
 
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
+import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.jdg.support.RESTCache;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +40,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/luksa/application-templates/JDG/datagrid/datagrid65-basic-s2i.json")
+@ExternalDeployment
 public class JdgClusteringTest {
     public static final String JDG_HOST = "jdg-app-%s.router.default.svc.cluster.local";
     public static final int JDG_PORT = 80;
@@ -49,11 +48,6 @@ public class JdgClusteringTest {
 
     @ArquillianResource
     ConfigurationHandle configuration;
-
-    @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return ShrinkWrap.create(WebArchive.class, "test.war");
-    }
 
     @Test
     @RunAsClient
