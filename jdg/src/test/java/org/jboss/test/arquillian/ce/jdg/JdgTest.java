@@ -38,6 +38,9 @@ import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.ExternalDeployment;
+import org.jboss.arquillian.ce.api.OpenShiftResource;
+import org.jboss.arquillian.ce.api.OpenShiftResources;
+import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
@@ -67,12 +70,22 @@ import static junit.framework.Assert.assertEquals;
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-https.json",
         labels = "application=datagrid-app",
         parameters = {
+                @TemplateParameter(name = "HOSTNAME_HTTP", value="jdg-http-route.openshift"),
+                @TemplateParameter(name = "HOSTNAME_HTTPS", value="jdg-http-route.openshift"),
                 @TemplateParameter(name = "JDG_HTTPS_NAME", value="jboss"),
-                @TemplateParameter(name = "JDG_HTTPS_PASSWORD", value="mykeystorepass")})
+                @TemplateParameter(name = "JDG_HTTPS_PASSWORD", value="mykeystorepass"),
+                @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value="${kubernetes.namespace}")})
+@RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
+@OpenShiftResources({
+        @OpenShiftResource("classpath:jdg-internal-imagestream.json"),
+        @OpenShiftResource("classpath:datagrid-service-account.json"),
+        @OpenShiftResource("classpath:datagrid-app-secret.json")
+})
 public class JdgTest {
     private static final boolean USE_SASL = true;
 
-    public static final String ROUTE_SUFFIX = ".router.default.svc.cluster.local";
+//    public static final String ROUTE_SUFFIX = ".router.default.svc.cluster.local";
+    public static final String HTTP_ROUTE_HOST = "jdg-http-route.openshift";
 
     @ArquillianResource
     ConfigurationHandle configuration;
@@ -86,12 +99,12 @@ public class JdgTest {
 
         war.addAsLibraries(
                 Maven.resolver()
-                        .resolve("com.google.code.simple-spring-memcached:spymemcached")
+                        .resolve("com.google.code.simple-spring-memcached:spymemcached:2.8.1")
                         .withTransitivity()
                         .asFile());
         war.addAsLibraries(
                 Maven.resolver()
-                        .resolve("org.infinispan:infinispan-client-hotrod")
+                        .resolve("org.infinispan:infinispan-client-hotrod:6.3.1.Final-redhat-1")
                         .withTransitivity()
                         .asFile());
         return war;
@@ -124,7 +137,7 @@ public class JdgTest {
     @Test
     @RunAsClient
     public void testRestRoute() throws Exception {
-        String host = "datagrid-app-" + getNamespace() + ROUTE_SUFFIX;
+        String host = HTTP_ROUTE_HOST;
         int port = 80;
         RESTCache<String, Object> cache = new RESTCache<>("default", "http://" + host + ":" + port + "/rest/");
         cache.put("foo1", "bar1");
@@ -137,7 +150,7 @@ public class JdgTest {
     public void testSecureRestRoute() throws Exception {
         trustAllCertificates();
 
-        String host = "secure-datagrid-app-" + getNamespace() + ROUTE_SUFFIX;
+        String host = HTTP_ROUTE_HOST;
         int port = 443;
         RESTCache<String, Object> cache = new RESTCache<>("default", "https://" + host + ":" + port + "/rest/");
         cache.put("foo1", "bar1");
@@ -157,7 +170,7 @@ public class JdgTest {
     @Ignore("Currently there is no memcached route")
     @RunAsClient
     public void testMemcachedRoute() throws Exception {
-        MemcachedCache<String, Object> cache = new MemcachedCache<>("datagrid-app-memcached-" + getNamespace() + ROUTE_SUFFIX, 443);
+        MemcachedCache<String, Object> cache = new MemcachedCache<>(HTTP_ROUTE_HOST, 443);
         cache.put("foo2", "bar2");
         assertEquals("bar2", cache.get("foo2"));
     }
@@ -166,7 +179,7 @@ public class JdgTest {
     @Ignore("Currently there is no memcached route")
     @RunAsClient
     public void testMemcachedRouteWithSasl() throws Exception {
-        MemcachedCache<String, Object> cache = new MemcachedCache<>("datagrid-app-memcached-" + getNamespace() + ROUTE_SUFFIX, 443, USE_SASL);
+        MemcachedCache<String, Object> cache = new MemcachedCache<>(HTTP_ROUTE_HOST, 443, USE_SASL);
         cache.put("foo2", "bar2");
         assertEquals("bar2", cache.get("foo2"));
     }
