@@ -40,6 +40,7 @@
         <module>jdg</module>
         <module>web</module>
         <module>wildfly</module>
+        <module>testsuite</module>
     </modules>
 
     <dependencyManagement>
@@ -53,34 +54,6 @@
                 <type>test-jar</type>
                 <version>${project.version}</version>
             </dependency>
-
-            <!-- Uncomment this if you want to run EAP tests - they need to be built first in your local repo -->
-
-            <!-- dependency>
-                <groupId>org.jboss.as</groupId>
-                <artifactId>jboss-as-ts-integ-basic</artifactId>
-                <type>test-jar</type>
-                <version>${version.eap}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.as</groupId>
-                <artifactId>jboss-as-testsuite-shared</artifactId>
-                <version>${version.eap}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency -->
 
             <!-- EAP testunit deps -->
 

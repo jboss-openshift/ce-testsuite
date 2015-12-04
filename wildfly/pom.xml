@@ -18,77 +18,7 @@
     <name>WildFly CE Testsuite</name>
     <description>WildFly Cloud Enablement Testsuite</description>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${version.dependency.plugin}</version>
-                <executions>
-                    <execution>
-                        <id>unpack-dependencies</id>
-                        <phase>process-test-classes</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeGroupIds>org.jboss</includeGroupIds>
-                            <includeTypes>test-jar</includeTypes>
-                            <includeScope>test</includeScope>
-                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${version.surefire.plugin}</version>
-                <configuration>
-                    <runOrder>alphabetical</runOrder>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                    <includes>
-                        <include>org/jboss/**/*Test.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
-
-        <!-- Tests - add any external existing tests here -->
-
-        <dependency>
-            <groupId>org.jboss.ce.testsuite</groupId>
-            <artifactId>tests-ce-testsuite</artifactId>
-            <type>test-jar</type>
-        </dependency>
-
-        <!-- dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-ts-integ-basic</artifactId>
-            <type>test-jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-testsuite-shared</artifactId>
-        </dependency -->
-
-        <!-- EAP testunit deps -->
-
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
 
         <!-- Test Utils -->
 
@@ -195,49 +125,6 @@
                     <name>wildfly</name>
                 </property>
             </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${version.dependency.plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>unpack-dependencies</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>org.jboss</includeGroupIds>
-                                    <includeTypes>test-jar</includeTypes>
-                                    <includeScope>test</includeScope>
-                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                                    <overWriteReleases>false</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
-                        <configuration>
-                            <runOrder>alphabetical</runOrder>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <includes>
-                                <include>org/jboss/**/*Test.java</include>
-                            </includes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 </project>
-
-
-
-
