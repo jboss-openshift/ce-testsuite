@@ -176,7 +176,7 @@
 
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-ce-fabric8</artifactId>
+                    <artifactId>arquillian-ce-openshift</artifactId>
                     <scope>test</scope>
                 </dependency>
 
