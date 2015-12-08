@@ -51,7 +51,7 @@ public class HttpSessionTest {
 
     @Deployment
     public static WebArchive getDeployment() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "hs.war");
         war.setWebXML("web-foo.xml");
         war.addClass(FooServlet.class);
         return war;
@@ -63,7 +63,7 @@ public class HttpSessionTest {
     public void testFirstNode() throws Exception {
         Thread.sleep(2000); // wait 2sec to sync on the server-side??
 
-        InputStream response = client.execute(0, "/test/foo");
+        InputStream response = client.execute(0, "/hs/foo");
         Assert.assertEquals("OK", FooServlet.readInputStream(response));
     }
 
@@ -73,7 +73,7 @@ public class HttpSessionTest {
     public void testSecondNode() throws Exception {
         Thread.sleep(2000); // wait 2sec to sync on the server-side??
 
-        InputStream response = client.execute(1, "/test/foo");
+        InputStream response = client.execute(1, "/hs/foo");
         Assert.assertEquals("CE!!", FooServlet.readInputStream(response));
     }
 

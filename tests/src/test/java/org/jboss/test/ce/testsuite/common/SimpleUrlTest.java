@@ -33,6 +33,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.test.ce.testsuite.common.support.PokeServlet;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,10 @@ public class SimpleUrlTest {
 
     @Deployment
     public static WebArchive getDeployment() throws Exception {
-        return ShrinkWrap.create(WebArchive.class, "test.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "urltest.war");
+        war.setWebXML("web-poke.xml");
+        war.addClass(PokeServlet.class);
+        return war;
     }
 
     @Test
