@@ -145,6 +145,28 @@
                     <artifactId>httpclient</artifactId>
                 </dependency>
 
+                <!-- Enrichers -->
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.testenricher</groupId>
+                    <artifactId>arquillian-testenricher-cdi</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.testenricher</groupId>
+                    <artifactId>arquillian-testenricher-ejb</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.testenricher</groupId>
+                    <artifactId>arquillian-testenricher-resource</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.testenricher</groupId>
+                    <artifactId>arquillian-testenricher-initialcontext</artifactId>
+                </dependency>
+
                 <!-- Test Utils -->
 
                 <dependency>
