@@ -19,6 +19,11 @@
     <name>CE Testsuite -- EAP testsuite tests</name>
     <description>Cloud Enablement Testsuite -- EAP testsuite tests</description>
 
+    <properties>
+        <version.javax.ejb>1.0.2.Final-redhat-3</version.javax.ejb>
+        <version.javax.jms>1.0.1.Final-redhat-3</version.javax.jms>
+    </properties>
+
     <profiles>
         <!-- Default, compile tests, but not run -->
         <profile>
@@ -99,6 +104,19 @@
 
                     <dependency>
                         <groupId>org.jboss.as</groupId>
+                        <artifactId>jboss-as-ts-integ-smoke</artifactId>
+                        <type>test-jar</type>
+                        <version>${version.eap}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>*</groupId>
+                                <artifactId>*</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.jboss.as</groupId>
                         <artifactId>jboss-as-testsuite-shared</artifactId>
                         <version>${version.eap}</version>
                         <scope>test</scope>
@@ -109,6 +127,23 @@
                             </exclusion>
                         </exclusions>
                     </dependency>
+
+                <!-- Test deps -->
+
+                <dependency>
+                    <groupId>org.jboss.spec.javax.ejb</groupId>
+                    <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+                    <version>${version.javax.ejb}</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.spec.javax.jms</groupId>
+                    <artifactId>jboss-jms-api_1.1_spec</artifactId>
+                    <version>${version.javax.jms}</version>
+                    <scope>test</scope>
+                </dependency>
+
                 </dependencies>
             </dependencyManagement>
 
@@ -130,6 +165,12 @@
 
                 <dependency>
                     <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-ts-integ-smoke</artifactId>
+                    <type>test-jar</type>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-testsuite-shared</artifactId>
                 </dependency>
 
@@ -143,6 +184,16 @@
                 <dependency>
                     <groupId>org.apache.httpcomponents</groupId>
                     <artifactId>httpclient</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.spec.javax.ejb</groupId>
+                    <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.spec.javax.jms</groupId>
+                    <artifactId>jboss-jms-api_1.1_spec</artifactId>
                 </dependency>
 
                 <!-- Enrichers -->
