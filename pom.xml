@@ -33,6 +33,7 @@
         <!-- EAP testunit deps -->
         <version.logging>3.1.4.GA</version.logging>
         <version.httpclient>4.3.6</version.httpclient>
+        <version.syslog4j>0.9.30</version.syslog4j>
     </properties>
 
     <modules>
@@ -68,6 +69,26 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${version.httpclient}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${version.httpclient}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.syslog4j</groupId>
+                <artifactId>syslog4j</artifactId>
+                <version>${version.syslog4j}</version>
                 <scope>test</scope>
             </dependency>
 
