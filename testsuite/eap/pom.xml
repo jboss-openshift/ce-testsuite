@@ -31,20 +31,6 @@
     </properties>
 
     <profiles>
-        <!-- Default, compile tests, but not run -->
-        <profile>
-            <id>default</id>
-
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-
-        <!-- Run existing EAP tests -->
         <profile>
             <id>eap</id>
 
@@ -139,7 +125,6 @@
                         <groupId>org.jboss.as</groupId>
                         <artifactId>jboss-as-arquillian-common</artifactId>
                         <version>${version.eap}</version>
-                        <scope>test</scope>
                     </dependency>
 
                     <dependency>
@@ -274,6 +259,11 @@
             </dependencyManagement>
 
             <dependencies>
+
+                <dependency>
+                    <groupId>org.kohsuke.metainf-services</groupId>
+                    <artifactId>metainf-services</artifactId>
+                </dependency>
 
                 <!-- Tests - add any external existing tests here -->
 
@@ -494,7 +484,3 @@
         </profile>
     </profiles>
 </project>
-
-
-
-
