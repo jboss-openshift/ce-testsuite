@@ -23,8 +23,14 @@
 
 package org.jboss.arquillian.ce.testsuite.eap;
 
+import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
+import org.jboss.arquillian.core.api.InstanceProducer;
+import org.jboss.arquillian.core.api.annotation.Inject;
+import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.LoadableExtension;
+import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
 import org.jboss.as.arquillian.container.CommonContainerExtension;
+import org.jboss.as.arquillian.container.ManagementClient;
 import org.kohsuke.MetaInfServices;
 
 /**
@@ -34,4 +40,20 @@ import org.kohsuke.MetaInfServices;
  */
 @MetaInfServices(LoadableExtension.class)
 public class CEContainerExtension extends CommonContainerExtension {
+    @Override
+    public void register(ExtensionBuilder builder) {
+        super.register(builder);
+        builder.observer(InitialObserver.class);
+    }
+
+    private static class InitialObserver {
+        @Inject
+        @ContainerScoped
+        private InstanceProducer<ManagementClient> managementClient;
+
+        public void observe(@Observes BeforeSuite event) {
+            System.out.println("result = " + event);
+            // TODO -- create mgmt client
+        }
+    }
 }
