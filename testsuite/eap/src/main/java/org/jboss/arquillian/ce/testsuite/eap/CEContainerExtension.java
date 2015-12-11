@@ -23,6 +23,9 @@
 
 package org.jboss.arquillian.ce.testsuite.eap;
 
+import org.jboss.arquillian.ce.api.AuthHandle;
+import org.jboss.arquillian.ce.api.ConfigurationHandle;
+import org.jboss.arquillian.ce.api.SetupCallback;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -31,6 +34,7 @@ import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
 import org.jboss.as.arquillian.container.CommonContainerExtension;
 import org.jboss.as.arquillian.container.ManagementClient;
+import org.jboss.as.controller.client.ModelControllerClient;
 import org.kohsuke.MetaInfServices;
 
 /**
@@ -51,9 +55,22 @@ public class CEContainerExtension extends CommonContainerExtension {
         @ContainerScoped
         private InstanceProducer<ManagementClient> managementClient;
 
+        @Inject
+        @ContainerScoped
+        private InstanceProducer<SetupCallback> setupCallback;
+
         public void observe(@Observes BeforeSuite event) {
-            System.out.println("result = " + event);
-            // TODO -- create mgmt client
+            setupCallback.set(new SetupCallback() {
+                @Override
+                public void callback(ConfigurationHandle configurationHandle, AuthHandle authHandle) {
+                    // TODO -- choose the right pod!!?
+                    String address = null;
+                    int port = 9990;
+                    ModelControllerClient mmc = null;
+                    ManagementClient client = new ManagementClient(mmc, address, port);
+                    managementClient.set(client);
+                }
+            });
         }
     }
 }

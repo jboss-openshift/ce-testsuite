@@ -104,7 +104,6 @@
                 <groupId>org.jboss.arquillian.container</groupId>
                 <artifactId>arquillian-ce-api</artifactId>
                 <version>${version.ce-arq}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
