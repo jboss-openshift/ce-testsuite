@@ -83,6 +83,13 @@
             <dependencyManagement>
                 <dependencies>
                     <dependency>
+                        <groupId>org.jboss.arquillian.container</groupId>
+                        <artifactId>arquillian-ce-eap6</artifactId>
+                        <version>${version.ce-arq}</version>
+                        <scope>test</scope>
+                    </dependency>
+
+                    <dependency>
                         <groupId>org.jboss.as</groupId>
                         <artifactId>jboss-as-ts-integ-basic</artifactId>
                         <type>test-jar</type>
@@ -119,12 +126,6 @@
                                 <artifactId>*</artifactId>
                             </exclusion>
                         </exclusions>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-arquillian-common</artifactId>
-                        <version>${version.eap}</version>
                     </dependency>
 
                     <dependency>
@@ -292,11 +293,6 @@
 
                 <dependency>
                     <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-common</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-cli</artifactId>
                 </dependency>
 
@@ -414,8 +410,7 @@
 
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-ce-wildfly</artifactId>
-                    <scope>test</scope>
+                    <artifactId>arquillian-ce-eap6</artifactId>
                 </dependency>
 
                 <dependency>
