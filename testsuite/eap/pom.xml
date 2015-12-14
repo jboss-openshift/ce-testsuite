@@ -28,6 +28,7 @@
         <version.javax.tx>1.0.1.Final-redhat-3</version.javax.tx>
         <version.org.jboss.security.jbossxacml>2.0.8.Final-redhat-5</version.org.jboss.security.jbossxacml>
         <version.org.hornetq>2.3.25.SP6-redhat-1</version.org.hornetq>
+        <version.org.jboss.xnio>3.1.0.Final</version.org.jboss.xnio>
     </properties>
 
     <profiles>
@@ -129,10 +130,22 @@
                     </dependency>
 
                     <dependency>
+                        <groupId>org.jboss.xnio</groupId>
+                        <artifactId>xnio-nio</artifactId>
+                        <version>${version.org.jboss.xnio}</version>
+                    </dependency>
+
+                    <dependency>
                         <groupId>org.jboss.as</groupId>
                         <artifactId>jboss-as-cli</artifactId>
                         <scope>test</scope>
                         <version>${version.eap}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.jboss.xnio</groupId>
+                                <artifactId>xnio-nio</artifactId>
+                            </exclusion>
+                        </exclusions>
                     </dependency>
 
                     <dependency>
@@ -302,6 +315,11 @@
                 </dependency>
 
                 <!-- EAP testunit deps -->
+
+                <dependency>
+                    <groupId>org.jboss.xnio</groupId>
+                    <artifactId>xnio-nio</artifactId>
+                </dependency>
 
                 <dependency>
                     <groupId>org.jboss.logging</groupId>
