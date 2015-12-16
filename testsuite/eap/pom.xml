@@ -159,6 +159,13 @@
                         <version>${version.eap}</version>
                     </dependency>
 
+                    <dependency>
+                        <groupId>org.jboss.as</groupId>
+                        <artifactId>jboss-as-arquillian-common</artifactId>
+                        <scope>test</scope>
+                        <version>${version.eap}</version>
+                    </dependency>
+
                     <!-- Test deps -->
 
                     <dependency>
@@ -325,6 +332,12 @@
                     <artifactId>jboss-as-security</artifactId>
                 </dependency>
 
+                <dependency>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-common</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
                 <!-- EAP testunit deps -->
 
                 <dependency>
@@ -437,9 +450,14 @@
                     <scope>test</scope>
                 </dependency>
 
-                <dependency>
+                <!-- dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-ce-eap6</artifactId>
+                </dependency -->
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-ce-wildfly</artifactId>
                 </dependency>
 
                 <dependency>
