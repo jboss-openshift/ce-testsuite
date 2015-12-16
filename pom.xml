@@ -24,6 +24,7 @@
         <version.ce-arq>1.0.0-SNAPSHOT</version.ce-arq>
         <version.meta-inf>1.6</version.meta-inf>
         <version.arquillian>1.1.9.Final</version.arquillian>
+        <version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
         <version.eap>7.5.6.Final-redhat-SNAPSHOT</version.eap>
         <version.junit>4.10</version.junit>
         <version.javax.servlet.api>3.1.0</version.javax.servlet.api>
@@ -152,6 +153,13 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>${version.slf4j}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.arquillian.extension</groupId>
+                <artifactId>arquillian-governor-ignore</artifactId>
+                <version>${version.arquillian.governor}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- JDG -->

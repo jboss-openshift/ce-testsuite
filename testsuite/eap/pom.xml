@@ -478,6 +478,11 @@
                     <scope>test</scope>
                 </dependency>
 
+                <dependency>
+                    <groupId>org.arquillian.extension</groupId>
+                    <artifactId>arquillian-governor-ignore</artifactId>
+                </dependency>
+
                 <!-- Deps -->
 
                 <dependency>
