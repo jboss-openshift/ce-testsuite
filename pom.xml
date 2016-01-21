@@ -63,6 +63,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.jboss.ce.testsuite</groupId>
+                <artifactId>wildfly-ce-testsuite</artifactId>
+                <type>test-jar</type>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- EAP testunit deps -->
 
             <dependency>
@@ -138,6 +145,13 @@
             <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
                 <artifactId>arquillian-ce-template</artifactId>
+                <version>${version.ce-arq}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-mgmtclient</artifactId>
                 <version>${version.ce-arq}</version>
                 <scope>test</scope>
             </dependency>

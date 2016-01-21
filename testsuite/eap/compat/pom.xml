@@ -163,6 +163,20 @@
                     </dependency>
 
                     <dependency>
+                        <groupId>org.jboss.arquillian.container</groupId>
+                        <artifactId>arquillian-ce-mgmtclient</artifactId>
+                        <version>${version.ce-arq}</version>
+                        <scope>test</scope>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.jboss.ce.testsuite</groupId>
+                        <artifactId>wildfly-ce-testsuite</artifactId>
+                        <type>test-jar</type>
+                        <version>${project.version}</version>
+                    </dependency>
+
+                    <dependency>
                         <groupId>org.jboss.as</groupId>
                         <artifactId>jboss-as-testsuite-compat</artifactId>
                         <type>test-jar</type>
@@ -346,6 +360,14 @@
             </dependencyManagement>
 
             <dependencies>
+
+                <dependency>
+                    <groupId>org.jboss.ce.testsuite</groupId>
+                    <artifactId>wildfly-ce-testsuite</artifactId>
+                    <type>test-jar</type>
+                </dependency>
+
+                <!-- TMP ^ -->
 
                 <dependency>
                     <groupId>org.hibernate</groupId>
@@ -540,6 +562,11 @@
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-ce-wildfly</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-ce-mgmtclient</artifactId>
                 </dependency>
 
                 <dependency>

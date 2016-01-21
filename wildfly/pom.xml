@@ -18,6 +18,23 @@
     <name>WildFly CE Testsuite</name>
     <description>WildFly Cloud Enablement Testsuite</description>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${version.jar.plugin}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
 
         <!-- Test Utils -->

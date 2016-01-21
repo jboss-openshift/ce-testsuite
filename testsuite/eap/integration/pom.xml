@@ -95,6 +95,13 @@
                     </dependency>
 
                     <dependency>
+                        <groupId>org.jboss.arquillian.container</groupId>
+                        <artifactId>arquillian-ce-mgmtclient</artifactId>
+                        <version>${version.ce-arq}</version>
+                        <scope>test</scope>
+                    </dependency>
+
+                    <dependency>
                         <groupId>org.jboss.as</groupId>
                         <artifactId>jboss-as-ts-integ-basic</artifactId>
                         <type>test-jar</type>
@@ -458,6 +465,11 @@
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-ce-wildfly</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-ce-mgmtclient</artifactId>
                 </dependency>
 
                 <dependency>
