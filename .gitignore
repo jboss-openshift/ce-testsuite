@@ -7,3 +7,5 @@ target/
 .project
 .settings
 .classpath
+jdg-internal-imagestream.json
+decisionserver-internal-imagestream.json
