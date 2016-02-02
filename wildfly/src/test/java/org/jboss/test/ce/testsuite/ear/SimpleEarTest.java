@@ -21,20 +21,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.test.ce.testsuite.cluster.http;
+package org.jboss.test.ce.testsuite.ear;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
-import org.jboss.arquillian.ce.api.Client;
-import org.jboss.arquillian.ce.api.Replicas;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.test.ce.testsuite.cluster.http.support.FooServlet;
+import org.jboss.test.ce.testsuite.ear.support.HelloServlet;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,38 +44,42 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-@Replicas(2)
-public class HttpSessionTest {
-
-    @ArquillianResource
-    Client client;
+public class SimpleEarTest {
 
     @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "hs.war");
-        war.setWebXML("web-foo.xml");
-        war.addClass(FooServlet.class);
-        return war;
+    public static Archive getDeployment() {
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
+        ear.setApplicationXML("application.xml");
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "web1.war");
+        ear.addAsModule(war1);
+        war1.addClass(HelloServlet.class);
+        war1.setWebXML("web-hello.xml");
+
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "web2.war");
+        ear.addAsModule(war2);
+        war2.addClass(HelloServlet.class);
+        war2.setWebXML("web-hello.xml");
+
+        return ear;
     }
 
     @Test
     @RunAsClient
-    @InSequence(1)
-    public void testFirstNode() throws Exception {
-        Thread.sleep(2000); // wait 2sec to sync on the server-side??
-
-        InputStream response = client.execute(0, "/hs/foo");
-        Assert.assertEquals("OK", FooServlet.readInputStream(response));
+    public void testModules(@ArquillianResource URL baseUrl) throws Exception {
+        Assert.assertEquals("Hello JBoss!", getResponse(new URL(baseUrl + "web1/hello?user=JBoss")));
+        Assert.assertEquals("Hello RedHat!", getResponse(new URL(baseUrl + "web2/hello?user=RedHat")));
     }
 
-    @Test
-    @RunAsClient
-    @InSequence(2)
-    public void testSecondNode() throws Exception {
-        Thread.sleep(2000); // wait 2sec to sync on the server-side??
-
-        InputStream response = client.execute(1, "/hs/foo");
-        Assert.assertEquals("CE!!", FooServlet.readInputStream(response));
+    private static String getResponse(URL url) throws IOException {
+        String response = "";
+        try (InputStream stream = url.openStream()) {
+            int b;
+            while ((b = stream.read()) != -1) {
+                response += ((char) b);
+            }
+        }
+        return response;
     }
-
 }

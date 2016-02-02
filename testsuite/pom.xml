@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.ce.testsuite</groupId>
+        <artifactId>parent-ce</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>parent-testsuite</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>CE Testsuite -- Existing tests</name>
+    <description>Cloud Enablement Testsuite -- Existing tests</description>
+
+    <profiles>
+        <profile>
+            <id>eap</id>
+
+            <activation>
+                <property>
+                    <name>eap</name>
+                </property>
+            </activation>
+
+            <modules>
+                <module>eap</module>
+            </modules>
+        </profile>
+    </profiles>
+
+</project>

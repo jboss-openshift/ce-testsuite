@@ -23,13 +23,18 @@
 
 package org.jboss.test.ce.testsuite.common;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.TargetsContainer;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.test.ce.testsuite.common.support.PokeServlet;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,22 +42,29 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-public class SmokeTest {
-    private static Logger log = Logger.getLogger(SmokeTest.class.getName());
+@RunAsClient
+public class SimpleUrlTest {
+    private static Logger log = Logger.getLogger(SimpleUrlTest.class.getName());
 
     @Deployment
     public static WebArchive getDeployment() throws Exception {
-        return ShrinkWrap.create(WebArchive.class, "smoketest.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "urltest.war");
+        war.setWebXML("web-poke.xml");
+        war.addClass(PokeServlet.class);
+        return war;
     }
 
     @Test
-    public void testBasic() throws Exception {
-        log.info("Poke!!");
-    }
-
-    @Test
-    @TargetsContainer("pod1")
-    public void testCluster() throws Exception {
-        log.info("Cluster!!");
+    public void testBasic(@ArquillianResource URL baseURL) throws Exception {
+        log.info("Injected URL: " + baseURL);
+        String response = "";
+        try (InputStream stream = new URL(baseURL + "_poke").openStream()) {
+            int b;
+            while ((b = stream.read()) != -1) {
+                response += ((char) b);
+            }
+        }
+        log.info("Poke response: " + response);
+        Assert.assertEquals("OK", response);
     }
 }

@@ -21,38 +21,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.test.ce.testsuite.common;
-
-import java.util.logging.Logger;
-
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.TargetsContainer;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+package org.jboss.test.ce.testsuite.common.support;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-@RunWith(Arquillian.class)
-public class SmokeTest {
-    private static Logger log = Logger.getLogger(SmokeTest.class.getName());
-
-    @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return ShrinkWrap.create(WebArchive.class, "smoketest.war");
-    }
-
-    @Test
-    public void testBasic() throws Exception {
-        log.info("Poke!!");
-    }
-
-    @Test
-    @TargetsContainer("pod1")
-    public void testCluster() throws Exception {
-        log.info("Cluster!!");
-    }
+public class Bean {
 }

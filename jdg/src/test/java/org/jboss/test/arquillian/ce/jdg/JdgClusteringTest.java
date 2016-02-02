@@ -58,4 +58,8 @@ public class JdgClusteringTest {
         assertEquals("bar1", cache.get("foo1"));
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> upstream/master

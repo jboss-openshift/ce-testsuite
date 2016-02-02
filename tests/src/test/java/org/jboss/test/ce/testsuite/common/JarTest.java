@@ -23,36 +23,36 @@
 
 package org.jboss.test.ce.testsuite.common;
 
-import java.util.logging.Logger;
-
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.test.ce.testsuite.common.support.Bean;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
+ * Jar test
+ *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-public class SmokeTest {
-    private static Logger log = Logger.getLogger(SmokeTest.class.getName());
+public class JarTest {
 
     @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return ShrinkWrap.create(WebArchive.class, "smoketest.war");
+    public static Archive getDeployment() throws Exception {
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "some.jar");
+        jar.addAsManifestResource(new StringAsset("<beans/>"), "beans.xml");
+        jar.addClass(Bean.class);
+        return jar;
     }
 
     @Test
-    public void testBasic() throws Exception {
-        log.info("Poke!!");
+    public void testBeans(Bean bean) throws Exception {
+        Assert.assertNotNull(bean); // should be injected via CDI enritcher
     }
 
-    @Test
-    @TargetsContainer("pod1")
-    public void testCluster() throws Exception {
-        log.info("Cluster!!");
-    }
 }

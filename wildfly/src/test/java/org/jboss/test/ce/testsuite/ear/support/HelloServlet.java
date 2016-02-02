@@ -21,38 +21,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.test.ce.testsuite.common;
+package org.jboss.test.ce.testsuite.ear.support;
 
-import java.util.logging.Logger;
+import java.io.IOException;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.TargetsContainer;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-@RunWith(Arquillian.class)
-public class SmokeTest {
-    private static Logger log = Logger.getLogger(SmokeTest.class.getName());
-
-    @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return ShrinkWrap.create(WebArchive.class, "smoketest.war");
-    }
-
-    @Test
-    public void testBasic() throws Exception {
-        log.info("Poke!!");
-    }
-
-    @Test
-    @TargetsContainer("pod1")
-    public void testCluster() throws Exception {
-        log.info("Cluster!!");
+public class HelloServlet extends HttpServlet {
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().write("Hello " + req.getParameter("user") + "!");
     }
 }
