@@ -72,8 +72,13 @@ import static junit.framework.Assert.assertEquals;
         parameters = {
                 @TemplateParameter(name = "HOSTNAME_HTTP", value="jdg-http-route.openshift"),
                 @TemplateParameter(name = "HOSTNAME_HTTPS", value="jdg-http-route.openshift"),
+<<<<<<< HEAD
+                @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
+                @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass"),
+=======
                 @TemplateParameter(name = "JDG_HTTPS_NAME", value="jboss"),
                 @TemplateParameter(name = "JDG_HTTPS_PASSWORD", value="mykeystorepass"),
+>>>>>>> upstream/master
                 @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value="${kubernetes.namespace}")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
@@ -86,6 +91,10 @@ public class JdgTest {
 
 //    public static final String ROUTE_SUFFIX = ".router.default.svc.cluster.local";
     public static final String HTTP_ROUTE_HOST = "jdg-http-route.openshift";
+<<<<<<< HEAD
+    public static final String HTTPS_ROUTE_HOST = "jdg-http-route.openshift";
+=======
+>>>>>>> upstream/master
 
     @ArquillianResource
     ConfigurationHandle configuration;
@@ -118,6 +127,11 @@ public class JdgTest {
     public void testRestService() throws Exception {
         String host = System.getenv("DATAGRID_APP_SERVICE_HOST");
         int port = Integer.parseInt(System.getenv("DATAGRID_APP_SERVICE_PORT"));
+<<<<<<< HEAD
+        
+        System.out.println("Host: " + host + " Port: " + port);
+=======
+>>>>>>> upstream/master
         RESTCache<String, Object> cache = new RESTCache<>("default", "http://" + host + ":" + port + "/rest/");
         cache.put("foo1", "bar1");
         assertEquals("bar1", cache.get("foo1"));
@@ -202,6 +216,10 @@ public class JdgTest {
     }
 
     private static void trustAllCertificates() throws NoSuchAlgorithmException, KeyManagementException {
+<<<<<<< HEAD
+    	
+=======
+>>>>>>> upstream/master
         TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                 return null;
@@ -227,6 +245,10 @@ public class JdgTest {
         // Install the all-trusting host verifier
         HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
     }
+<<<<<<< HEAD
+}
+=======
 
 
 }
+>>>>>>> upstream/master

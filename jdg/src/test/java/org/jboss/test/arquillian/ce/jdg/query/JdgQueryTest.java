@@ -69,8 +69,13 @@ import static junit.framework.Assert.assertEquals;
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-https.json",
         labels = "application=datagrid-app",
         parameters = {
+<<<<<<< HEAD
+                @TemplateParameter(name="HTTPS_NAME", value="jboss"),
+                @TemplateParameter(name="HTTPS_PASSWORD", value="mykeystorepass"),
+=======
                 @TemplateParameter(name="JDG_HTTPS_NAME", value="jboss"),
                 @TemplateParameter(name="JDG_HTTPS_PASSWORD", value="mykeystorepass"),
+>>>>>>> upstream/master
                 @TemplateParameter(name="CACHE_NAMES", value="addressbook_indexed,addressbook"),
                 @TemplateParameter(name="addressbook_indexed_CACHE_START", value="EAGER"),
                 @TemplateParameter(name="addressbook_indexed_CACHE_INDEX", value="ALL"),

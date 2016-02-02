@@ -29,6 +29,11 @@
         <version.junit>4.10</version.junit>
         <version.javax.servlet.api>3.1.0</version.javax.servlet.api>
         <version.slf4j>1.7.5</version.slf4j>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> upstream/master
         <!-- JDG -->
         <version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
         <spymemcached.version>2.8.1</spymemcached.version>
@@ -36,6 +41,11 @@
         <version.logging>3.1.4.GA</version.logging>
         <version.httpclient>4.3.6</version.httpclient>
         <version.syslog4j>0.9.30</version.syslog4j>
+<<<<<<< HEAD
+        <jboss.bom.brms>6.2.0.GA-redhat-1</jboss.bom.brms>
+>>>>>>> 98de5d9... Removing unneeded files.
+=======
+>>>>>>> upstream/master
     </properties>
 
     <modules>
@@ -214,6 +224,11 @@
         </dependencies>
     </dependencyManagement>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> upstream/master
     <profiles>
         <profile>
             <id>default</id>
@@ -235,6 +250,29 @@
                 <module>jdg</module>
             </modules>
         </profile>
+<<<<<<< HEAD
+        <profile>
+            <id>decisionserver</id>
+            <activation>
+                <property>
+                    <name>decisionserver</name>
+                </property>
+            </activation>
+
+            <modules>
+                <module>decisionserver</module>
+            </modules>
+        </profile>
+
     </profiles>
+
+>>>>>>> a8489fa... Including decision server test cases
+</project>
+
+
+
+=======
+    </profiles>
+>>>>>>> upstream/master
 
 </project>
