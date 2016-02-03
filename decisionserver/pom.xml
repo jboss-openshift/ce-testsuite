@@ -57,20 +57,7 @@
 		</plugins>
 	</build>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jboss.bom.brms</groupId>
-				<artifactId>jboss-brms-bpmsuite-bom</artifactId>
-				<version>${jboss.bom.brms}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
-
 
 		<!-- TODO -->
 
@@ -129,9 +116,7 @@
 		<dependency>
 			<groupId>org.kie.server</groupId>
 			<artifactId>kie-server-client</artifactId>
-			<scope>compile</scope>
 		</dependency>
-		
 
 		<!-- Deps -->
 
