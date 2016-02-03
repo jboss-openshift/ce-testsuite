@@ -72,8 +72,8 @@ import static junit.framework.Assert.assertEquals;
         parameters = {
                 @TemplateParameter(name = "HOSTNAME_HTTP", value="jdg-http-route.openshift"),
                 @TemplateParameter(name = "HOSTNAME_HTTPS", value="jdg-http-route.openshift"),
-                @TemplateParameter(name = "JDG_HTTPS_NAME", value="jboss"),
-                @TemplateParameter(name = "JDG_HTTPS_PASSWORD", value="mykeystorepass"),
+                @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
+                @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass"),
                 @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value="${kubernetes.namespace}")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
