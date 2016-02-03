@@ -39,7 +39,8 @@ import org.junit.runner.RunWith;
  * @author Marko Luksa
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/luksa/application-templates/JDG/datagrid/datagrid65-basic-s2i.json")
+@Template(url = "https://raw.githubusercontent.com/luksa/application-templates/JDG/datagrid/datagrid65-basic-s2i.json",
+          labels = "application=jdg-app")
 @ExternalDeployment
 public class JdgClusteringTest {
     public static final String JDG_HOST = "jdg-app-%s.router.default.svc.cluster.local";
