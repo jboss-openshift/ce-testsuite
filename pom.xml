@@ -36,7 +36,8 @@
         <version.logging>3.1.4.GA</version.logging>
         <version.httpclient>4.3.6</version.httpclient>
         <version.syslog4j>0.9.30</version.syslog4j>
-	<jboss.bom.brms>6.2.0.GA-redhat-1</jboss.bom.brms>
+        <!-- Decision server -->
+        <version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
     </properties>
 
     <modules>
@@ -195,6 +196,16 @@
                 <scope>compile</scope>
             </dependency>
 
+            <!-- Decision server -->
+
+            <dependency>
+                <groupId>org.jboss.bom.brms</groupId>
+                <artifactId>jboss-brms-bpmsuite-bom</artifactId>
+                <version>${version.jboss.bom.brms}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- ARQ -->
 
             <dependency>
@@ -236,6 +247,7 @@
                 <module>jdg</module>
             </modules>
         </profile>
+
         <profile>
             <id>decisionserver</id>
             <activation>
