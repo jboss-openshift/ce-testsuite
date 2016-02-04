@@ -41,6 +41,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.api.marshalling.MarshallingFormat;
@@ -86,8 +87,7 @@ public class DecisionServerBasicTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML("web.xml");
 
-        war.addAsLibraries(Maven.resolver().resolve("org.kie:kie-server-api").withTransitivity().asFile());
-        war.addAsLibraries(Maven.resolver().resolve("org.kie:kie-server-client").withTransitivity().asFile());
+        war.addAsLibraries(Maven.resolver().resolve("org.kie.server:kie-server-client").withTransitivity().asFile());
 
         Properties properties = new Properties();
         properties.setProperty("kie.username", USERNAME);
@@ -138,13 +138,11 @@ public class DecisionServerBasicTest {
 
         serverInfo.getVersion();
 
-        /* FIXME / TODO
         //Reading Server capabilities
         for (String capability : serverInfo.getCapabilities()) {
             serverCapabilitiesResult += (capability);
         }
-        assertEquals("KieServerBRM", serverCapabilitiesResult);
-        */
+        Assert.assertEquals("KieServerBRM", serverCapabilitiesResult);
     }
 
 }
