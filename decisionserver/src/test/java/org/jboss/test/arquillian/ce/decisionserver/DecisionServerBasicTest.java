@@ -88,7 +88,7 @@ public class DecisionServerBasicTest {
         
         war.addAsLibraries(
             Maven.resolver().loadPomFromFile("pom.xml")
-            	.resolve("org.kie:kie-server-client")
+            	.resolve("org.kie.server:kie-server-client")
                 .withTransitivity()
                 .asFile());
         return war;
