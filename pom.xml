@@ -1,265 +1,275 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <!-- Parent -->
-    <parent>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-parent</artifactId>
-        <version>19</version>
-    </parent>
+	<!-- Parent -->
+	<parent>
+		<groupId>org.jboss</groupId>
+		<artifactId>jboss-parent</artifactId>
+		<version>19</version>
+	</parent>
 
-    <!-- Model Version -->
-    <modelVersion>4.0.0</modelVersion>
+	<!-- Model Version -->
+	<modelVersion>4.0.0</modelVersion>
 
-    <!-- Artifact Configuration -->
-    <groupId>org.jboss.ce.testsuite</groupId>
-    <artifactId>parent-ce</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>CE Testsuite</name>
-    <description>Cloud Enablement Testsuite</description>
+	<!-- Artifact Configuration -->
+	<groupId>org.jboss.ce.testsuite</groupId>
+	<artifactId>parent-ce</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>CE Testsuite</name>
+	<description>Cloud Enablement Testsuite</description>
 
-    <!-- Properties -->
-    <properties>
-        <version.ce-arq>1.0.0-SNAPSHOT</version.ce-arq>
-        <version.meta-inf>1.6</version.meta-inf>
-        <version.arquillian>1.1.9.Final</version.arquillian>
-        <version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
-        <version.eap>7.5.6.Final-redhat-SNAPSHOT</version.eap>
-        <version.junit>4.10</version.junit>
-        <version.javax.servlet.api>3.1.0</version.javax.servlet.api>
-        <version.slf4j>1.7.5</version.slf4j>
-        <!-- JDG -->
-        <version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
-        <spymemcached.version>2.8.1</spymemcached.version>
-        <!-- EAP testunit deps -->
-        <version.logging>3.1.4.GA</version.logging>
-        <version.httpclient>4.3.6</version.httpclient>
-        <version.syslog4j>0.9.30</version.syslog4j>
-        <!-- Decision server -->
-        <version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
-    </properties>
+	<!-- Properties -->
+	<properties>
+		<version.ce-arq>1.0.0-SNAPSHOT</version.ce-arq>
+		<version.meta-inf>1.6</version.meta-inf>
+		<version.arquillian>1.1.9.Final</version.arquillian>
+		<version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
+		<version.eap>7.5.6.Final-redhat-SNAPSHOT</version.eap>
+		<version.junit>4.10</version.junit>
+		<version.javax.servlet.api>3.1.0</version.javax.servlet.api>
+		<version.slf4j>1.7.5</version.slf4j>
+		<!-- JDG -->
+		<version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
+		<spymemcached.version>2.8.1</spymemcached.version>
+		<!-- EAP testunit deps -->
+		<version.logging>3.1.4.GA</version.logging>
+		<version.httpclient>4.3.6</version.httpclient>
+		<version.syslog4j>0.9.30</version.syslog4j>
+		<!-- Decision server -->
+		<version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
+		<version.org.kie>6.2.0.Final-redhat-14</version.org.kie>
+	</properties>
 
-    <modules>
-        <module>tests</module>
-        <module>web</module>
-        <module>wildfly</module>
-        <module>testsuite</module>
-    </modules>
+	<modules>
+		<module>tests</module>
+		<module>web</module>
+		<module>wildfly</module>
+		<module>testsuite</module>
+	</modules>
 
-    <dependencyManagement>
-        <dependencies>
+	<dependencyManagement>
+		<dependencies>
 
-            <dependency>
-                <groupId>org.kohsuke.metainf-services</groupId>
-                <artifactId>metainf-services</artifactId>
-                <version>${version.meta-inf}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.kohsuke.metainf-services</groupId>
+				<artifactId>metainf-services</artifactId>
+				<version>${version.meta-inf}</version>
+			</dependency>
 
-            <!-- External tests -->
+			<!-- External tests -->
 
-            <dependency>
-                <groupId>org.jboss.ce.testsuite</groupId>
-                <artifactId>tests-ce-testsuite</artifactId>
-                <type>test-jar</type>
-                <version>${project.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.ce.testsuite</groupId>
+				<artifactId>tests-ce-testsuite</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.ce.testsuite</groupId>
-                <artifactId>wildfly-ce-testsuite</artifactId>
-                <type>test-jar</type>
-                <version>${project.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.ce.testsuite</groupId>
+				<artifactId>wildfly-ce-testsuite</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
 
-            <!-- EAP testunit deps -->
+			<!-- EAP testunit deps -->
 
-            <dependency>
-                <groupId>org.jboss.logging</groupId>
-                <artifactId>jboss-logging</artifactId>
-                <version>${version.logging}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.logging</groupId>
+				<artifactId>jboss-logging</artifactId>
+				<version>${version.logging}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${version.httpclient}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${version.httpclient}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpmime</artifactId>
-                <version>${version.httpclient}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpmime</artifactId>
+				<version>${version.httpclient}</version>
+				<scope>test</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 
-            <dependency>
-                <groupId>org.syslog4j</groupId>
-                <artifactId>syslog4j</artifactId>
-                <version>${version.syslog4j}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.syslog4j</groupId>
+				<artifactId>syslog4j</artifactId>
+				<version>${version.syslog4j}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <!-- Deps -->
+			<!-- Deps -->
 
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-api</artifactId>
-                <version>${version.ce-arq}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-ce-api</artifactId>
+				<version>${version.ce-arq}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-openshift</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-ce-openshift</artifactId>
+				<version>${version.ce-arq}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-fabric8</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-ce-fabric8</artifactId>
+				<version>${version.ce-arq}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-wildfly</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-ce-wildfly</artifactId>
+				<version>${version.ce-arq}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-web</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-ce-web</artifactId>
+				<version>${version.ce-arq}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-template</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-ce-template</artifactId>
+				<version>${version.ce-arq}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-mgmtclient</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-ce-mgmtclient</artifactId>
+				<version>${version.ce-arq}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${version.javax.servlet.api}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${version.javax.servlet.api}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${version.slf4j}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${version.slf4j}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.arquillian.extension</groupId>
-                <artifactId>arquillian-governor-ignore</artifactId>
-                <version>${version.arquillian.governor}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.arquillian.extension</groupId>
+				<artifactId>arquillian-governor-ignore</artifactId>
+				<version>${version.arquillian.governor}</version>
+				<scope>test</scope>
+			</dependency>
+			
+			<!-- Decision server -->
+			<dependency>
+				<groupId>org.jboss.bom.brms</groupId>
+				<artifactId>jboss-brms-bpmsuite-bom</artifactId>
+				<version>${version.jboss.bom.brms}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.kie</groupId>
+				<artifactId>kie-bom</artifactId>
+				<version>${version.org.kie}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-            <!-- JDG -->
+			<!-- JDG -->
 
-            <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-bom</artifactId>
-                <version>${version.org.infinispan}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.infinispan</groupId>
+				<artifactId>infinispan-bom</artifactId>
+				<version>${version.org.infinispan}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-            <!-- Manage the Spy memcached version -->
-            <dependency>
-                <groupId>com.google.code.simple-spring-memcached</groupId>
-                <artifactId>spymemcached</artifactId>
-                <version>${spymemcached.version}</version>
-                <scope>compile</scope>
-            </dependency>
+			<!-- Manage the Spy memcached version -->
+			<dependency>
+				<groupId>com.google.code.simple-spring-memcached</groupId>
+				<artifactId>spymemcached</artifactId>
+				<version>${spymemcached.version}</version>
+				<scope>compile</scope>
+			</dependency>
 
-            <!-- Decision server -->
 
-            <dependency>
-                <groupId>org.jboss.bom.brms</groupId>
-                <artifactId>jboss-brms-bpmsuite-bom</artifactId>
-                <version>${version.jboss.bom.brms}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
 
-            <!-- ARQ -->
+			<!-- ARQ -->
 
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${version.junit}</version>
+				<scope>test</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <type>pom</type>
-                <scope>import</scope>
-                <version>${version.arquillian}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<type>pom</type>
+				<scope>import</scope>
+				<version>${version.arquillian}</version>
+			</dependency>
 
-        </dependencies>
-    </dependencyManagement>
+		</dependencies>
+	</dependencyManagement>
 
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
 
-        <profile>
-            <id>jdg</id>
+		<profile>
+			<id>jdg</id>
 
-            <activation>
-                <property>
-                    <name>jdg</name>
-                </property>
-            </activation>
+			<activation>
+				<property>
+					<name>jdg</name>
+				</property>
+			</activation>
 
-            <modules>
-                <module>jdg</module>
-            </modules>
-        </profile>
+			<modules>
+				<module>jdg</module>
+			</modules>
+		</profile>
 
-        <profile>
-            <id>decisionserver</id>
-            <activation>
-                <property>
-                    <name>decisionserver</name>
-                </property>
-            </activation>
+		<profile>
+			<id>decisionserver</id>
+			<activation>
+				<property>
+					<name>decisionserver</name>
+				</property>
+			</activation>
 
-            <modules>
-                <module>decisionserver</module>
-            </modules>
-        </profile>
-    </profiles>
+			<modules>
+				<module>decisionserver</module>
+			</modules>
+		</profile>
+	</profiles>
 
 </project>

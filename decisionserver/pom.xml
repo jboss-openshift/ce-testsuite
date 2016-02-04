@@ -23,7 +23,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${version.dependency.plugin}</version>
 				<executions>
 					<execution>
 						<id>unpack-dependencies</id>
@@ -45,7 +44,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${version.surefire.plugin}</version>
 				<configuration>
 					<runOrder>alphabetical</runOrder>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -115,6 +113,10 @@
 
 		<dependency>
 			<groupId>org.kie.server</groupId>
+			<artifactId>kie-server-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.kie</groupId>
 			<artifactId>kie-server-client</artifactId>
 		</dependency>
 
