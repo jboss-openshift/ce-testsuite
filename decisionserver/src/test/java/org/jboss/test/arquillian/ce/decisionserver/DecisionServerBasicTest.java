@@ -101,7 +101,7 @@ public class DecisionServerBasicTest {
      * Returns the kieService client
      */
     private static KieServicesClient getKieServiceClient(String host) throws Exception {
-        Properties properties = Files.readProperties(DecisionServerBasicTest.class, FILENAME);
+        Properties properties = Files.loadProperties(DecisionServerBasicTest.class, FILENAME);
         String username = properties.getProperty("kie.username");
         String password = properties.getProperty("kie.password");
 
