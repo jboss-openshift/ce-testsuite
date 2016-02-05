@@ -24,6 +24,7 @@
 package org.jboss.test.arquillian.ce.jdg.query;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,9 @@ import org.infinispan.query.dsl.Query;
 import org.infinispan.query.dsl.QueryFactory;
 import org.infinispan.query.remote.client.ProtobufMetadataManagerConstants;
 import org.jboss.arquillian.ce.api.ExternalDeployment;
+import org.jboss.arquillian.ce.api.OpenShiftResource;
+import org.jboss.arquillian.ce.api.OpenShiftResources;
+import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
@@ -100,7 +104,12 @@ import org.junit.runner.RunWith;
                 @TemplateParameter(name="addressbook_DATA_COLUMN_TYPE", value="BINARY"),
                 @TemplateParameter(name="addressbook_TIMESTAMP_COLUMN_NAME", value="version"),
                 @TemplateParameter(name="addressbook_TIMESTAMP_COLUMN_TYPE", value="BIGINT")})
-
+@RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
+@OpenShiftResources({
+        @OpenShiftResource("classpath:jdg-internal-imagestream.json"),
+        @OpenShiftResource("classpath:datagrid-service-account.json"),
+        @OpenShiftResource("classpath:datagrid-app-secret.json")
+})
 public class JdgQueryTest {
     private static final String PROTOBUF_DEFINITION_RESOURCE = "/jdgquerytest/addressbook.proto";
 
@@ -132,7 +141,8 @@ public class JdgQueryTest {
                         .marshaller(new ProtoStreamMarshaller())  // The Protobuf based marshaller is required for query capabilities
                         .build()
         );
-        RemoteCache<Object, Object> cache = cacheManager.getCache("default");
+        RemoteCache<Object, Object> cache = cacheManager.getCache();
+        assertNotNull(cache);
 
         registerSchemasAndMarshallers(cacheManager);
 
