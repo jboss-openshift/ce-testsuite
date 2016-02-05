@@ -23,6 +23,8 @@
 
 package org.jboss.test.arquillian.ce.jdg.query;
 
+import static junit.framework.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,20 +47,18 @@ import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.test.arquillian.ce.jdg.query.support.Person;
 import org.jboss.test.arquillian.ce.jdg.query.support.PersonMarshaller;
 import org.jboss.test.arquillian.ce.jdg.query.support.PhoneNumberMarshaller;
 import org.jboss.test.arquillian.ce.jdg.query.support.PhoneTypeMarshaller;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static junit.framework.Assert.assertEquals;
 
 /**
  * @author Marko Luksa
@@ -112,21 +112,10 @@ public class JdgQueryTest {
         war.addPackage(Person.class.getPackage());
         war.addAsResource("jdgquerytest/addressbook.proto");
 
-        war.addAsLibraries(
-                Maven.resolver()
-                        .resolve("org.infinispan:infinispan-client-hotrod")
-                        .withTransitivity()
-                        .asFile());
-        war.addAsLibraries(
-                Maven.resolver()
-                        .resolve("org.infinispan:infinispan-query-dsl")
-                        .withTransitivity()
-                        .asFile());
-        war.addAsLibraries(
-                Maven.resolver()
-                        .resolve("org.infinispan:infinispan-remote-query-client")
-                        .withTransitivity()
-                        .asFile());
+        war.addAsLibraries(Libraries.transitive("org.infinispan", "infinispan-client-hotrod"));
+        war.addAsLibraries(Libraries.transitive("org.infinispan", "infinispan-query-dsl"));
+        war.addAsLibraries(Libraries.transitive("org.infinispan", "infinispan-remote-query-client"));
+
         return war;
     }
 

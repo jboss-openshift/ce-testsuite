@@ -23,8 +23,6 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.Properties;
 
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
@@ -35,12 +33,13 @@ import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.shrinkwrap.Files;
+import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,6 +70,7 @@ import org.kie.server.client.KieServicesFactory;
 })
 public class DecisionServerBasicTest {
 
+    private static final String FILENAME = "kie.properties";
     private static final String DECISIONSERVER_ROUTE_HOST = "http://kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server/";
 
     //kie-server credentials
@@ -87,31 +87,21 @@ public class DecisionServerBasicTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML("web.xml");
 
-        war.addAsLibraries(Maven.resolver().resolve("org.kie.server:kie-server-client").withTransitivity().asFile());
+        war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
 
         Properties properties = new Properties();
         properties.setProperty("kie.username", USERNAME);
         properties.setProperty("kie.password", PASSWORD);
-        StringWriter writer = new StringWriter();
-        properties.store(writer, "CE-Testsuite");
-        war.addAsResource(writer.toString(), "kie.properties");
+        Files.storeProperties(war, properties, FILENAME);
 
         return war;
-    }
-
-    private static Properties readProperties() throws Exception {
-        Properties properties = new Properties();
-        try (InputStream is = DecisionServerBasicTest.class.getClassLoader().getResourceAsStream("kie.properties")) {
-            properties.load(is);
-        }
-        return properties;
     }
 
     /*
      * Returns the kieService client
      */
     private static KieServicesClient getKieServiceClient(String host) throws Exception {
-        Properties properties = readProperties();
+        Properties properties = Files.readProperties(DecisionServerBasicTest.class, FILENAME);
         String username = properties.getProperty("kie.username");
         String password = properties.getProperty("kie.password");
 

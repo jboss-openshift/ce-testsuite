@@ -23,9 +23,12 @@
 
 package org.jboss.test.arquillian.ce.jdg;
 
+import static junit.framework.Assert.assertEquals;
+
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -45,6 +48,7 @@ import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -52,14 +56,11 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.test.arquillian.ce.jdg.support.MemcachedCache;
 import org.jboss.test.arquillian.ce.jdg.support.RESTCache;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static junit.framework.Assert.assertEquals;
 
 /**
  * @author Marko Luksa
@@ -97,16 +98,9 @@ public class JdgTest {
         war.setWebXML(new StringAsset("<web-app/>"));
         war.addPackage(RESTCache.class.getPackage());
 
-        war.addAsLibraries(
-                Maven.resolver()
-                        .resolve("com.google.code.simple-spring-memcached:spymemcached:2.8.1")
-                        .withTransitivity()
-                        .asFile());
-        war.addAsLibraries(
-                Maven.resolver()
-                        .resolve("org.infinispan:infinispan-client-hotrod:6.3.1.Final-redhat-1")
-                        .withTransitivity()
-                        .asFile());
+        war.addAsLibraries(Libraries.transitive("com.google.code.simple-spring-memcached", "spymemcached"));
+        war.addAsLibraries(Libraries.transitive("org.infinispan", "infinispan-client-hotrod"));
+
         return war;
     }
 
