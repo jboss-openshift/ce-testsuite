@@ -33,6 +33,7 @@ import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -89,10 +90,10 @@ public class DecisionServerBasicTest {
 
         war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
 
-        Properties properties = new Properties();
-        properties.setProperty("kie.username", USERNAME);
-        properties.setProperty("kie.password", PASSWORD);
-        Files.storeProperties(war, properties, FILENAME);
+        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
+        handle.addProperty("kie.username", USERNAME);
+        handle.addProperty("kie.password", PASSWORD);
+        handle.store(war);
 
         return war;
     }
@@ -101,7 +102,7 @@ public class DecisionServerBasicTest {
      * Returns the kieService client
      */
     private static KieServicesClient getKieServiceClient(String host) throws Exception {
-        Properties properties = Files.loadProperties(DecisionServerBasicTest.class, FILENAME);
+        Properties properties = Tools.loadProperties(DecisionServerBasicTest.class, FILENAME);
         String username = properties.getProperty("kie.username");
         String password = properties.getProperty("kie.password");
 
