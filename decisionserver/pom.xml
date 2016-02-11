@@ -121,14 +121,6 @@
 			<artifactId>kie-server-client</artifactId>
 		</dependency>
 
-        <!-- HelloRules -->
-
-        <dependency>
-            <groupId>org.openshift.quickstarts</groupId>
-            <artifactId>decisionserver-hellorules</artifactId>
-            <version>${hello.rules.version}</version>
-        </dependency>
-
 		<!-- Deps -->
 
 		<dependency>

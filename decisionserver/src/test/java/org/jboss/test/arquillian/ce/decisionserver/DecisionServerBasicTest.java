@@ -23,7 +23,11 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -93,7 +97,7 @@ public class DecisionServerBasicTest {
     private static final String PASSWORD = System.getProperty("kie.password", "Redhat@123");
 
     @ArquillianResource
-    private static ConfigurationHandle configuration;
+    private ConfigurationHandle configuration;
 
     @Deployment
     @RunInPodDeployment
@@ -115,8 +119,7 @@ public class DecisionServerBasicTest {
     /*
     * Returns the kieService client
     */
-    private static KieServicesClient getKieServiceClient() throws Exception {
-
+    private KieServicesClient getKieServiceClient() throws Exception {
         Properties properties = Tools.loadProperties(DecisionServerBasicTest.class, FILENAME);
         String username = properties.getProperty("kie.username");
         String password = properties.getProperty("kie.password");
@@ -129,7 +132,7 @@ public class DecisionServerBasicTest {
     /*
     * Return the resolved endpoint's host/uri
     */
-    private static String resolveHost() {
+    private String resolveHost() {
         return String.format(DECISIONSERVER_ROUTE_HOST, configuration.getNamespace());
     }
 
@@ -144,7 +147,7 @@ public class DecisionServerBasicTest {
      * Return the classes used in the MarshallerFactory
      */
     public static Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
+        Set<Class<?>> classes = new HashSet<>();
         classes.add(Person.class);
         classes.add(Greeting.class);
         return classes;
@@ -171,11 +174,7 @@ public class DecisionServerBasicTest {
 
         // Sometimes the getCapabilities returns "KieServer BRM" and another time "BRM KieServer"
         // We have to make sure the result will be the same always
-        if (serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer")) {
-            serverCapabilitiesResult = "KieServerBRM";
-        }
-
-        Assert.assertEquals("KieServerBRM", serverCapabilitiesResult);
+        Assert.assertTrue(serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer"));
     }
 
     /*
@@ -204,7 +203,7 @@ public class DecisionServerBasicTest {
 
         Person person = new Person();
         person.setName("Filippe Spolti");
-        List<GenericCommand<?>> commands = new ArrayList<GenericCommand<?>>();
+        List<GenericCommand<?>> commands = new ArrayList<>();
         commands.add((GenericCommand<?>) CommandFactory.newInsert(person));
         commands.add((GenericCommand<?>) CommandFactory.newFireAllRules());
         commands.add((GenericCommand<?>) CommandFactory.newQuery("greetings", "get greeting"));
