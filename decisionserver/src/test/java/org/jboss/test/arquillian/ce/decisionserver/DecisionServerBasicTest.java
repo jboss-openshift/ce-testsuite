@@ -71,18 +71,17 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
 @RunWith(Arquillian.class)
 @RunInPod
 @ExternalDeployment
-//@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-basic-s2i.json",
-@Template(url = "https://raw.githubusercontent.com/spolti/application-templates/CLOUD-435/decisionserver/decisionserver62-basic-s2i.json",
-    labels = "application=kie-app",
-    parameters = {
-        @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
-        @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-basic-s2i.json",
+        labels = "application=kie-app",
+        parameters = {
+                @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
+                @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
-	@OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/jboss-image-streams.json"),
-    @OpenShiftResource("classpath:decisionserver-service-account.json"),
-    @OpenShiftResource("classpath:decisionserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/jboss-image-streams.json"),
+        @OpenShiftResource("classpath:decisionserver-service-account.json"),
+        @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
 public class DecisionServerBasicTest {
 
@@ -99,7 +98,7 @@ public class DecisionServerBasicTest {
     @Deployment
     @RunInPodDeployment
     public static WebArchive getDeployment() throws Exception {
-    	
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML("web.xml");
         war.addPackage(Person.class.getPackage());
@@ -137,8 +136,18 @@ public class DecisionServerBasicTest {
     /*
     * Return the RuleServicesClient
     */
-    public RuleServicesClient getRuleServicesClient(KieServicesClient client){
+    public RuleServicesClient getRuleServicesClient(KieServicesClient client) {
         return client.getServicesClient(RuleServicesClient.class);
+    }
+
+    /*
+     * Return the classes used in the MarshallerFactory
+     */
+    public static Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        classes.add(Person.class);
+        classes.add(Greeting.class);
+        return classes;
     }
 
     /*
@@ -165,6 +174,7 @@ public class DecisionServerBasicTest {
         if (serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer")) {
             serverCapabilitiesResult = "KieServerBRM";
         }
+
         Assert.assertEquals("KieServerBRM", serverCapabilitiesResult);
     }
 
@@ -188,7 +198,7 @@ public class DecisionServerBasicTest {
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
     @Test
-    public void testFireAllRules() throws Exception{
+    public void testFireAllRules() throws Exception {
 
         KieServicesClient client = getKieServiceClient();
 
@@ -201,13 +211,10 @@ public class DecisionServerBasicTest {
         BatchExecutionCommand command = CommandFactory.newBatchExecution(commands, "HelloRulesSession");
         ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("HelloRulesContainer", command);
 
-        Set<Class<?>> classes = new HashSet<Class<?>>();
-        classes.add(Person.class);
-        classes.add(Greeting.class);
-
-        Marshaller marshaller = MarshallerFactory.getMarshaller(classes, MarshallingFormat.JSON, Person.class.getClassLoader());
+        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.JSON, Person.class.getClassLoader());
         ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResultImpl.class);
 
+        // results cannot be null
         Assert.assertNotNull(results);
 
         QueryResults queryResults = (QueryResults) results.getValue("greetings");
