@@ -1,238 +1,246 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<!-- Parent -->
-	<parent>
-		<groupId>org.jboss.ce.testsuite</groupId>
-		<artifactId>parent-ce</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.ce.testsuite</groupId>
+        <artifactId>parent-ce</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
 
-	<!-- Model Version -->
-	<modelVersion>4.0.0</modelVersion>
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
 
-	<!-- Artifact Configuration -->
-	<artifactId>decisionserver-ce-testsuite</artifactId>
-	<packaging>jar</packaging>
-	<name>Decision Server CE Testsuite</name>
-	<description>Decision Server Cloud Enablement Testsuite</description>
+    <!-- Artifact Configuration -->
+    <artifactId>decisionserver-ce-testsuite</artifactId>
+    <packaging>jar</packaging>
+    <name>Decision Server CE Testsuite</name>
+    <description>Decision Server Cloud Enablement Testsuite</description>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack-dependencies</id>
-						<phase>process-test-classes</phase>
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeGroupIds>org.jboss</includeGroupIds>
-							<includeTypes>test-jar</includeTypes>
-							<includeScope>test</includeScope>
-							<outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<runOrder>alphabetical</runOrder>
-					<redirectTestOutputToFile>true</redirectTestOutputToFile>
-					<includes>
-						<include>org/jboss/**/*Test.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>org.jboss</includeGroupIds>
+                            <includeTypes>test-jar</includeTypes>
+                            <includeScope>test</includeScope>
+                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <runOrder>alphabetical</runOrder>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <includes>
+                        <include>org/jboss/**/*Test.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
+    <dependencies>
 
-		<!-- TODO -->
+        <!-- TODO -->
 
-		<!-- EAP testunit deps -->
+        <!-- EAP testunit deps -->
 
-		<dependency>
-			<groupId>org.jboss.logging</groupId>
-			<artifactId>jboss-logging</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 
-		<!-- Test Utils -->
+        <!-- Test Utils -->
 
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-ce-shrinkwrap</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-shrinkwrap</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-ce-fabric8</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-fabric8</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-ce-template</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-template</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.arquillian.junit</groupId>
-			<artifactId>arquillian-junit-core</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-core</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.shrinkwrap</groupId>
-			<artifactId>shrinkwrap-api</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<!-- KIE -->
+        <!-- KIE -->
 
-		<dependency>
-			<groupId>org.kie.server</groupId>
-			<artifactId>kie-server-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.kie.server</groupId>
+            <artifactId>kie-server-api</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.kie.server</groupId>
-			<artifactId>kie-server-client</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.kie.server</groupId>
+            <artifactId>kie-server-client</artifactId>
+        </dependency>
 
-		<!-- Deps -->
 
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-container-spi</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <!-- Dependencies needed to use JMS/AMQ -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>5.8.0.redhat-60083</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.arquillian.protocol</groupId>
-			<artifactId>arquillian-protocol-servlet</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <!-- Deps -->
 
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-container-impl-base</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-spi</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.arquillian.junit</groupId>
-			<artifactId>arquillian-junit-container</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.arquillian.core</groupId>
-			<artifactId>arquillian-core-impl-base</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.arquillian.test</groupId>
-			<artifactId>arquillian-test-impl-base</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-ce-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.test</groupId>
+            <artifactId>arquillian-test-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
 
-	<profiles>
-		<!-- Default, compile tests, but not run -->
-		<profile>
-			<id>default</id>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-api</artifactId>
+        </dependency>
 
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+    </dependencies>
 
-			<properties>
-				<skipTests>true</skipTests>
-			</properties>
-		</profile>
+    <profiles>
+        <!-- Default, compile tests, but not run -->
+        <profile>
+            <id>default</id>
 
-		<!-- Run tests against wildfly -->
-		<profile>
-			<id>decisionserver</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
 
-			<activation>
-				<property>
-					<name>decisionserver</name>
-				</property>
-			</activation>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
 
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>${version.dependency.plugin}</version>
-						<executions>
-							<execution>
-								<id>unpack-dependencies</id>
-								<phase>process-test-classes</phase>
-								<goals>
-									<goal>unpack-dependencies</goal>
-								</goals>
-								<configuration>
-									<includeGroupIds>org.jboss</includeGroupIds>
-									<includeTypes>test-jar</includeTypes>
-									<includeScope>test</includeScope>
-									<outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-									<overWriteReleases>false</overWriteReleases>
-									<overWriteSnapshots>true</overWriteSnapshots>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>${version.surefire.plugin}</version>
-						<configuration>
-							<runOrder>alphabetical</runOrder>
-							<redirectTestOutputToFile>true</redirectTestOutputToFile>
-							<includes>
-								<include>org/jboss/**/*Test.java</include>
-							</includes>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+        <!-- Run tests against wildfly -->
+        <profile>
+            <id>decisionserver</id>
+
+            <activation>
+                <property>
+                    <name>decisionserver</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${version.dependency.plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-dependencies</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <includeGroupIds>org.jboss</includeGroupIds>
+                                    <includeTypes>test-jar</includeTypes>
+                                    <includeScope>test</includeScope>
+                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${version.surefire.plugin}</version>
+                        <configuration>
+                            <runOrder>alphabetical</runOrder>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <includes>
+                                <include>org/jboss/**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
