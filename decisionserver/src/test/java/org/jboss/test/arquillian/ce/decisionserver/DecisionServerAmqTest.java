@@ -23,21 +23,7 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
-import org.jboss.arquillian.ce.api.ConfigurationHandle;
-import org.jboss.arquillian.ce.api.ExternalDeployment;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.RunInPod;
-import org.jboss.arquillian.ce.api.RunInPodDeployment;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.api.Tools;
+import org.jboss.arquillian.ce.api.*;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -67,6 +53,17 @@ import org.kie.server.client.RuleServicesClient;
 import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
+import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.HashSet;
+
 
 /**
  * @author Filippe Spolti
@@ -76,11 +73,13 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
 @RunInPod
 @ExternalDeployment
 //@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-basic-s2i.json",
-@Template(url = "https://raw.githubusercontent.com/spolti/application-templates/CLOUD-435/decisionserver/decisionserver62-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/spolti/application-templates/CLOUD-435/decisionserver/decisionserver62-amq-s2i.json",
         labels = "application=kie-app",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
-                @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
+                @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}"),
+                @TemplateParameter(name = "MQ_USERNAME", value = "${mq.username:kieserver}"),
+                @TemplateParameter(name = "MQ_PASSWORD", value = "${mq.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
@@ -88,17 +87,23 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
         @OpenShiftResource("classpath:decisionserver-service-account.json"),
         @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
-public class DecisionServerBasicTest {
+public class DecisionServerAmqTest {
 
     private static final String FILENAME = "kie.properties";
     private static final String DECISIONSERVER_ROUTE_HOST = "http://kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";
+    private static final String AMQ_HOST = "tcp://kie-app-amq-tcp:61616";
 
     //kie-server credentials
-    private static final String USERNAME = System.getProperty("kie.username", "kieserver");
-    private static final String PASSWORD = System.getProperty("kie.password", "Redhat@123");
+    private static final String KIE_USERNAME = System.getProperty("kie.username", "kieserver");
+    private static final String KIE_PASSWORD = System.getProperty("kie.password", "Redhat@123");
+    // AMQ credentials
+    private static final String MQ_USERNAME = System.getProperty("mq.username", "kieserver");
+    private static final String MQ_PASSWORD = System.getProperty("mq.password", "Redhat@123");
 
     @ArquillianResource
     private ConfigurationHandle configuration;
+
+    private Person person = new Person();
 
     @Deployment
     @RunInPodDeployment
@@ -108,26 +113,54 @@ public class DecisionServerBasicTest {
         war.setWebXML("web.xml");
         war.addPackage(Person.class.getPackage());
         war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
+        war.addAsLibraries(Libraries.transitive("org.apache.activemq","activemq-all"));
 
         Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        handle.addProperty("kie.username", USERNAME);
-        handle.addProperty("kie.password", PASSWORD);
+        handle.addProperty("kie.username", KIE_USERNAME);
+        handle.addProperty("kie.password", KIE_PASSWORD);
+        handle.addProperty("mq.username", MQ_USERNAME);
+        handle.addProperty("mq.password", MQ_PASSWORD);
         handle.store(war);
 
         return war;
     }
 
     /*
-    * Returns the kieService client
+    * Returns the REST kieService client
     */
-    private KieServicesClient getKieServiceClient() throws Exception {
-        Properties properties = Tools.loadProperties(DecisionServerBasicTest.class, FILENAME);
+    private KieServicesClient getKieRESTServiceClient() throws Exception {
+        Properties properties = Tools.loadProperties(DecisionServerAmqTest.class, FILENAME);
         String username = properties.getProperty("kie.username");
         String password = properties.getProperty("kie.password");
 
         KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newRestConfiguration(resolveHost(), username, password);
         kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
         return KieServicesFactory.newKieServicesClient(kieServicesConfiguration);
+    }
+
+    /*
+    * Returns the JMS kieService client
+    */
+    public KieServicesClient getKieJMSServiceClient() throws NamingException {
+
+        Properties props = new Properties();
+        props.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+        props.setProperty(Context.PROVIDER_URL, AMQ_HOST);
+        props.setProperty(Context.SECURITY_PRINCIPAL, KIE_USERNAME );
+        props.setProperty(Context.SECURITY_CREDENTIALS, KIE_PASSWORD);
+        InitialContext context = new InitialContext(props);
+
+        ConnectionFactory connectionFactory = (ConnectionFactory)context.lookup("ConnectionFactory");
+        //ActiveMQQueue requestQueue = (ActiveMQQueue)context.lookup("dynamicQueues/queue/KIE.SERVER.REQUEST");
+        //ActiveMQQueue responseQueue = (ActiveMQQueue)context.lookup("dynamicQueues/queue/KIE.SERVER.RESPONSE");
+
+        Queue requestQueue = (Queue)context.lookup("dynamicQueues/queue/KIE.SERVER.REQUEST");
+        Queue responseQueue = (Queue)context.lookup("dynamicQueues/queue/KIE.SERVER.RESPONSE");
+
+        KieServicesConfiguration config = KieServicesFactory.newJMSConfiguration(connectionFactory, requestQueue, responseQueue, MQ_USERNAME, MQ_PASSWORD);
+        config.setMarshallingFormat(MarshallingFormat.XSTREAM);
+
+        return KieServicesFactory.newKieServicesClient(config);
     }
 
     /*
@@ -155,17 +188,30 @@ public class DecisionServerBasicTest {
     }
 
     /*
+     * Return the batch command used to fire rules
+     */
+    public BatchExecutionCommand batchCommand() {
+
+        person.setName("Filippe Spolti");
+        List<Command<?>> commands = new ArrayList<>();
+        commands.add((Command<?>) CommandFactory.newInsert(person));
+        commands.add((Command<?>) CommandFactory.newFireAllRules());
+        commands.add((Command<?>) CommandFactory.newQuery("greetings", "get greeting"));
+        return CommandFactory.newBatchExecution(commands, "HelloRulesSession");
+    }
+
+    /*
      * Verifies the server capabilities, for decisionserver-openshift:6.2 it
      * should be KieServer BRM
      */
     @Test
-    public void testDecisionServerStatus() throws Exception {
+    public void testDecisionServerCapabilities() throws Exception {
 
         // Where the result will be stored
         String serverCapabilitiesResult = "";
 
         // Getting the KieServiceClient
-        KieServicesClient kieServicesClient = getKieServiceClient();
+        KieServicesClient kieServicesClient = getKieRESTServiceClient();
         KieServerInfo serverInfo = kieServicesClient.getServerInfo().getResult();
 
         // Reading Server capabilities
@@ -185,7 +231,7 @@ public class DecisionServerBasicTest {
     @Test
     public void testDecisionServerContainer() throws Exception {
 
-        List<KieContainerResource> kieContainers = getKieServiceClient().listContainers().getResult().getContainers();
+        List<KieContainerResource> kieContainers = getKieRESTServiceClient().listContainers().getResult().getContainers();
 
         // verify the KieContainer Name
         Assert.assertEquals("HelloRulesContainer", kieContainers.get(0).getContainerId());
@@ -200,16 +246,9 @@ public class DecisionServerBasicTest {
     @Test
     public void testFireAllRules() throws Exception {
 
-        KieServicesClient client = getKieServiceClient();
+        KieServicesClient client = getKieRESTServiceClient();
 
-        Person person = new Person();
-        person.setName("Filippe Spolti");
-        List<Command<?>> commands = new ArrayList<>();
-        commands.add((Command<?>) CommandFactory.newInsert(person));
-        commands.add((Command<?>) CommandFactory.newFireAllRules());
-        commands.add((Command<?>) CommandFactory.newQuery("greetings", "get greeting"));
-        BatchExecutionCommand command = CommandFactory.newBatchExecution(commands, "HelloRulesSession");
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("HelloRulesContainer", command);
+        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("HelloRulesContainer", batchCommand());
 
         Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
         ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
@@ -225,5 +264,72 @@ public class DecisionServerBasicTest {
         }
 
         Assert.assertEquals("Hello " + person.getName() + "!", greeting.getSalutation());
+    }
+
+    /*
+    * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
+    * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
+    */
+    @Test
+    public void amqCommandExecFiraAllRules() throws Exception {
+
+        System.out.println("Trying to connect to AMQ HOST: " + AMQ_HOST);
+
+        KieServicesClient client = getKieJMSServiceClient();
+
+        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("HelloRulesContainer", batchCommand());
+        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
+        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
+
+        // results cannot be null
+        Assert.assertNotNull(results);
+
+        QueryResults queryResults = (QueryResults) results.getValue("greetings");
+        Greeting greeting = new Greeting();
+        for (QueryResultsRow queryResult : queryResults) {
+            greeting = (Greeting) queryResult.get("greeting");
+            System.out.println("Result AMQ: " + greeting.getSalutation());
+        }
+
+        Assert.assertEquals("Hello " + person.getName() + "!", greeting.getSalutation());
+    }
+
+    /*
+    * Verifies the server capabilities, for decisionserver-openshift:6.2 it
+    * should be KieServer BRM
+    */
+    @Test
+    public void testDecisionServerCapabilitiesAMQ () throws NamingException {
+
+        // Where the result will be stored
+        String serverCapabilitiesResult = "";
+
+        // Getting the KieServiceClient JMS
+        KieServicesClient kieServicesClient = getKieJMSServiceClient();
+        KieServerInfo serverInfo = kieServicesClient.getServerInfo().getResult();
+
+        // Reading Server capabilities
+        for (String capability : serverInfo.getCapabilities()) {
+            serverCapabilitiesResult += (capability);
+        }
+
+        // Sometimes the getCapabilities returns "KieServer BRM" and another time "BRM KieServer"
+        // We have to make sure the result will be the same always
+        Assert.assertTrue(serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer"));
+    }
+
+    /*
+    * Verifies the KieContainer ID, it should be HelloRulesContainer
+    * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
+    */
+    @Test
+    public void testDecisionServerContainerAMQ() throws NamingException {
+
+        List<KieContainerResource> kieContainers = getKieJMSServiceClient().listContainers().getResult().getContainers();
+
+        // verify the KieContainer Name
+        Assert.assertEquals("HelloRulesContainer", kieContainers.get(0).getContainerId());
+        // verify the KieContainer Status
+        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
     }
 }
