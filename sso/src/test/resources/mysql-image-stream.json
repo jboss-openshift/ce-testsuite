@@ -1,0 +1,33 @@
+ {
+  "kind": "ImageStream",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "mysql",
+    "creationTimestamp": null
+  },
+  "spec": {
+    "tags": [
+      {
+        "name": "latest",
+        "from": {
+          "Kind": "ImageStreamTag",
+          "Name": "5.6"
+        }
+      },
+      {
+        "name": "5.5",
+        "from": {
+          "Kind": "DockerImage",
+          "Name": "registry.access.redhat.com/openshift3/mysql-55-rhel7:latest"
+        }
+      },
+      {
+        "name": "5.6",
+        "from": {
+          "Kind": "DockerImage",
+          "Name": "registry.access.redhat.com/rhscl/mysql-56-rhel7:latest"
+        }
+      }
+    ]
+  }
+}
