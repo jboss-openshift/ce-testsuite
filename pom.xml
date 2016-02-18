@@ -47,6 +47,8 @@
 		<module>web</module>
 		<module>wildfly</module>
 		<module>testsuite</module>
+                <module>jdg</module>
+                <module>sso</module>
 	</modules>
 
 	<dependencyManagement>
@@ -276,6 +278,21 @@
 				<module>decisionserver</module>
 			</modules>
 		</profile>
+                
+                 <profile>
+                        <id>sso</id>
+
+                        <activation>
+                                <property>
+                                        <name>sso</name>
+                                </property>
+                        </activation>
+
+                        <modules>
+                                <module>sso</module>
+                        </modules>
+                </profile>
+
 	</profiles>
 
 </project>
