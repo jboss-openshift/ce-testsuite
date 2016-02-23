@@ -77,7 +77,7 @@ import java.util.*;
         @OpenShiftResource("classpath:decisionserver-service-account.json"),
         @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
-public class DecisionServerBasicTestSecure {
+public class DecisionServerBasicSecureTest {
 
     private static final String FILENAME = "kie.properties";
     private static final String SECURE_DECISIONSERVER_ROUTE_HOST = "https://secure-kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";
@@ -110,7 +110,7 @@ public class DecisionServerBasicTestSecure {
     * Returns the kieService client
     */
     private KieServicesClient getKieServiceClient() throws Exception {
-        Properties properties = Tools.loadProperties(DecisionServerBasicTestSecure.class, FILENAME);
+        Properties properties = Tools.loadProperties(DecisionServerBasicSecureTest.class, FILENAME);
         String username = properties.getProperty("kie.username");
         String password = properties.getProperty("kie.password");
 
