@@ -121,12 +121,11 @@
             <artifactId>kie-server-client</artifactId>
         </dependency>
 
-
         <!-- Dependencies needed to use JMS/AMQ -->
+
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-all</artifactId>
-            <version>5.8.0.redhat-60083</version>
         </dependency>
 
         <!-- Deps -->

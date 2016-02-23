@@ -24,12 +24,8 @@
 package org.jboss.test.arquillian.ce.decisionserver;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
-import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -37,13 +33,9 @@ import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,12 +50,8 @@ import org.kie.server.api.marshalling.Marshaller;
 import org.kie.server.api.marshalling.MarshallerFactory;
 import org.kie.server.api.marshalling.MarshallingFormat;
 import org.kie.server.api.model.KieContainerResource;
-import org.kie.server.api.model.KieServerInfo;
 import org.kie.server.api.model.ServiceResponse;
 import org.kie.server.client.KieServicesClient;
-import org.kie.server.client.KieServicesConfiguration;
-import org.kie.server.client.KieServicesFactory;
-import org.kie.server.client.RuleServicesClient;
 import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
@@ -88,94 +76,19 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
         @OpenShiftResource("classpath:decisionserver-service-account.json"),
         @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
-public class DecisionServerBasicTest {
-
-    private static final String FILENAME = "kie.properties";
-    private static final String DECISIONSERVER_ROUTE_HOST = "http://kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";
-
-    //kie-server credentials
-    private static final String USERNAME = System.getProperty("kie.username", "kieserver");
-    private static final String PASSWORD = System.getProperty("kie.password", "Redhat@123");
-
-    @ArquillianResource
-    private ConfigurationHandle configuration;
+public class DecisionServerBasicTest extends DecisionServerTestBase {
 
     @Deployment
     @RunInPodDeployment
     public static WebArchive getDeployment() throws Exception {
-
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
-        war.setWebXML("web.xml");
-        war.addPackage(Person.class.getPackage());
-        war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
+        WebArchive war = getDeploymentInternal();
 
         Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        handle.addProperty("kie.username", USERNAME);
-        handle.addProperty("kie.password", PASSWORD);
+        handle.addProperty("kie.username", KIE_USERNAME);
+        handle.addProperty("kie.password", KIE_PASSWORD);
         handle.store(war);
 
         return war;
-    }
-
-    /*
-    * Returns the kieService client
-    */
-    private KieServicesClient getKieServiceClient() throws Exception {
-        Properties properties = Tools.loadProperties(DecisionServerBasicTest.class, FILENAME);
-        String username = properties.getProperty("kie.username");
-        String password = properties.getProperty("kie.password");
-
-        KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newRestConfiguration(resolveHost(), username, password);
-        kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
-        return KieServicesFactory.newKieServicesClient(kieServicesConfiguration);
-    }
-
-    /*
-    * Return the resolved endpoint's host/uri
-    */
-    private String resolveHost() {
-        return String.format(DECISIONSERVER_ROUTE_HOST, configuration.getNamespace());
-    }
-
-    /*
-    * Return the RuleServicesClient
-    */
-    public RuleServicesClient getRuleServicesClient(KieServicesClient client) {
-        return client.getServicesClient(RuleServicesClient.class);
-    }
-
-    /*
-     * Return the classes used in the MarshallerFactory
-     */
-    public static Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<>();
-        classes.add(Person.class);
-        classes.add(Greeting.class);
-        return classes;
-    }
-
-    /*
-     * Verifies the server capabilities, for decisionserver-openshift:6.2 it
-     * should be KieServer BRM
-     */
-    @Test
-    public void testDecisionServerStatus() throws Exception {
-
-        // Where the result will be stored
-        String serverCapabilitiesResult = "";
-
-        // Getting the KieServiceClient
-        KieServicesClient kieServicesClient = getKieServiceClient();
-        KieServerInfo serverInfo = kieServicesClient.getServerInfo().getResult();
-
-        // Reading Server capabilities
-        for (String capability : serverInfo.getCapabilities()) {
-            serverCapabilitiesResult += (capability);
-        }
-
-        // Sometimes the getCapabilities returns "KieServer BRM" and another time "BRM KieServer"
-        // We have to make sure the result will be the same always
-        Assert.assertTrue(serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer"));
     }
 
     /*
@@ -185,7 +98,7 @@ public class DecisionServerBasicTest {
     @Test
     public void testDecisionServerContainer() throws Exception {
 
-        List<KieContainerResource> kieContainers = getKieServiceClient().listContainers().getResult().getContainers();
+        List<KieContainerResource> kieContainers = getKieRestServiceClient().listContainers().getResult().getContainers();
 
         // verify the KieContainer Name
         Assert.assertEquals("HelloRulesContainer", kieContainers.get(0).getContainerId());
@@ -200,7 +113,7 @@ public class DecisionServerBasicTest {
     @Test
     public void testFireAllRules() throws Exception {
 
-        KieServicesClient client = getKieServiceClient();
+        KieServicesClient client = getKieRestServiceClient();
 
         Person person = new Person();
         person.setName("Filippe Spolti");

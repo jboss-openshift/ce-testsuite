@@ -40,6 +40,7 @@
 		<!-- Decision server -->
 		<version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
 		<version.org.kie>6.2.0.Final-redhat-14</version.org.kie>
+		<version.activemq>5.8.0.redhat-60083</version.activemq>
 	</properties>
 
 	<modules>
@@ -187,6 +188,7 @@
 			</dependency>
 			
 			<!-- Decision server -->
+
 			<dependency>
 				<groupId>org.jboss.bom.brms</groupId>
 				<artifactId>jboss-brms-bpmsuite-bom</artifactId>
@@ -200,6 +202,12 @@
 				<version>${version.org.kie}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-all</artifactId>
+				<version>${version.activemq}</version>
 			</dependency>
 
 			<!-- JDG -->
