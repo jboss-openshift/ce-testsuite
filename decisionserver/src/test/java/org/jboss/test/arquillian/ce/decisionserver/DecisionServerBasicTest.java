@@ -105,12 +105,17 @@ public class DecisionServerBasicTest extends DecisionServerTestBase {
         Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
     }
 
+    protected void prepareClientInvocation() throws Exception {
+        // do nothing in basic
+    }
+
     /*
     * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
     @Test
     public void testFireAllRules() throws Exception {
+        prepareClientInvocation();
 
         KieServicesClient client = getKieRestServiceClient();
 

@@ -74,7 +74,7 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
 @RunWith(Arquillian.class)
 @RunInPod
 @ExternalDeployment
-@Template(url = "https://raw.githubusercontent.com/spolti/application-templates/CLOUD-435/decisionserver/decisionserver62-amq-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-basic-s2i.json",
         labels = "deploymentConfig=kie-app",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),

@@ -51,7 +51,6 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
  */
 public abstract class DecisionServerTestBase {
     protected static final String FILENAME = "kie.properties";
-    protected static final String DECISIONSERVER_ROUTE_HOST = "http://kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";
 
     //kie-server credentials
     protected static final String KIE_USERNAME = System.getProperty("kie.username", "kieserver");
@@ -82,11 +81,15 @@ public abstract class DecisionServerTestBase {
         return KieServicesFactory.newKieServicesClient(kieServicesConfiguration);
     }
 
+    protected String getDecisionserverRouteHost() {
+        return "http://kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";
+    }
+
     /*
     * Return the resolved endpoint's host/uri
     */
     protected String resolveHost() {
-        return String.format(DECISIONSERVER_ROUTE_HOST, configuration.getNamespace());
+        return String.format(getDecisionserverRouteHost(), configuration.getNamespace());
     }
 
     /*
@@ -122,7 +125,7 @@ public abstract class DecisionServerTestBase {
 
         // Reading Server capabilities
         for (String capability : serverInfo.getCapabilities()) {
-            serverCapabilitiesResult += (capability);
+            serverCapabilitiesResult += capability;
         }
 
         // Sometimes the getCapabilities returns "KieServer BRM" and another time "BRM KieServer"

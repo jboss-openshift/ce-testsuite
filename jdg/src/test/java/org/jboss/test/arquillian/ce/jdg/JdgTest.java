@@ -25,17 +25,6 @@ package org.jboss.test.arquillian.ce.jdg;
 
 import static junit.framework.Assert.assertEquals;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
@@ -48,6 +37,7 @@ import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -85,7 +75,7 @@ import org.junit.runner.RunWith;
 public class JdgTest {
     private static final boolean USE_SASL = true;
 
-//    public static final String ROUTE_SUFFIX = ".router.default.svc.cluster.local";
+    //    public static final String ROUTE_SUFFIX = ".router.default.svc.cluster.local";
     public static final String HTTP_ROUTE_HOST = "jdg-http-route.openshift";
 
     @ArquillianResource
@@ -119,7 +109,7 @@ public class JdgTest {
 
     @Test
     public void testSecureRestService() throws Exception {
-        trustAllCertificates();
+        Tools.trustAllCertificates();
 
         String host = System.getenv("SECURE_DATAGRID_APP_SERVICE_HOST");
         int port = Integer.parseInt(System.getenv("SECURE_DATAGRID_APP_SERVICE_PORT"));
@@ -142,7 +132,7 @@ public class JdgTest {
 //    @Ignore("Fails with IOException: Invalid Http response, but works with curl")
     @RunAsClient
     public void testSecureRestRoute() throws Exception {
-        trustAllCertificates();
+        Tools.trustAllCertificates();
 
         String host = HTTP_ROUTE_HOST;
         int port = 443;
@@ -184,43 +174,14 @@ public class JdgTest {
         int port = Integer.parseInt(System.getenv("DATAGRID_APP_HOTROD_SERVICE_PORT"));
 
         RemoteCacheManager cacheManager = new RemoteCacheManager(
-                new ConfigurationBuilder()
-                        .addServer()
-                        .host(host).port(port)
-                        .build()
+            new ConfigurationBuilder()
+                .addServer()
+                .host(host).port(port)
+                .build()
         );
         RemoteCache<Object, Object> cache = cacheManager.getCache("default");
 
         cache.put("foo3", "bar3");
         assertEquals("bar3", cache.get("foo3"));
     }
-
-    private static void trustAllCertificates() throws NoSuchAlgorithmException, KeyManagementException {
-        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
-        }};
-        // Install the all-trusting trust manager
-        final SSLContext sc = SSLContext.getInstance("SSL");
-        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        // Create all-trusting host name verifier
-        HostnameVerifier allHostsValid = new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        };
-
-        // Install the all-trusting host verifier
-        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-    }
-
-
 }
