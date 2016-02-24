@@ -259,6 +259,26 @@
 		</profile>
 
 		<profile>
+			<id>all</id>
+
+			<activation>
+				<property>
+					<name>all</name>
+				</property>
+			</activation>
+
+			<properties>
+				<skipTests>true</skipTests>
+			</properties>
+
+			<modules>
+				<module>decisionserver</module>
+				<module>jdg</module>
+				<module>sso</module>
+			</modules>
+		</profile>
+
+		<profile>
 			<id>jdg</id>
 
 			<activation>
