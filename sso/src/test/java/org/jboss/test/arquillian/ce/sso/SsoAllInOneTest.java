@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -62,8 +61,8 @@ import org.junit.runner.RunWith;
         @OpenShiftResource("classpath:ssoeap-image-stream.json"),
         @OpenShiftResource("classpath:sso-image-stream.json"),
         @OpenShiftResource("classpath:postgresql-image-stream.json")
-}) 
-public class SsoAllInOneTest extends SsoEapBaseTest 
+})
+public class SsoAllInOneTest extends SsoEapTestBase
 {
 	
 	public SsoAllInOneTest() {
@@ -105,8 +104,8 @@ public class SsoAllInOneTest extends SsoEapBaseTest
         
     protected void oidcLogin(String protocol, String host, String expected) throws Exception {
         Client client = new Client(protocol + "://" + host);
-        
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("username", "demouser"));
         params.add(new BasicNameValuePair("password", "demopass"));
         params.add(new BasicNameValuePair("login", "submit"));

@@ -48,8 +48,8 @@ import org.junit.runner.RunWith;
     @OpenShiftResource("classpath:eap-app-secret.json"),
     @OpenShiftResource("classpath:sso-image-stream.json"),
     @OpenShiftResource("classpath:mysql-image-stream.json"),
-}) 
-public class SsoMysqlTest extends SsoBaseTest 
+})
+public class SsoMysqlTest extends SsoTestBase
 {
 
 	public SsoMysqlTest() {

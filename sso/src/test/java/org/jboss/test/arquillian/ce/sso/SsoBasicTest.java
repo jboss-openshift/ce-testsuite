@@ -47,8 +47,8 @@ import org.junit.runner.RunWith;
         @OpenShiftResource("classpath:sso-app-secret.json"),
         @OpenShiftResource("classpath:eap-app-secret.json"),
         @OpenShiftResource("classpath:sso-image-stream.json")
-}) 
-public class SsoBasicTest  extends SsoBaseTest 
+})
+public class SsoBasicTest extends SsoTestBase
 {
 	
 	public SsoBasicTest() {

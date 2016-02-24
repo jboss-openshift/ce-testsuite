@@ -23,26 +23,22 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.junit.Test;
 
-public abstract class SsoBaseTest {
+public abstract class SsoTestBase {
     public static final String HTTP = "http";
     public static final String HTTPS = "https";
 
-    @ArquillianResource
-    ConfigurationHandle configuration;
-    
     protected String route;
     protected String secureRoute;
     
@@ -84,7 +80,7 @@ public abstract class SsoBaseTest {
     }
                
     protected void restRoute(String protocol, String host) {
-        List<NameValuePair> params = new ArrayList<NameValuePair>(4);
+        List<NameValuePair> params = new ArrayList<>(4);
         params.add(new BasicNameValuePair("username", "admin"));
         params.add(new BasicNameValuePair("password", "admin"));
         params.add(new BasicNameValuePair("grant_type", "password"));
@@ -111,8 +107,8 @@ public abstract class SsoBaseTest {
         
     protected void login(String protocol, String host) throws Exception {
         Client client = new Client(protocol + "://" + host);
-        
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("username", "admin"));
         params.add(new BasicNameValuePair("password", "admin"));
         params.add(new BasicNameValuePair("login", "submit"));

@@ -48,8 +48,8 @@ import org.junit.runner.RunWith;
     @OpenShiftResource("classpath:eap-app-secret.json"),
     @OpenShiftResource("classpath:sso-image-stream.json"),
     @OpenShiftResource("classpath:postgresql-image-stream.json"),
-}) 
-public class SsoPostgresqlTest extends SsoBaseTest 
+})
+public class SsoPostgresqlTest extends SsoTestBase
 {
 
 	public SsoPostgresqlTest() {

@@ -23,22 +23,17 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertTrue;
 
-import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.junit.Test;
 
-public abstract class SsoEapBaseTest {
-	
+public abstract class SsoEapTestBase {
+
     public static final String HTTP = "http";
     public static final String HTTPS = "https";
 
-    @ArquillianResource
-    ConfigurationHandle configuration;
-    
     protected String route;
     protected String secureRoute;
     
