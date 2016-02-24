@@ -222,7 +222,7 @@
                                 <include>org/jboss/**/*Test.java</include>
                             </includes>
                             <systemPropertyVariables>
-            					<openshift.domain>.cloudapps.example.com</openshift.domain>
+            					<openshift.domain>.openshift</openshift.domain>
             				</systemPropertyVariables>
                         </configuration>
                     </plugin>
