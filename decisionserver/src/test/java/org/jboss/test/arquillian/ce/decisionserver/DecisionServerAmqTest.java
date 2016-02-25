@@ -74,7 +74,7 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
 @RunWith(Arquillian.class)
 @RunInPod
 @ExternalDeployment
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-amq-s2i.json",
         labels = "deploymentConfig=kie-app",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
@@ -89,13 +89,11 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
         @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
 public class DecisionServerAmqTest extends DecisionServerTestBase {
-    private static final String AMQ_HOST = "tcp://kie-app-amq-tcp:61616";
+    public static final String AMQ_HOST = "tcp://kie-app-amq-tcp:61616";
 
     // AMQ credentials
-    private static final String MQ_USERNAME = System.getProperty("mq.username", "kieserver");
-    private static final String MQ_PASSWORD = System.getProperty("mq.password", "Redhat@123");
-
-    private Person person = new Person();
+    public static final String MQ_USERNAME = System.getProperty("mq.username", "kieserver");
+    public static final String MQ_PASSWORD = System.getProperty("mq.password", "Redhat@123");
 
     @Deployment
     @RunInPodDeployment
@@ -126,8 +124,6 @@ public class DecisionServerAmqTest extends DecisionServerTestBase {
         InitialContext context = new InitialContext(props);
 
         ConnectionFactory connectionFactory = (ConnectionFactory)context.lookup("ConnectionFactory");
-        //ActiveMQQueue requestQueue = (ActiveMQQueue)context.lookup("dynamicQueues/queue/KIE.SERVER.REQUEST");
-        //ActiveMQQueue responseQueue = (ActiveMQQueue)context.lookup("dynamicQueues/queue/KIE.SERVER.RESPONSE");
 
         Queue requestQueue = (Queue)context.lookup("dynamicQueues/queue/KIE.SERVER.REQUEST");
         Queue responseQueue = (Queue)context.lookup("dynamicQueues/queue/KIE.SERVER.RESPONSE");
@@ -136,19 +132,6 @@ public class DecisionServerAmqTest extends DecisionServerTestBase {
         config.setMarshallingFormat(MarshallingFormat.XSTREAM);
 
         return KieServicesFactory.newKieServicesClient(config);
-    }
-
-    /*
-     * Return the batch command used to fire rules
-     */
-    public BatchExecutionCommand batchCommand() {
-
-        person.setName("Filippe Spolti");
-        List<Command<?>> commands = new ArrayList<>();
-        commands.add((Command<?>) CommandFactory.newInsert(person));
-        commands.add((Command<?>) CommandFactory.newFireAllRules());
-        commands.add((Command<?>) CommandFactory.newQuery("greetings", "get greeting"));
-        return CommandFactory.newBatchExecution(commands, "HelloRulesSession");
     }
 
     /*

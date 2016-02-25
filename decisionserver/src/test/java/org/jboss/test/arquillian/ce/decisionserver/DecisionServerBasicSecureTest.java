@@ -23,13 +23,22 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import org.jboss.arquillian.ce.api.Tools;
+import org.jboss.arquillian.ce.api.*;
+import org.jboss.arquillian.junit.Arquillian;
+import org.junit.runner.RunWith;
+
+import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
 
 
 /**
  * @author Filippe Spolti
  */
 
+@RunWith(Arquillian.class)
+@RunInPod
+@ExternalDeployment
+//The rest of template's parameters are coming from DecisionServerBasicTest class
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-https-s2i.json")
 public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
 
     @Override
@@ -40,6 +49,7 @@ public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
     // only needed for non-production test scenarios
     @Override
     protected void prepareClientInvocation() throws Exception {
-        Tools.trustAllCertificates();
+        trustAllCertificates();
+        System.out.println("Trusting all certs");
     }
 }

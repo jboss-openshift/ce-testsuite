@@ -23,9 +23,8 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+import java.util.logging.Logger;
 
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.Tools;
@@ -35,6 +34,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.command.BatchExecutionCommand;
+import org.kie.api.command.Command;
+import org.kie.internal.command.CommandFactory;
 import org.kie.server.api.marshalling.MarshallingFormat;
 import org.kie.server.api.model.KieServerInfo;
 import org.kie.server.client.KieServicesClient;
@@ -50,11 +52,14 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
  * @author Ales justin
  */
 public abstract class DecisionServerTestBase {
+    private static final Logger log = Logger.getLogger(DecisionServerTestBase.class.getCanonicalName());
     protected static final String FILENAME = "kie.properties";
 
     //kie-server credentials
     protected static final String KIE_USERNAME = System.getProperty("kie.username", "kieserver");
     protected static final String KIE_PASSWORD = System.getProperty("kie.password", "Redhat@123");
+
+    public Person person = new Person();
 
     @ArquillianResource
     protected ConfigurationHandle configuration;
@@ -63,6 +68,9 @@ public abstract class DecisionServerTestBase {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML("web.xml");
         war.addClass(DecisionServerTestBase.class);
+        war.addClass(DecisionServerAmqTest.class);
+        war.addClass(DecisionServerBasicSecureTest.class);
+        war.addClass(DecisionServerBasicTest.class);
         war.addPackage(Person.class.getPackage());
         war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
         return war;
@@ -89,7 +97,9 @@ public abstract class DecisionServerTestBase {
     * Return the resolved endpoint's host/uri
     */
     protected String resolveHost() {
-        return String.format(getDecisionserverRouteHost(), configuration.getNamespace());
+        String resolvedHost = String.format(getDecisionserverRouteHost(), configuration.getNamespace());
+        log.info("Testing against URL: " + resolvedHost);
+        return resolvedHost;
     }
 
     /*
@@ -110,11 +120,30 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
+     * Return the batch command used to fire rules
+     */
+    public BatchExecutionCommand batchCommand() {
+
+        person.setName("Filippe Spolti");
+        List<Command<?>> commands = new ArrayList<>();
+        commands.add((Command<?>) CommandFactory.newInsert(person));
+        commands.add((Command<?>) CommandFactory.newFireAllRules());
+        commands.add((Command<?>) CommandFactory.newQuery("greetings", "get greeting"));
+        return CommandFactory.newBatchExecution(commands, "HelloRulesSession");
+    }
+
+    protected void prepareClientInvocation() throws Exception {
+        // do nothing in basic
+    }
+
+    /*
      * Verifies the server capabilities, for decisionserver-openshift:6.2 it
      * should be KieServer BRM
      */
     @Test
     public void testDecisionServerCapabilities() throws Exception {
+        // for untrusted connections
+        prepareClientInvocation();
 
         // Where the result will be stored
         String serverCapabilitiesResult = "";
