@@ -9,3 +9,5 @@ target/
 .classpath
 jdg-internal-imagestream.json
 decisionserver-internal-imagestream.json
+amq-internal-imagestream.json
+
