@@ -14,91 +14,45 @@
 
 	<!-- Artifact Configuration -->
 	<artifactId>amq-ce-testsuite</artifactId>
-	<packaging>ejb</packaging>
+	<packaging>jar</packaging>
 	<name>A-MQ CE Testsuite</name>
 	<description>A-MQ Cloud Enablement Testsuite</description>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${version.dependency.plugin}</version><!--$NO-MVN-MAN-VER$ -->
-				<executions>
-					<execution>
-						<id>unpack-dependencies</id>
-						<phase>process-test-classes</phase>
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeGroupIds>org.jboss</includeGroupIds>
-							<includeTypes>test-jar</includeTypes>
-							<includeScope>test</includeScope>
-							<outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${version.surefire.plugin}</version><!--$NO-MVN-MAN-VER$ -->
-				<configuration>
-					<runOrder>alphabetical</runOrder>
-					<redirectTestOutputToFile>true</redirectTestOutputToFile>
-					<includes>
-						<include>org/jboss/**/*Test.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms</artifactId>
-			<version>1.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-client</artifactId>
-			<version>5.11.1</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-mqtt</artifactId>
-			<version>5.11.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.fusesource.mqtt-client</groupId>
-			<artifactId>mqtt-client</artifactId>
-			<version>1.10</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-stomp</artifactId>
-			<version>5.11.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fusesource.mqtt-client</groupId>
+			<artifactId>mqtt-client</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.fusesource.stompjms</groupId>
 			<artifactId>stompjms-client</artifactId>
-			<version>1.19</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.qpid</groupId>
 			<artifactId>qpid-jms-client</artifactId>
-			<version>0.8.0</version>
 		</dependency>
 
 		<dependency>

@@ -41,6 +41,12 @@
 		<version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
 		<version.org.kie>6.2.0.Final-redhat-14</version.org.kie>
 		<version.activemq>5.8.0.redhat-60083</version.activemq>
+		<!-- AMQ -->
+		<version.jms>1.1</version.jms>
+		<version.activemq>5.11.1</version.activemq>
+		<version.qpid>0.8.0</version.qpid>
+		<version.mqtt>1.10</version.mqtt>
+		<version.stompjms>1.19</version.stompjms>
 	</properties>
 
 	<modules>
@@ -49,6 +55,45 @@
 		<module>wildfly</module>
 		<module>testsuite</module>
 	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${version.dependency.plugin}</version><!--$NO-MVN-MAN-VER$ -->
+				<executions>
+					<execution>
+						<id>unpack-dependencies</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeGroupIds>org.jboss</includeGroupIds>
+							<includeTypes>test-jar</includeTypes>
+							<includeScope>test</includeScope>
+							<outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${version.surefire.plugin}</version><!--$NO-MVN-MAN-VER$ -->
+				<configuration>
+					<runOrder>alphabetical</runOrder>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+					<includes>
+						<include>org/jboss/**/*Test.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencyManagement>
 		<dependencies>
@@ -186,7 +231,51 @@
 				<version>${version.arquillian.governor}</version>
 				<scope>test</scope>
 			</dependency>
-			
+
+			<!-- AMQ -->
+
+			<dependency>
+				<groupId>javax.jms</groupId>
+				<artifactId>jms</artifactId>
+				<version>${version.jms}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-client</artifactId>
+				<version>${version.activemq}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-mqtt</artifactId>
+				<version>${version.activemq}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-stomp</artifactId>
+				<version>${version.activemq}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.fusesource.mqtt-client</groupId>
+				<artifactId>mqtt-client</artifactId>
+				<version>${version.mqtt}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.fusesource.stompjms</groupId>
+				<artifactId>stompjms-client</artifactId>
+				<version>${version.stompjms}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.qpid</groupId>
+				<artifactId>qpid-jms-client</artifactId>
+				<version>${version.qpid}</version>
+			</dependency>
+
 			<!-- Decision server -->
 
 			<dependency>
@@ -272,9 +361,36 @@
 			</properties>
 
 			<modules>
+				<module>amq</module>
 				<module>decisionserver</module>
 				<module>jdg</module>
 				<module>sso</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>amq</id>
+			<activation>
+				<property>
+					<name>amq</name>
+				</property>
+			</activation>
+
+			<modules>
+				<module>amq</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>decisionserver</id>
+			<activation>
+				<property>
+					<name>decisionserver</name>
+				</property>
+			</activation>
+
+			<modules>
+				<module>decisionserver</module>
 			</modules>
 		</profile>
 
@@ -289,19 +405,6 @@
 
 			<modules>
 				<module>jdg</module>
-			</modules>
-		</profile>
-
-		<profile>
-			<id>decisionserver</id>
-			<activation>
-				<property>
-					<name>decisionserver</name>
-				</property>
-			</activation>
-
-			<modules>
-				<module>decisionserver</module>
 			</modules>
 		</profile>
 

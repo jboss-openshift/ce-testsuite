@@ -25,7 +25,6 @@ package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
 
-import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -38,75 +37,80 @@ import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+
+/**
+ * @author Ricardo Martinelli
+ */
 
 @RunWith(Arquillian.class)
 @RunInPod
 @ExternalDeployment
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-basic.json",
-labels = "application=amq-test",
-parameters = {
-		@TemplateParameter(name = "MQ_USERNAME", value = "ce"),
-		@TemplateParameter(name = "MQ_PASSWORD", value = "ce"),
-		@TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
-		@TemplateParameter(name = "MQ_TOPICS", value = "TOPICS.FOO,TOPICS.BAR"),
-		@TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
-		@TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
-		@TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
-		@TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
-		@TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value="${kubernetes.namespace}")})
+    labels = "application=amq-test",
+    parameters = {
+        @TemplateParameter(name = "MQ_USERNAME", value = "ce"),
+        @TemplateParameter(name = "MQ_PASSWORD", value = "ce"),
+        @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
+        @TemplateParameter(name = "MQ_TOPICS", value = "TOPICS.FOO,TOPICS.BAR"),
+        @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
+        @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
+        @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
+        @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
+        @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value = "${kubernetes.namespace}")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-@OpenShiftResource("classpath:amq-internal-imagestream.json")
+    @OpenShiftResource("classpath:amq-internal-imagestream.json")
 })
 public class AmqSecuredTest {
-	
-static final String FILENAME = "amq.properties";
-	
-	static final String USERNAME = System.getProperty("amq.username", "amq-test");
-	static final String PASSWORD = System.getProperty("amq.password", "redhat");
-			
-	@ArquillianResource
-	ConfigurationHandle configuration;
-	
-	@Deployment
-	@RunInPodDeployment
-	public static WebArchive getDeployment() throws IOException {
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
-		war.setWebXML(new StringAsset("<web-app/>"));
-		war.addPackage(AmqClient.class.getPackage());
-		
-		war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-client"));
-		war.addAsLibraries(Libraries.transitive("org.fusesource.mqtt-client", "mqtt-client"));
-		war.addAsLibraries(Libraries.transitive("org.fusesource.stompjms", "stompjms-client"));
-		
-		Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
+
+    static final String FILENAME = "amq.properties";
+
+    static final String USERNAME = System.getProperty("amq.username", "amq-test");
+    static final String PASSWORD = System.getProperty("amq.password", "redhat");
+
+    @Deployment
+    @RunInPodDeployment
+    public static WebArchive getDeployment() throws IOException {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
+        war.setWebXML(new StringAsset("<web-app/>"));
+        war.addPackage(AmqClient.class.getPackage());
+
+        war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-client"));
+        war.addAsLibraries(Libraries.transitive("org.fusesource.mqtt-client", "mqtt-client"));
+        war.addAsLibraries(Libraries.transitive("org.fusesource.stompjms", "stompjms-client"));
+
+        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
         handle.addProperty("amq.username", USERNAME);
         handle.addProperty("amq.password", PASSWORD);
         handle.store(war);
-		
-		return war;
-	}
-	
-	public void testSecuredOpenwire() {
-		
-	}
-	
-	public void testSecuredMqtt() {
-		
-	}
-	
-	public void testSecuredStomp() {
-		
-	}
-	
-	public void testSecuredAmqp() {
-		
-	}
+
+        return war;
+    }
+
+    @Test
+    public void testSecuredOpenwire() {
+        // TODO
+    }
+
+    @Test
+    public void testSecuredMqtt() {
+        // TODO
+    }
+
+    @Test
+    public void testSecuredStomp() {
+        // TODO
+    }
+
+    @Test
+    public void testSecuredAmqp() {
+        // TODO
+    }
 
 }
