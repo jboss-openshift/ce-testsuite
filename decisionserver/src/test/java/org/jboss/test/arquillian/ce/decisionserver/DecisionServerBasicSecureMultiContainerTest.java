@@ -44,6 +44,7 @@ import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
 
@@ -66,48 +67,19 @@ import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
-public class DecisionServerBasicSecureMultiContainerTest extends DecisionServerBasicSecureTest {
+public class DecisionServerBasicSecureMultiContainerTest extends DecisionServerBasicMulltiContainerTest {
 
-    /*
-    * Tests a decision server with 2 containers:
-    * Verifies the KieContainer ID, it should be AnotherContainer
-    * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
-    */
-    @Test
-    public void testSecondDecisionServerContainer() throws Exception {
+    private static final Logger log = Logger.getLogger(DecisionServerBasicSecureTest.class.getCanonicalName());
 
-        List<KieContainerResource> kieContainers = getKieRestServiceClient().listContainers().getResult().getContainers();
-
-        // verify the KieContainer Name
-        Assert.assertEquals("AnotherContainer", kieContainers.get(1).getContainerId());
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(1).getStatus());
+    @Override
+    protected String getDecisionserverRouteHost() {
+        return "https://secure-kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";
     }
 
-    /*
-    * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
-    * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
-    */
-    @Test
-    public void testFireAllRulesInSecondContainer() throws Exception {
-
-        KieServicesClient client = getKieRestServiceClient();
-
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("AnotherContainer", batchCommand());
-
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
-
-        // results cannot be null
-        Assert.assertNotNull(results);
-
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
-        Greeting greeting = new Greeting();
-        for (QueryResultsRow queryResult : queryResults) {
-            greeting = (Greeting) queryResult.get("greeting");
-            System.out.println("Result: " + greeting.getSalutation());
-        }
-
-        Assert.assertEquals("Hello " + person.getName() + "!", greeting.getSalutation());
+    // only needed for non-production test scenarios
+    @Override
+    protected void prepareClientInvocation() throws Exception {
+        trustAllCertificates();
+        log.info("Trusting all certs");
     }
 }

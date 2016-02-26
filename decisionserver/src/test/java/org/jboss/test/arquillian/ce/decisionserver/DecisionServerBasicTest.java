@@ -23,9 +23,6 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -37,23 +34,9 @@ import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.command.BatchExecutionCommand;
-import org.kie.api.command.Command;
-import org.kie.api.runtime.ExecutionResults;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.internal.command.CommandFactory;
-import org.kie.server.api.marshalling.Marshaller;
-import org.kie.server.api.marshalling.MarshallerFactory;
-import org.kie.server.api.marshalling.MarshallingFormat;
-import org.kie.server.api.model.KieContainerResource;
-import org.kie.server.api.model.ServiceResponse;
-import org.kie.server.client.KieServicesClient;
-import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
-import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
 
 /**
@@ -81,60 +64,29 @@ public class DecisionServerBasicTest extends DecisionServerTestBase {
     @RunInPodDeployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
-
         Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
+        war.addClass(DecisionServerTestBase.class);
+        war.addClass(DecisionServerBasicTest.class);
+        war.addClass(DecisionServerBasicSecureTest.class);
+        war.addClass(DecisionServerBasicMulltiContainerTest.class);
         handle.addProperty("kie.username", KIE_USERNAME);
         handle.addProperty("kie.password", KIE_PASSWORD);
         handle.store(war);
-
         return war;
     }
 
-    /*
-    * Verifies the KieContainer ID, it should be HelloRulesContainer
-    * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
-    */
     @Test
-    public void testDecisionServerContainer() throws Exception {
-        // for untrusted connections
-        prepareClientInvocation();
-
-        List<KieContainerResource> kieContainers = getKieRestServiceClient().listContainers().getResult().getContainers();
-
-        // verify the KieContainer Name
-        Assert.assertEquals("HelloRulesContainer", kieContainers.get(0).getContainerId());
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
+    public void decisionServerCapabilities() throws Exception {
+        testDecisionServerCapabilities();
     }
 
-
-
-    /*
-    * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
-    * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
-    */
     @Test
-    public void testFireAllRules() throws Exception {
-        // for untrusted connections
-        prepareClientInvocation();
+    public void decisionServerContainer() throws Exception {
+        testDecisionServerContainer();
+    }
 
-        KieServicesClient client = getKieRestServiceClient();
-
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("HelloRulesContainer", batchCommand());
-
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
-
-        // results cannot be null
-        Assert.assertNotNull(results);
-
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
-        Greeting greeting = new Greeting();
-        for (QueryResultsRow queryResult : queryResults) {
-            greeting = (Greeting) queryResult.get("greeting");
-            System.out.println("Result: " + greeting.getSalutation());
-        }
-
-        Assert.assertEquals("Hello " + person.getName() + "!", greeting.getSalutation());
+    @Test
+    public void fireAllRules() throws Exception {
+        testFireAllRules();
     }
 }

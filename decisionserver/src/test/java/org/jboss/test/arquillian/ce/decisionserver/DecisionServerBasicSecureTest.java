@@ -25,7 +25,10 @@ package org.jboss.test.arquillian.ce.decisionserver;
 
 import org.jboss.arquillian.ce.api.*;
 import org.jboss.arquillian.junit.Arquillian;
+import java.util.logging.Logger;
 import org.junit.runner.RunWith;
+
+import javax.naming.NamingException;
 
 import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
 
@@ -37,9 +40,15 @@ import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
 @RunWith(Arquillian.class)
 @RunInPod
 @ExternalDeployment
-//The rest of template's parameters are coming from DecisionServerBasicTest class
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-https-s2i.json")
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-https-s2i.json",
+        labels = "application=kie-app",
+        parameters = {
+@TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
+@TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
+})
 public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
+
+    private static final Logger log = Logger.getLogger(DecisionServerBasicSecureTest.class.getCanonicalName());
 
     @Override
     protected String getDecisionserverRouteHost() {
@@ -50,6 +59,6 @@ public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
     @Override
     protected void prepareClientInvocation() throws Exception {
         trustAllCertificates();
-        System.out.println("Trusting all certs");
+        log.info("Trusting all certs");
     }
 }
