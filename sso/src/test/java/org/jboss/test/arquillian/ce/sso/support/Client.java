@@ -55,12 +55,21 @@ public class Client {
     }
     
     public String get(String key) {
+    	return get(key, null);
+    }
+    
+    public String get(String key, List<NameValuePair> headers) {
         try {
         	
         	HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         	HttpGet request = new HttpGet(basicUrl + "/" + key);
         	
         	System.out.println("!!!!!!!!!!!!! url " + basicUrl + "/" + key);
+        	
+        	if (headers != null){
+        		for (NameValuePair header : headers) 
+        			request.addHeader(header.getName(), header.getValue());
+        	}
             
             HttpResponse response = client.execute(request);
 
