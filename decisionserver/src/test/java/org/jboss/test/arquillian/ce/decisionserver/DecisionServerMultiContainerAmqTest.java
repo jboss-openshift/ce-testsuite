@@ -77,89 +77,23 @@ import java.util.Properties;
 )
 public class DecisionServerMultiContainerAmqTest extends DecisionServerAmqTest {
 
-    /*
-    * Tests a decision server with 2 containers:
-    * Verifies the KieContainer ID, it should be AnotherContainer
-    * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
-    */
     @Test
-    public void testSecondDecisionServerContainer() throws Exception {
-
-        List<KieContainerResource> kieContainers = getKieRestServiceClient().listContainers().getResult().getContainers();
-
-        // verify the KieContainer Name
-        Assert.assertEquals("AnotherContainer", kieContainers.get(1).getContainerId());
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(1).getStatus());
+    public void secondDecisionServerContainer() throws Exception {
+        testSecondDecisionServerContainer();
     }
 
-    /*
-    * Verifies the Second KieContainer ID, it should be AnotherContainer
-    * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
-    */
     @Test
-    public void testDecisionServerSecondContainerAMQ() throws NamingException {
-
-        List<KieContainerResource> kieContainers = getKieJmsServiceClient().listContainers().getResult().getContainers();
-
-        // verify the KieContainer Name
-        Assert.assertEquals("AnotherContainer", kieContainers.get(1).getContainerId());
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(1).getStatus());
+    public void decisionServerSecondContainerAMQ() throws NamingException {
+        testDecisionServerSecondContainerAMQ();
     }
 
-    /*
-    * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
-    * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
-    */
     @Test
-    public void testFireAllRulesInSecondContainer() throws Exception {
-
-        KieServicesClient client = getKieRestServiceClient();
-
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("AnotherContainer", batchCommand());
-
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
-
-        // results cannot be null
-        Assert.assertNotNull(results);
-
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
-        Greeting greeting = new Greeting();
-        for (QueryResultsRow queryResult : queryResults) {
-            greeting = (Greeting) queryResult.get("greeting");
-            System.out.println("Result: " + greeting.getSalutation());
-        }
-
-        Assert.assertEquals("Hello " + person.getName() + "!", greeting.getSalutation());
+    public void fireAllRulesInSecondContainer() throws Exception {
+        testFireAllRulesInSecondContainer();
     }
 
-    /*
-    * Test the rule deployed on Openshift, this test case register a new template called NewHelloRulesContainer with the Kie jar:
-    * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
-    */
     @Test
-    public void amqCommandExecFiraAllRulesInSecondContainer() throws Exception {
-
-        System.out.println("Trying to connect to AMQ HOST: " + AMQ_HOST);
-
-        KieServicesClient client = getKieJmsServiceClient();
-
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("AnotherContainer", batchCommand());
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
-
-        // results cannot be null
-        Assert.assertNotNull(results);
-
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
-        Greeting greeting = new Greeting();
-        for (QueryResultsRow queryResult : queryResults) {
-            greeting = (Greeting) queryResult.get("greeting");
-            System.out.println("Result AMQ: " + greeting.getSalutation());
-        }
-
-        Assert.assertEquals("Hello " + person.getName() + "!", greeting.getSalutation());
+    public void fireAllRulesInSecondContainerAMQ() throws Exception {
+        testFireAllRulesInSecondContainerAMQ();
     }
 }

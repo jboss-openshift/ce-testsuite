@@ -89,157 +89,50 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
         @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
 public class DecisionServerAmqTest extends DecisionServerTestBase {
-    public static final String AMQ_HOST = "tcp://kie-app-amq-tcp:61616";
-
-    // AMQ credentials
-    public static final String MQ_USERNAME = System.getProperty("mq.username", "kieserver");
-    public static final String MQ_PASSWORD = System.getProperty("mq.password", "Redhat@123");
 
     @Deployment
     @RunInPodDeployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
         war.addAsLibraries(Libraries.transitive("org.apache.activemq","activemq-all"));
-
         Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
+        war.addClass(DecisionServerTestBase.class);
+        war.addClass(DecisionServerAmqTest.class);
         handle.addProperty("kie.username", KIE_USERNAME);
         handle.addProperty("kie.password", KIE_PASSWORD);
         handle.addProperty("mq.username", MQ_USERNAME);
         handle.addProperty("mq.password", MQ_PASSWORD);
         handle.store(war);
-
         return war;
     }
 
-    /*
-    * Returns the JMS kieService client
-    */
-    public KieServicesClient getKieJmsServiceClient() throws NamingException {
-
-        Properties props = new Properties();
-        props.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        props.setProperty(Context.PROVIDER_URL, AMQ_HOST);
-        props.setProperty(Context.SECURITY_PRINCIPAL, KIE_USERNAME );
-        props.setProperty(Context.SECURITY_CREDENTIALS, KIE_PASSWORD);
-        InitialContext context = new InitialContext(props);
-
-        ConnectionFactory connectionFactory = (ConnectionFactory)context.lookup("ConnectionFactory");
-
-        Queue requestQueue = (Queue)context.lookup("dynamicQueues/queue/KIE.SERVER.REQUEST");
-        Queue responseQueue = (Queue)context.lookup("dynamicQueues/queue/KIE.SERVER.RESPONSE");
-
-        KieServicesConfiguration config = KieServicesFactory.newJMSConfiguration(connectionFactory, requestQueue, responseQueue, MQ_USERNAME, MQ_PASSWORD);
-        config.setMarshallingFormat(MarshallingFormat.XSTREAM);
-
-        return KieServicesFactory.newKieServicesClient(config);
+    @Test
+    public void decisionServerCapabilities() throws Exception {
+        testDecisionServerCapabilities();
     }
 
-    /*
-    * Verifies the KieContainer ID, it should be HelloRulesContainer
-    * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
-    */
     @Test
-    public void testDecisionServerContainer() throws Exception {
-
-        List<KieContainerResource> kieContainers = getKieRestServiceClient().listContainers().getResult().getContainers();
-
-        // verify the KieContainer Name
-        Assert.assertEquals("HelloRulesContainer", kieContainers.get(0).getContainerId());
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
+    public void decisionServerContainer() throws Exception {
+        testDecisionServerContainer();
     }
 
-    /*
-    * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
-    * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
-    */
     @Test
-    public void testFireAllRules() throws Exception {
-
-        KieServicesClient client = getKieRestServiceClient();
-
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("HelloRulesContainer", batchCommand());
-
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
-
-        // results cannot be null
-        Assert.assertNotNull(results);
-
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
-        Greeting greeting = new Greeting();
-        for (QueryResultsRow queryResult : queryResults) {
-            greeting = (Greeting) queryResult.get("greeting");
-            System.out.println("Result: " + greeting.getSalutation());
-        }
-
-        Assert.assertEquals("Hello " + person.getName() + "!", greeting.getSalutation());
+    public void fireAllRules() throws Exception {
+        testFireAllRules();
     }
 
-    /*
-    * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
-    * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
-    */
     @Test
-    public void amqCommandExecFiraAllRules() throws Exception {
-
-        System.out.println("Trying to connect to AMQ HOST: " + AMQ_HOST);
-
-        KieServicesClient client = getKieJmsServiceClient();
-
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("HelloRulesContainer", batchCommand());
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
-
-        // results cannot be null
-        Assert.assertNotNull(results);
-
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
-        Greeting greeting = new Greeting();
-        for (QueryResultsRow queryResult : queryResults) {
-            greeting = (Greeting) queryResult.get("greeting");
-            System.out.println("Result AMQ: " + greeting.getSalutation());
-        }
-
-        Assert.assertEquals("Hello " + person.getName() + "!", greeting.getSalutation());
+    public void fireAllRulesAMQ() throws Exception {
+        testFireAllRulesAMQ();
     }
 
-    /*
-    * Verifies the server capabilities, for decisionserver-openshift:6.2 it
-    * should be KieServer BRM
-    */
     @Test
-    public void testDecisionServerCapabilitiesAMQ () throws NamingException {
-
-        // Where the result will be stored
-        String serverCapabilitiesResult = "";
-
-        // Getting the KieServiceClient JMS
-        KieServicesClient kieServicesClient = getKieJmsServiceClient();
-        KieServerInfo serverInfo = kieServicesClient.getServerInfo().getResult();
-
-        // Reading Server capabilities
-        for (String capability : serverInfo.getCapabilities()) {
-            serverCapabilitiesResult += (capability);
-        }
-
-        // Sometimes the getCapabilities returns "KieServer BRM" and another time "BRM KieServer"
-        // We have to make sure the result will be the same always
-        Assert.assertTrue(serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer"));
+    public void decisionServerCapabilitiesAMQ() throws NamingException {
+        testDecisionServerCapabilitiesAMQ();
     }
 
-    /*
-    * Verifies the KieContainer ID, it should be HelloRulesContainer
-    * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
-    */
     @Test
-    public void testDecisionServerContainerAMQ() throws NamingException {
-
-        List<KieContainerResource> kieContainers = getKieJmsServiceClient().listContainers().getResult().getContainers();
-
-        // verify the KieContainer Name
-        Assert.assertEquals("HelloRulesContainer", kieContainers.get(0).getContainerId());
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
+    public void decisionServerContainerAMQ () throws NamingException {
+        testDecisionServerContainerAMQ();
     }
 }
