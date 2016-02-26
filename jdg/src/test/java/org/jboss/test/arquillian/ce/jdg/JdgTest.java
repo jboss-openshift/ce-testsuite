@@ -29,12 +29,9 @@ import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
-import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
-import org.jboss.arquillian.ce.api.RunInPod;
-import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.api.Tools;
@@ -56,8 +53,6 @@ import org.junit.runner.RunWith;
  * @author Marko Luksa
  */
 @RunWith(Arquillian.class)
-@RunInPod
-@ExternalDeployment
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-https.json",
         labels = "application=datagrid-app",
         parameters = {
@@ -65,10 +60,9 @@ import org.junit.runner.RunWith;
                 @TemplateParameter(name = "HOSTNAME_HTTPS", value="jdg-http-route.openshift"),
                 @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
                 @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass"),
-                @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value="${kubernetes.namespace}")})
+                @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value="openshift")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
-        @OpenShiftResource("classpath:jdg-internal-imagestream.json"),
         @OpenShiftResource("classpath:datagrid-service-account.json"),
         @OpenShiftResource("classpath:datagrid-app-secret.json")
 })
@@ -82,7 +76,6 @@ public class JdgTest {
     ConfigurationHandle configuration;
 
     @Deployment
-    @RunInPodDeployment
     public static WebArchive getDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML(new StringAsset("<web-app/>"));

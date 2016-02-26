@@ -24,7 +24,7 @@
 	<properties>
 		<version.ce-arq>1.0.0-SNAPSHOT</version.ce-arq>
 		<version.meta-inf>1.6</version.meta-inf>
-		<version.arquillian>1.1.9.Final</version.arquillian>
+		<version.arquillian>1.1.11.Final</version.arquillian>
 		<version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
 		<version.eap>7.5.6.Final-redhat-SNAPSHOT</version.eap>
 		<version.junit>4.10</version.junit>
@@ -213,6 +213,13 @@
 				<version>${version.ce-arq}</version>
 				<scope>test</scope>
 			</dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-cube</artifactId>
+                <version>${version.ce-arq}</version>
+                <scope>test</scope>
+            </dependency>
 
 			<dependency>
 				<groupId>javax.servlet</groupId>

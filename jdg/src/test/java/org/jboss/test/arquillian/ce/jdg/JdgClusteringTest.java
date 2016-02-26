@@ -26,7 +26,6 @@ package org.jboss.test.arquillian.ce.jdg;
 import static junit.framework.Assert.assertEquals;
 
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
-import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -41,7 +40,6 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/luksa/application-templates/JDG/datagrid/datagrid65-basic-s2i.json",
           labels = "application=jdg-app")
-@ExternalDeployment
 public class JdgClusteringTest {
     public static final String JDG_HOST = "jdg-app-%s.router.default.svc.cluster.local";
     public static final int JDG_PORT = 80;

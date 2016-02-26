@@ -5,7 +5,7 @@
 *.iws
 target/
 .project
-.settings
+.settings/
 .classpath
 jdg-internal-imagestream.json
 decisionserver-internal-imagestream.json
