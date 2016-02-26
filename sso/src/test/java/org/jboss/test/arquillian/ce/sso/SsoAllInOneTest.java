@@ -23,9 +23,13 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -40,6 +44,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 @RunWith(Arquillian.class)
 @ExternalDeployment
@@ -114,6 +121,47 @@ public class SsoAllInOneTest extends SsoEapTestBase
         String result = client.post("app-profile-jee/profile.jsp",params);
         System.out.println("!!!!!! result " + result);
         assertTrue(result.contains(expected));
+    }
+    
+    @Test
+    @RunAsClient
+    public void testAccessType() throws Exception {
+    	String host = "sso" + System.getProperty("openshift.domain");
+    	
+        List<NameValuePair> params = new ArrayList<>(4);
+        params.add(new BasicNameValuePair("username", "admin"));
+        params.add(new BasicNameValuePair("password", "admin"));
+        params.add(new BasicNameValuePair("grant_type", "password"));
+        params.add(new BasicNameValuePair("client_id", "admin-cli"));
+        
+        Client client = new Client(HTTP + "://" + host + "/auth");
+        String result = client.post("realms/master/protocol/openid-connect/token", params);
+        
+        assertFalse(result.contains("error_description"));
+        assertTrue(result.contains("access_token"));
+        
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject)jsonParser.parse(result);
+        String accessToken = (String)jsonObject.get("access_token");
+        System.out.println("!!! accessToken " + accessToken);
+        
+        params = new ArrayList<>(2);
+        params.add(new BasicNameValuePair("Accept", "application/json"));
+        params.add(new BasicNameValuePair("Authorization", "Bearer " + accessToken));
+        
+        result = client.get("admin/realms/demo/clients", params);
+        System.out.println("!!! result " + result);
+        Iterator clients = ((JSONArray)jsonParser.parse(result)).iterator();
+        while (clients.hasNext()) {
+        	jsonObject = (JSONObject)clients.next();
+        	if (((String)jsonObject.get("clientId")).equals("app-jee")) {
+        		assertEquals((Boolean)jsonObject.get("publicClient"), Boolean.FALSE);
+        		assertEquals((Boolean)jsonObject.get("bearerOnly"), Boolean.FALSE);
+        		return;
+        	}
+        }
+        
+        fail("ClientId app-jee not found");
     }
 
 }

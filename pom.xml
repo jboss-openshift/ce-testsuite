@@ -48,6 +48,7 @@
 		<module>web</module>
 		<module>wildfly</module>
 		<module>testsuite</module>
+                <module>sso</module>
 	</modules>
 
 	<dependencyManagement>
