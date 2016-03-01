@@ -23,20 +23,27 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.RunInPod;
-import org.jboss.arquillian.ce.api.RunInPodDeployment;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.api.*;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
+import org.kie.server.api.marshalling.Marshaller;
+import org.kie.server.api.marshalling.MarshallerFactory;
+import org.kie.server.api.marshalling.MarshallingFormat;
+import org.kie.server.api.model.KieContainerResource;
+import org.kie.server.api.model.ServiceResponse;
+import org.kie.server.client.KieServicesClient;
+import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
+import org.openshift.quickstarts.decisionserver.hellorules.Person;
+
+import java.util.List;
 
 
 /**
@@ -49,44 +56,22 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-basic-s2i.json",
         labels = "application=kie-app",
         parameters = {
+                //the container with the bigger name will always get deployed first
+                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "HelloRulesContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0-SNAPSHOT|" +
+                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0-SNAPSHOT"),
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
-@OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/jboss-image-streams.json"),
-        @OpenShiftResource("classpath:decisionserver-service-account.json"),
-        @OpenShiftResource("classpath:decisionserver-app-secret.json")
-})
-public class DecisionServerBasicTest extends DecisionServerTestBase {
+public class DecisionServerBasicMulltiContainerTest extends DecisionServerBasicTest {
 
-    @Deployment
-    @RunInPodDeployment
-    public static WebArchive getDeployment() throws Exception {
-        WebArchive war = getDeploymentInternal();
-        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        war.addClass(DecisionServerTestBase.class);
-        war.addClass(DecisionServerBasicTest.class);
-        war.addClass(DecisionServerBasicSecureTest.class);
-        war.addClass(DecisionServerBasicMulltiContainerTest.class);
-        handle.addProperty("kie.username", KIE_USERNAME);
-        handle.addProperty("kie.password", KIE_PASSWORD);
-        handle.store(war);
-        return war;
+    @Test
+    public void secondDecisionServerContainer() throws Exception {
+        testSecondDecisionServerContainer();
     }
 
     @Test
-    public void decisionServerCapabilities() throws Exception {
-        testDecisionServerCapabilities();
-    }
-
-    @Test
-    public void decisionServerContainer() throws Exception {
-        testDecisionServerContainer();
-    }
-
-    @Test
-    public void fireAllRules() throws Exception {
-        testFireAllRules();
+    public void fireAllRulesInSecondContainer() throws Exception {
+        testFireAllRulesInSecondContainer();
     }
 }
