@@ -23,30 +23,14 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
+import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
+
 import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.runtime.ExecutionResults;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.server.api.marshalling.Marshaller;
-import org.kie.server.api.marshalling.MarshallerFactory;
-import org.kie.server.api.marshalling.MarshallingFormat;
-import org.kie.server.api.model.KieContainerResource;
-import org.kie.server.api.model.ServiceResponse;
-import org.kie.server.client.KieServicesClient;
-import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
-import org.openshift.quickstarts.decisionserver.hellorules.Person;
-
-import java.util.List;
-import java.util.logging.Logger;
-
-import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
 
 
 /**
@@ -68,9 +52,6 @@ import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
         }
 )
 public class DecisionServerBasicSecureMultiContainerTest extends DecisionServerBasicMulltiContainerTest {
-
-    private static final Logger log = Logger.getLogger(DecisionServerBasicSecureTest.class.getCanonicalName());
-
     @Override
     protected String getDecisionserverRouteHost() {
         return "https://secure-kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";

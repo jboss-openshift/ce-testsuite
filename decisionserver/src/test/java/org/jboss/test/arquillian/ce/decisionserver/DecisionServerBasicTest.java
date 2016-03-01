@@ -34,7 +34,6 @@ import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -64,29 +63,31 @@ public class DecisionServerBasicTest extends DecisionServerTestBase {
     @RunInPodDeployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
-        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        war.addClass(DecisionServerTestBase.class);
+
         war.addClass(DecisionServerBasicTest.class);
         war.addClass(DecisionServerBasicSecureTest.class);
         war.addClass(DecisionServerBasicMulltiContainerTest.class);
+
+        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
         handle.addProperty("kie.username", KIE_USERNAME);
         handle.addProperty("kie.password", KIE_PASSWORD);
         handle.store(war);
+
         return war;
     }
 
     @Test
-    public void decisionServerCapabilities() throws Exception {
-        testDecisionServerCapabilities();
+    public void testDecisionServerCapabilities() throws Exception {
+        checkDecisionServerCapabilities();
     }
 
     @Test
-    public void decisionServerContainer() throws Exception {
-        testDecisionServerContainer();
+    public void testDecisionServerContainer() throws Exception {
+        checkDecisionServerContainer();
     }
 
     @Test
-    public void fireAllRules() throws Exception {
-        testFireAllRules();
+    public void testFireAllRules() throws Exception {
+        checkFireAllRules();
     }
 }

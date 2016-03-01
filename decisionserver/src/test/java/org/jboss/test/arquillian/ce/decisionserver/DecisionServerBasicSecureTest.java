@@ -23,14 +23,14 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import org.jboss.arquillian.ce.api.*;
-import org.jboss.arquillian.junit.Arquillian;
-import java.util.logging.Logger;
-import org.junit.runner.RunWith;
-
-import javax.naming.NamingException;
-
 import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
+
+import org.jboss.arquillian.ce.api.ExternalDeployment;
+import org.jboss.arquillian.ce.api.RunInPod;
+import org.jboss.arquillian.ce.api.Template;
+import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.junit.Arquillian;
+import org.junit.runner.RunWith;
 
 
 /**
@@ -47,9 +47,6 @@ import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
 })
 public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
-
-    private static final Logger log = Logger.getLogger(DecisionServerBasicSecureTest.class.getCanonicalName());
-
     @Override
     protected String getDecisionserverRouteHost() {
         return "https://secure-kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";

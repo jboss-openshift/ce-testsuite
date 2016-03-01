@@ -23,14 +23,6 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.Queue;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.jboss.arquillian.ce.api.ExternalDeployment;
@@ -45,26 +37,8 @@ import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.command.BatchExecutionCommand;
-import org.kie.api.command.Command;
-import org.kie.api.runtime.ExecutionResults;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.internal.command.CommandFactory;
-import org.kie.server.api.marshalling.Marshaller;
-import org.kie.server.api.marshalling.MarshallerFactory;
-import org.kie.server.api.marshalling.MarshallingFormat;
-import org.kie.server.api.model.KieContainerResource;
-import org.kie.server.api.model.KieServerInfo;
-import org.kie.server.api.model.ServiceResponse;
-import org.kie.server.client.KieServicesClient;
-import org.kie.server.client.KieServicesConfiguration;
-import org.kie.server.client.KieServicesFactory;
-import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
-import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
 
 /**
@@ -95,44 +69,47 @@ public class DecisionServerAmqTest extends DecisionServerTestBase {
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
         war.addAsLibraries(Libraries.transitive("org.apache.activemq","activemq-all"));
-        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        war.addClass(DecisionServerTestBase.class);
+
         war.addClass(DecisionServerAmqTest.class);
+        war.addClass(DecisionServerMultiContainerAmqTest.class);
+
+        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
         handle.addProperty("kie.username", KIE_USERNAME);
         handle.addProperty("kie.password", KIE_PASSWORD);
         handle.addProperty("mq.username", MQ_USERNAME);
         handle.addProperty("mq.password", MQ_PASSWORD);
         handle.store(war);
+
         return war;
     }
 
     @Test
-    public void decisionServerCapabilities() throws Exception {
-        testDecisionServerCapabilities();
+    public void testDecisionServerCapabilities() throws Exception {
+        checkDecisionServerCapabilities();
     }
 
     @Test
-    public void decisionServerContainer() throws Exception {
-        testDecisionServerContainer();
+    public void testDecisionServerContainer() throws Exception {
+        checkDecisionServerContainer();
     }
 
     @Test
-    public void fireAllRules() throws Exception {
-        testFireAllRules();
+    public void testFireAllRules() throws Exception {
+        checkFireAllRules();
     }
 
     @Test
-    public void fireAllRulesAMQ() throws Exception {
-        testFireAllRulesAMQ();
+    public void testFireAllRulesAMQ() throws Exception {
+        checkFireAllRulesAMQ();
     }
 
     @Test
-    public void decisionServerCapabilitiesAMQ() throws NamingException {
-        testDecisionServerCapabilitiesAMQ();
+    public void testDecisionServerCapabilitiesAMQ() throws NamingException {
+        checkDecisionServerCapabilitiesAMQ();
     }
 
     @Test
-    public void decisionServerContainerAMQ () throws NamingException {
-        testDecisionServerContainerAMQ();
+    public void testDecisionServerContainerAMQ() throws NamingException {
+        checkDecisionServerContainerAMQ();
     }
 }

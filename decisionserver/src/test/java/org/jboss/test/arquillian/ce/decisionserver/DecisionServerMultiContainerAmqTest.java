@@ -23,37 +23,15 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import org.jboss.arquillian.ce.api.*;
-import org.jboss.arquillian.ce.shrinkwrap.Files;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
-import org.jboss.arquillian.container.test.api.Deployment;
+import javax.naming.NamingException;
+
+import org.jboss.arquillian.ce.api.ExternalDeployment;
+import org.jboss.arquillian.ce.api.RunInPod;
+import org.jboss.arquillian.ce.api.Template;
+import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.runtime.ExecutionResults;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.server.api.marshalling.Marshaller;
-import org.kie.server.api.marshalling.MarshallerFactory;
-import org.kie.server.api.marshalling.MarshallingFormat;
-import org.kie.server.api.model.KieContainerResource;
-import org.kie.server.api.model.KieServerInfo;
-import org.kie.server.api.model.ServiceResponse;
-import org.kie.server.client.KieServicesClient;
-import org.kie.server.client.KieServicesConfiguration;
-import org.kie.server.client.KieServicesFactory;
-import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
-import org.openshift.quickstarts.decisionserver.hellorules.Person;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.Queue;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.util.List;
-import java.util.Properties;
 
 
 /**
@@ -78,22 +56,22 @@ import java.util.Properties;
 public class DecisionServerMultiContainerAmqTest extends DecisionServerAmqTest {
 
     @Test
-    public void secondDecisionServerContainer() throws Exception {
-        testSecondDecisionServerContainer();
+    public void testSecondDecisionServerContainer() throws Exception {
+        checkSecondDecisionServerContainer();
     }
 
     @Test
-    public void decisionServerSecondContainerAMQ() throws NamingException {
-        testDecisionServerSecondContainerAMQ();
+    public void testDecisionServerSecondContainerAMQ() throws NamingException {
+        checkDecisionServerSecondContainerAMQ();
     }
 
     @Test
-    public void fireAllRulesInSecondContainer() throws Exception {
-        testFireAllRulesInSecondContainer();
+    public void testFireAllRulesInSecondContainer() throws Exception {
+        checkFireAllRulesInSecondContainer();
     }
 
     @Test
-    public void fireAllRulesInSecondContainerAMQ() throws Exception {
-        testFireAllRulesInSecondContainerAMQ();
+    public void testFireAllRulesInSecondContainerAMQ() throws Exception {
+        checkFireAllRulesInSecondContainerAMQ();
     }
 }
