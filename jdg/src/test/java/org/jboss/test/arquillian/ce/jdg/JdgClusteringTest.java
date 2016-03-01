@@ -25,8 +25,11 @@ package org.jboss.test.arquillian.ce.jdg;
 
 import static junit.framework.Assert.assertEquals;
 
+import java.net.URL;
+
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.Template;
+import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -50,9 +53,8 @@ public class JdgClusteringTest {
 
     @Test
     @RunAsClient
-    public void testRest() throws Exception {
-        String jdgHost = String.format(JDG_HOST, configuration.getNamespace());
-        RESTCache<String, Object> cache = new RESTCache<>("default", "http://" + jdgHost + ":" + JDG_PORT + CONTEXT_PATH + "/");
+    public void testRest(@RouteURL("jdg-app") URL url) throws Exception {
+        RESTCache<String, Object> cache = new RESTCache<>("default", url, CONTEXT_PATH);
         cache.put("foo1", "bar1");
         assertEquals("bar1", cache.get("foo1"));
     }

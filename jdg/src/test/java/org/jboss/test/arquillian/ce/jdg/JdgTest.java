@@ -25,6 +25,8 @@ package org.jboss.test.arquillian.ce.jdg;
 
 import static junit.framework.Assert.assertEquals;
 
+import java.net.URL;
+
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
@@ -35,6 +37,7 @@ import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.api.Tools;
+import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -56,8 +59,8 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-https.json",
         labels = "application=datagrid-app",
         parameters = {
-                @TemplateParameter(name = "HOSTNAME_HTTP", value="jdg-http-route.openshift"),
-                @TemplateParameter(name = "HOSTNAME_HTTPS", value="jdg-http-route.openshift"),
+                //@TemplateParameter(name = "HOSTNAME_HTTP", value="jdg-http-route.openshift"),
+                //@TemplateParameter(name = "HOSTNAME_HTTPS", value="jdg-http-route.openshift"),
                 @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
                 @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass"),
                 @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value="openshift")})
@@ -95,7 +98,7 @@ public class JdgTest {
     public void testRestService() throws Exception {
         String host = System.getenv("DATAGRID_APP_SERVICE_HOST");
         int port = Integer.parseInt(System.getenv("DATAGRID_APP_SERVICE_PORT"));
-        RESTCache<String, Object> cache = new RESTCache<>("default", "http://" + host + ":" + port + "/rest/");
+        RESTCache<String, Object> cache = new RESTCache<>("default", new URL("http://" + host + ":" + port), "rest");
         cache.put("foo1", "bar1");
         assertEquals("bar1", cache.get("foo1"));
     }
@@ -106,17 +109,15 @@ public class JdgTest {
 
         String host = System.getenv("SECURE_DATAGRID_APP_SERVICE_HOST");
         int port = Integer.parseInt(System.getenv("SECURE_DATAGRID_APP_SERVICE_PORT"));
-        RESTCache<String, Object> cache = new RESTCache<>("default", "https://" + host + ":" + port + "/rest/");
+        RESTCache<String, Object> cache = new RESTCache<>("default", new URL("https://" + host + ":" + port), "rest");
         cache.put("foo1", "bar1");
         assertEquals("bar1", cache.get("foo1"));
     }
 
     @Test
     @RunAsClient
-    public void testRestRoute() throws Exception {
-        String host = HTTP_ROUTE_HOST;
-        int port = 80;
-        RESTCache<String, Object> cache = new RESTCache<>("default", "http://" + host + ":" + port + "/rest/");
+    public void testRestRoute(@RouteURL("datagrid-app") URL url) throws Exception {
+        RESTCache<String, Object> cache = new RESTCache<>("default", url, "rest");
         cache.put("foo1", "bar1");
         assertEquals("bar1", cache.get("foo1"));
     }
@@ -124,12 +125,10 @@ public class JdgTest {
     @Test
 //    @Ignore("Fails with IOException: Invalid Http response, but works with curl")
     @RunAsClient
-    public void testSecureRestRoute() throws Exception {
+    public void testSecureRestRoute(@RouteURL("secure-datagrid-app") URL url) throws Exception {
         Tools.trustAllCertificates();
 
-        String host = HTTP_ROUTE_HOST;
-        int port = 443;
-        RESTCache<String, Object> cache = new RESTCache<>("default", "https://" + host + ":" + port + "/rest/");
+        RESTCache<String, Object> cache = new RESTCache<>("default", url, "rest");
         cache.put("foo1", "bar1");
         assertEquals("bar1", cache.get("foo1"));
     }

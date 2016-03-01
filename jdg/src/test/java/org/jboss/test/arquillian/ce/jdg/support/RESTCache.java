@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
@@ -35,21 +37,39 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class RESTCache<K, V> implements ConcurrentMap<K, V> {
     String cacheName;
-    String basicUrl;
+    String basicPath;
+    URL contextUrl;
+    Proxy proxy;
 
     private static final String GET = "GET";
     private static final String PUT = "PUT";
     private static final String DELETE = "DELETE";
 
-    public RESTCache(String cacheName, String restServerURL) {
+    public RESTCache(String cacheName, URL contextUrl, String basicPath) throws MalformedURLException {
+        this(cacheName, contextUrl, basicPath, Proxy.NO_PROXY);
+    }
+
+    public RESTCache(String cacheName, URL contextUrl, String basicPath, Proxy proxy) throws MalformedURLException {
         this.cacheName = cacheName;
-        this.basicUrl = restServerURL + cacheName;
+        this.contextUrl = contextUrl;
+        this.basicPath = stripLeadingTrailingSlash(basicPath);
+        this.proxy = proxy;
+    }
+    
+    private String stripLeadingTrailingSlash(String value) {
+        while (value.startsWith("/")) {
+            value = value.substring(1, value.length());
+        }
+        while (value.endsWith("/")) {
+            value = value.substring(0, value.length() - 1);
+        }
+        return value;
     }
 
     private String doOperation(String method, String key, Object value) {
         try {
-            URL url = key == null ? new URL(basicUrl) : new URL(basicUrl + "/" + key);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            URL url = key == null ? new URL(contextUrl, String.format("/%s/%s", basicPath, cacheName)) : new URL(contextUrl, String.format("/%s/%s/%s/", basicPath, cacheName, key));
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
             connection.setRequestMethod(method);
             connection.setRequestProperty("Content-Type", "text/plain");
             int read;
