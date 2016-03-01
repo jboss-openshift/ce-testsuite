@@ -47,6 +47,8 @@
 		<version.qpid>0.8.0</version.qpid>
 		<version.mqtt>1.10</version.mqtt>
 		<version.stompjms>1.19</version.stompjms>
+		<!-- SSO -->
+		<version.json-simple>1.1.1</version.json-simple>
 	</properties>
 
 	<modules>
@@ -54,7 +56,6 @@
 		<module>web</module>
 		<module>wildfly</module>
 		<module>testsuite</module>
-                <module>sso</module>
 	</modules>
 
 	<build>
@@ -318,7 +319,13 @@
 				<scope>compile</scope>
 			</dependency>
 
+			<!-- SSO -->
 
+			<dependency>
+				<groupId>com.googlecode.json-simple</groupId>
+				<artifactId>json-simple</artifactId>
+				<version>${version.json-simple}</version>
+			</dependency>
 
 			<!-- ARQ -->
 
