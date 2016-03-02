@@ -165,6 +165,14 @@
                             <includes>
                                 <include>org/jboss/**/*Test.java</include>
                             </includes>
+                            <systemPropertyVariables>
+                                <!-- Custom DNS resolver for OpenShift routes -->
+                                <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
+                                <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
+                                <kubernetes.master>${kubernetes.master}</kubernetes.master>
+                                <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
+                                <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
+                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>
