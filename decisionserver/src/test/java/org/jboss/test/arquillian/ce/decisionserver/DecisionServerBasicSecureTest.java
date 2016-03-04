@@ -32,7 +32,6 @@ import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
-
 /**
  * @author Filippe Spolti
  */

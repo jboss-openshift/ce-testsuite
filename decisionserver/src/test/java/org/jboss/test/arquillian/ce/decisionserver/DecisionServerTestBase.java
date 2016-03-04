@@ -158,6 +158,9 @@ public abstract class DecisionServerTestBase {
         return KieServicesFactory.newKieServicesClient(config);
     }
 
+    /*
+     * Returns the decisionServerRouteHost
+     */
     protected String getDecisionserverRouteHost() {
         return "http://kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";
     }
@@ -248,7 +251,7 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
-    * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
+    * Test the rule deployed on Openshift, the template used to register the HelloRules container with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
     public void checkFireAllRules() throws Exception {
@@ -277,7 +280,7 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
-    * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
+    * Test the rule deployed on Openshift using AMQ client, the template used to register the HelloRules container with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
     public void checkFireAllRulesAMQ() throws Exception {
@@ -304,7 +307,7 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
-    * Verifies the server capabilities, for decisionserver-openshift:6.2 it
+    * Verifies the server capabilities using AMQ client, for decisionserver-openshift:6.2 it
     * should be KieServer BRM
     */
     public void checkDecisionServerCapabilitiesAMQ() throws NamingException {
@@ -365,7 +368,7 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
-    * Test the rule deployed on Openshift, the template used register the HelloRules container with the Kie jar:
+    * Test the rule deployed on Openshift, the template used to register the HelloRules container with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
     public void checkFireAllRulesInSecondContainer() throws Exception {
@@ -393,7 +396,7 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
-    * Verifies the Second KieContainer ID, it should be AnotherContainer
+    * Verifies the Second KieContainer ID using AMQ client, it should be AnotherContainer
     * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
     */
     public void checkDecisionServerSecondContainerAMQ() throws NamingException {
@@ -410,7 +413,7 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
-    * Test the rule deployed on Openshift, this test case register a new template called NewHelloRulesContainer with the Kie jar:
+    * Test the rule deployed on Openshift using AMQ client, this test case register a new template called AnotherContainer with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
     public void checkFireAllRulesInSecondContainerAMQ() throws Exception {
@@ -440,7 +443,7 @@ public abstract class DecisionServerTestBase {
     /*
     * Allow httpClient to use untrusted connections
     * The code below was tested with httpclient 4.3.6-redhat-1
-    * code example from; XXXXXX
+    * code example from; http://literatejava.com/networks/ignore-ssl-certificate-errors-apache-httpclient-4-4/
     */
     public static HttpClient acceptUntrustedConnClient() throws Exception {
         HttpClientBuilder b = HttpClientBuilder.create();
@@ -487,21 +490,21 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
-    * Returns httpClient client
+    * Returns httpClient client Authorization Base64 encoded
     */
     private String authEncoding() {
         return Base64Encoder.encode(KIE_USERNAME + ":" + KIE_PASSWORD);
     }
 
     /*
-     *Return the formated xml to perform the fire-all-rules using httpClient
+     *Return the formatted xml to perform the fire-all-rules using httpClient
      */
     private String streamXML() {
         return BatchExecutionHelper.newXStreamMarshaller().toXML(batchCommand());
     }
 
     /*
-    * Return the HttpPost request to perform the fire-all-rules using
+    * Return the HttpPost response for fire-all-rules using httpClient
     */
     private HttpResponse responseFireAllRules(String host, String containerId) throws Exception {
 
@@ -525,6 +528,10 @@ public abstract class DecisionServerTestBase {
         return client.execute(request);
     }
 
+
+    /*
+    * Return the HttpGet response for generic requests using httpClient
+    */
     private HttpResponse genericResponse(String host, String uri) throws Exception {
         //request
         HttpGet request = new HttpGet(host + uri);
@@ -573,7 +580,7 @@ public abstract class DecisionServerTestBase {
     /*
     * Verifies the KieContainer ID
     * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
-    * test using using httpClient
+    * test using httpClient
     */
     public void checkDecisionServerSecureMultiContainerHttpClient() throws Exception {
 
@@ -612,7 +619,7 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
-    * Test the rule deployed on Openshift using httpClient, the template used register the HelloRules container with the Kie jar:
+    * Test the rule deployed on Openshift using httpClient, the template used register the HelloRulesContainer with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
     public void checkFireAllRulesSecureHttpClient() throws Exception {
@@ -644,7 +651,8 @@ public abstract class DecisionServerTestBase {
     }
 
     /*
-    * Test the rule deployed on Openshift using httpClient and multicontainer feature, the template used register the HelloRules container with the Kie jar:
+    * Test the rule deployed on Openshift using httpClient and multicontainer feature, the template used register the
+     * AnotherContainer with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
     public void checkFireAllRulesSecureSecondContainerHttpClient() throws Exception {
