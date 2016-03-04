@@ -23,15 +23,8 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import javax.naming.NamingException;
-
-import org.jboss.arquillian.ce.api.ExternalDeployment;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.RunInPod;
-import org.jboss.arquillian.ce.api.RunInPodDeployment;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
+import io.fabric8.utils.Base64Encoder;
+import org.jboss.arquillian.ce.api.*;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -40,21 +33,21 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 /**
- * @author Filippe Spolti
+ * @author fspolti
  */
 
 @RunWith(Arquillian.class)
 @RunInPod
 @ExternalDeployment
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-amq-s2i.json",
-        labels = "deploymentConfig=kie-app",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-https-s2i.json",
+        labels = "application=kie-app",
         parameters = {
+                //the container with the bigger name will always get deployed first
+                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "HelloRulesContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0-SNAPSHOT|" +
+                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0-SNAPSHOT"),
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
-                @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}"),
-                @TemplateParameter(name = "MQ_USERNAME", value = "${mq.username:kieserver}"),
-                @TemplateParameter(name = "MQ_PASSWORD", value = "${mq.password:Redhat@123}")
+                @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
@@ -62,54 +55,38 @@ import org.junit.runner.RunWith;
         @OpenShiftResource("classpath:decisionserver-service-account.json"),
         @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
-public class DecisionServerAmqTest extends DecisionServerTestBase {
+public class DecisionServerHttpClientSecureAllInOneTest extends DecisionServerTestBase {
 
     @Deployment
     @RunInPodDeployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
-        war.addAsLibraries(Libraries.transitive("org.apache.activemq","activemq-all"));
-
-        war.addClass(DecisionServerAmqTest.class);
-        war.addClass(DecisionServerMultiContainerAmqTest.class);
-
+        war.addAsLibraries(Libraries.transitive("org.apache.httpcomponents", "httpclient"));
+        war.addClass(Base64Encoder.class);
         Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
         handle.addProperty("kie.username", KIE_USERNAME);
         handle.addProperty("kie.password", KIE_PASSWORD);
-        handle.addProperty("mq.username", MQ_USERNAME);
-        handle.addProperty("mq.password", MQ_PASSWORD);
         handle.store(war);
-
         return war;
     }
 
     @Test
-    public void testDecisionServerCapabilities() throws Exception {
-        checkDecisionServerCapabilities();
+    public void testDecisionServerCapabilitiesHttpClient() throws Exception {
+        checkDecisionServerCapabilitiesHttpClient();
     }
 
     @Test
-    public void testDecisionServerContainer() throws Exception {
-        checkDecisionServerContainer();
+    public void testDecisionServerSecureMultiContainerHttpClient () throws Exception {
+        checkDecisionServerSecureMultiContainerHttpClient();
     }
 
     @Test
-    public void testFireAllRules() throws Exception {
-        checkFireAllRules();
+    public void testFireAllRulesSecureHttpClient() throws Exception {
+        checkFireAllRulesSecureHttpClient();
     }
 
     @Test
-    public void testFireAllRulesAMQ() throws Exception {
-        checkFireAllRulesAMQ();
-    }
-
-    @Test
-    public void testDecisionServerCapabilitiesAMQ() throws NamingException {
-        checkDecisionServerCapabilitiesAMQ();
-    }
-
-    @Test
-    public void testDecisionServerContainerAMQ() throws NamingException {
-        checkDecisionServerContainerAMQ();
+    public void testFireAllRulesSecureSecondContainerHttpClient () throws Exception {
+        checkFireAllRulesSecureSecondContainerHttpClient();
     }
 }
