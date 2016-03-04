@@ -30,7 +30,6 @@ import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -67,11 +66,6 @@ public class DecisionServerBasicTest extends DecisionServerTestBase {
         war.addClass(DecisionServerBasicTest.class);
         war.addClass(DecisionServerBasicSecureTest.class);
         war.addClass(DecisionServerBasicMulltiContainerTest.class);
-
-        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        handle.addProperty("kie.username", KIE_USERNAME);
-        handle.addProperty("kie.password", KIE_PASSWORD);
-        handle.store(war);
 
         return war;
     }

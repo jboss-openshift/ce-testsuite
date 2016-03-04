@@ -60,6 +60,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.Tools;
+import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -111,10 +112,19 @@ public abstract class DecisionServerTestBase {
 
     protected static WebArchive getDeploymentInternal() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
+
         war.setWebXML("web.xml");
         war.addClass(DecisionServerTestBase.class);
         war.addPackage(Person.class.getPackage());
         war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
+
+        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
+        handle.addProperty("kie.username", KIE_USERNAME);
+        handle.addProperty("kie.password", KIE_PASSWORD);
+        handle.addProperty("mq.username", MQ_USERNAME);
+        handle.addProperty("mq.password", MQ_PASSWORD);
+        handle.store(war);
+
         return war;
     }
 

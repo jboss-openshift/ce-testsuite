@@ -31,7 +31,6 @@ import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -69,10 +68,6 @@ public class DecisionServerHttpClientSecureAllInOneTest extends DecisionServerTe
         WebArchive war = getDeploymentInternal();
         war.addAsLibraries(Libraries.transitive("org.apache.httpcomponents", "httpclient"));
         war.addClass(Base64Encoder.class);
-        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        handle.addProperty("kie.username", KIE_USERNAME);
-        handle.addProperty("kie.password", KIE_PASSWORD);
-        handle.store(war);
         return war;
     }
 

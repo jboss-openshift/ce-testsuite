@@ -32,7 +32,6 @@ import org.jboss.arquillian.ce.api.RunInPod;
 import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -68,17 +67,11 @@ public class DecisionServerAmqTest extends DecisionServerTestBase {
     @RunInPodDeployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
+
         war.addAsLibraries(Libraries.transitive("org.apache.activemq","activemq-all"));
 
         war.addClass(DecisionServerAmqTest.class);
         war.addClass(DecisionServerMultiContainerAmqTest.class);
-
-        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        handle.addProperty("kie.username", KIE_USERNAME);
-        handle.addProperty("kie.password", KIE_PASSWORD);
-        handle.addProperty("mq.username", MQ_USERNAME);
-        handle.addProperty("mq.password", MQ_PASSWORD);
-        handle.store(war);
 
         return war;
     }
