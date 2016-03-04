@@ -23,6 +23,23 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.jms.ConnectionFactory;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+
 import io.fabric8.utils.Base64Encoder;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -68,18 +85,6 @@ import org.kie.server.client.KieServicesFactory;
 import org.kie.server.client.RuleServicesClient;
 import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
-
-import javax.jms.ConnectionFactory;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
-import java.util.*;
-import java.util.logging.Logger;
 
 
 /**
@@ -450,9 +455,9 @@ public abstract class DecisionServerTestBase {
         //
         SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, (X509HostnameVerifier) hostnameVerifier);
         Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", sslSocketFactory)
-                .build();
+            .register("http", PlainConnectionSocketFactory.getSocketFactory())
+            .register("https", sslSocketFactory)
+            .build();
 
         // now, we create connection-manager using our Registry.
         //      -- allows multi-threaded use
@@ -467,7 +472,7 @@ public abstract class DecisionServerTestBase {
     /*
      * Returns httpClient client
      */
-    private HttpClient getClient () throws Exception {
+    private HttpClient getClient() throws Exception {
         return acceptUntrustedConnClient();
     }
 
@@ -475,7 +480,7 @@ public abstract class DecisionServerTestBase {
     * Returns httpClient client
     */
     private String authEncoding() {
-        return Base64Encoder.encode(KIE_USERNAME+":"+KIE_PASSWORD);
+        return Base64Encoder.encode(KIE_USERNAME + ":" + KIE_PASSWORD);
     }
 
     /*
@@ -488,15 +493,15 @@ public abstract class DecisionServerTestBase {
     /*
     * Return the HttpPost request to perform the fire-all-rules using
     */
-    private HttpResponse responseFireAllRules (String host, String containerId) throws Exception {
+    private HttpResponse responseFireAllRules(String host, String containerId) throws Exception {
 
         //request
         HttpPost request = new HttpPost(host + "/kie-server/services/rest/server/containers/instances/" + containerId);
         //setting headers
         request.setHeader("accept", "application/xml");
-        request.setHeader("X-KIE-ContentType","XSTREAM");
-        request.setHeader("Content-Type","application/xml");
-        request.setHeader("X-KIE-ClassType","org.drools.core.command.runtime.BatchExecutionCommandImpl");
+        request.setHeader("X-KIE-ContentType", "XSTREAM");
+        request.setHeader("Content-Type", "application/xml");
+        request.setHeader("X-KIE-ClassType", "org.drools.core.command.runtime.BatchExecutionCommandImpl");
 
         //setting authorization
         request.setHeader("Authorization", "Basic " + authEncoding());
@@ -525,7 +530,7 @@ public abstract class DecisionServerTestBase {
     */
     public void checkDecisionServerCapabilitiesHttpClient() throws Exception {
 
-        String HOST = "https://"+System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
+        String HOST = "https://" + System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
         String URI = "/kie-server/services/rest/server";
 
         //performing request
@@ -562,7 +567,7 @@ public abstract class DecisionServerTestBase {
     */
     public void checkDecisionServerSecureMultiContainerHttpClient() throws Exception {
 
-        String HOST = "https://"+System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
+        String HOST = "https://" + System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
         String URI = "/kie-server/services/rest/server/containers";
 
         //Retrieving response
@@ -583,7 +588,7 @@ public abstract class DecisionServerTestBase {
         KieContainerResourceList kieContainers = (KieContainerResourceList) serviceResponse.getResult();
 
         //kieContainers's should be 2
-        Assert.assertEquals(2,kieContainers.getContainers().size());
+        Assert.assertEquals(2, kieContainers.getContainers().size());
 
         // verify the first KieContainer Name
         Assert.assertEquals("HelloRulesContainer", kieContainers.getContainers().get(0).getContainerId());
@@ -602,7 +607,7 @@ public abstract class DecisionServerTestBase {
     */
     public void checkFireAllRulesSecureHttpClient() throws Exception {
 
-        String HOST = "https://"+System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
+        String HOST = "https://" + System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
 
         HttpResponse response = responseFireAllRules(HOST, "HelloRulesContainer");
 
@@ -634,7 +639,7 @@ public abstract class DecisionServerTestBase {
     */
     public void checkFireAllRulesSecureSecondContainerHttpClient() throws Exception {
 
-        String HOST = "https://"+System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
+        String HOST = "https://" + System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
 
         HttpResponse response = responseFireAllRules(HOST, "AnotherContainer");
 

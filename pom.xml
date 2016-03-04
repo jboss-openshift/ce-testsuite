@@ -35,7 +35,7 @@
 		<spymemcached.version>2.8.1</spymemcached.version>
 		<!-- EAP testunit deps -->
 		<version.logging>3.1.4.GA</version.logging>
-		<version.httpclient>4.4</version.httpclient>
+		<version.httpclient>4.3.6.redhat-1</version.httpclient>
 		<version.syslog4j>0.9.30</version.syslog4j>
 		<!-- Decision server -->
 		<version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
