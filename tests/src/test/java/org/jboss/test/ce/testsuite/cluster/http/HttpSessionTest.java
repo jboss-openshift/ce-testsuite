@@ -25,7 +25,7 @@ package org.jboss.test.ce.testsuite.cluster.http;
 
 import java.io.InputStream;
 
-import org.jboss.arquillian.ce.api.Client;
+import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.Replicas;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
 public class HttpSessionTest {
 
     @ArquillianResource
-    Client client;
+    OpenShiftHandle client;
 
     @Deployment
     public static WebArchive getDeployment() throws Exception {
@@ -63,7 +63,7 @@ public class HttpSessionTest {
     public void testFirstNode() throws Exception {
         Thread.sleep(2000); // wait 2sec to sync on the server-side??
 
-        InputStream response = client.execute(0, "/hs/foo");
+        InputStream response = client.execute(0, 8080, "/hs/foo");
         Assert.assertEquals("OK", FooServlet.readInputStream(response));
     }
 
@@ -73,7 +73,7 @@ public class HttpSessionTest {
     public void testSecondNode() throws Exception {
         Thread.sleep(2000); // wait 2sec to sync on the server-side??
 
-        InputStream response = client.execute(1, "/hs/foo");
+        InputStream response = client.execute(1, 8080, "/hs/foo");
         Assert.assertEquals("CE!!", FooServlet.readInputStream(response));
     }
 

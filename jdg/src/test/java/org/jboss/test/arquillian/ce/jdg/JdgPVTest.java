@@ -28,15 +28,12 @@ import static junit.framework.Assert.assertEquals;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import org.jboss.arquillian.ce.adapter.OpenShiftAdapter;
-import org.jboss.arquillian.ce.api.ConfigurationHandle;
+import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.utils.RegistryLookup;
-import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -65,19 +62,13 @@ import org.junit.runner.RunWith;
         @OpenShiftResource("classpath:datagrid-app-secret.json")
 })
 public class JdgPVTest {
-    @ArquillianResource
-    ConfigurationHandle configuration;
-
     private static final Logger log = Logger.getLogger(JdgPVTest.class.getName());
 
     @Deployment
     public static WebArchive getDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
-        war.setWebXML(new StringAsset("<web-app/>"))
-           .addPackage(RESTCache.class.getPackage())
-           .addClass(OpenShiftAdapter.class)
-           .addClass(RegistryLookup.class);
-
+        war.setWebXML(new StringAsset("<web-app/>"));
+        war.addPackage(RESTCache.class.getPackage());
         return war;
     }
 
@@ -91,7 +82,7 @@ public class JdgPVTest {
         assertEquals("bar1", cache.get("foo1"));
     }
 
-    private void restartPod(OpenShiftAdapter adapter, String name) throws DeploymentException {
+    private void restartPod(OpenShiftHandle adapter, String name) throws Exception {
         log.info("Scaling down " + name);
         adapter.scaleDeployment(name, 0);
         log.info("Scaling up " + name);
@@ -101,7 +92,7 @@ public class JdgPVTest {
     @Test
     @RunAsClient
     @InSequence(2)
-    public void restartDB(@ArquillianResource OpenShiftAdapter adapter) throws Exception {
+    public void restartDB(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         restartPod(adapter, "datagrid-app-mysql");
         restartPod(adapter, "datagrid-app");
     }
