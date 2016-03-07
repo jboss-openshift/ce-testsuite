@@ -380,6 +380,7 @@
 				<module>decisionserver</module>
 				<module>jdg</module>
 				<module>sso</module>
+				<module>webserver</module>
 			</modules>
 		</profile>
 
@@ -433,6 +434,19 @@
 
 			<modules>
 				<module>sso</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>webserver</id>
+			<activation>
+				<property>
+					<name>webserver</name>
+				</property>
+			</activation>
+
+			<modules>
+				<module>webserver</module>
 			</modules>
 		</profile>
 
