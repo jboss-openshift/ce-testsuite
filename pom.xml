@@ -49,6 +49,8 @@
 		<version.stompjms>1.19</version.stompjms>
 		<!-- SSO -->
 		<version.json-simple>1.1.1</version.json-simple>
+		<!-- undertow JSR356 implementation -->
+		<undertow.jsr356.version>1.2.11.Final</undertow.jsr356.version>
 	</properties>
 
 	<modules>

@@ -25,7 +25,12 @@
     <dependencies>
 
         <!-- Tests - add any external existing tests here -->
-
+        <!-- undertow JSR356 implementation -->
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-websockets-jsr</artifactId>
+            <version>${undertow.jsr356.version}</version>
+        </dependency>
 
         <!-- TODO -->
 

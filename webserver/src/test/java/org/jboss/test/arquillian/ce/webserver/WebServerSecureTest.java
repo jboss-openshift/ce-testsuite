@@ -23,44 +23,32 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import io.undertow.protocols.ssl.UndertowXnioSsl;
-import junit.framework.Assert;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.xnio.OptionMap;
-import org.xnio.Xnio;
 
-import javax.net.ssl.*;
 import javax.websocket.*;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 /**
  * @author fspolti
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-https-s2i.json",
         labels = "application=jws-app"
 )
 @OpenShiftResources({
@@ -68,7 +56,7 @@ import java.util.logging.Logger;
         @OpenShiftResource("classpath:webserver-app-secret.json")
 })
 @ClientEndpoint
-public class WebServerTest extends WebserverTestBase {
+public class WebServerSecureTest extends WebserverTestBase {
 
     @Deployment
     public static WebArchive getDeployment() throws Exception {
@@ -77,7 +65,7 @@ public class WebServerTest extends WebserverTestBase {
 
     @Test
     @RunAsClient
-    public void testWebchat(@RouteURL("jws-app") URL url) throws InterruptedException, IOException, DeploymentException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
-        checkWebChat(url.toURI(), WebServerTest.class);
+    public void testWebchat(@RouteURL("secure-jws-app") URL url) throws InterruptedException, IOException, DeploymentException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
+        checkWebChat(url.toURI(), WebServerSecureTest.class);
     }
 }
