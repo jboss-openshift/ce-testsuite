@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
  * @author fspolti
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-https-s2i.json",
         labels = "application=jws-app"
 )
 @OpenShiftResources({
@@ -50,7 +50,7 @@ import org.junit.runner.RunWith;
         @OpenShiftResource("classpath:webserver-app-secret.json")
 })
 @ClientEndpoint
-public class WebServerTest extends WebserverTestBase {
+public class WebServerTomcat7BasicSecureTest extends WebserverTestBase {
 
     @Deployment
     public static WebArchive getDeployment() throws Exception {
@@ -59,7 +59,7 @@ public class WebServerTest extends WebserverTestBase {
 
     @Test
     @RunAsClient
-    public void testWebchat(@RouteURL("jws-app") URL url) throws Exception {
-        checkWebChat(url.toURI(), WebServerTest.class);
+    public void testWebchat(@RouteURL("secure-jws-app") URL url) throws Exception {
+        checkWebChat(url.toURI(), WebServerTomcat7BasicSecureTest.class);
     }
 }

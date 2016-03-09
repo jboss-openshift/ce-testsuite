@@ -23,10 +23,6 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import java.net.URL;
-
-import javax.websocket.ClientEndpoint;
-
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
@@ -38,28 +34,22 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.websocket.ClientEndpoint;
+import java.net.URL;
+
 /**
  * @author fspolti
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-https-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat8-https-s2i.json",
         labels = "application=jws-app"
 )
-@OpenShiftResources({
-        @OpenShiftResource("classpath:webserver-service-account.json"),
-        @OpenShiftResource("classpath:webserver-app-secret.json")
-})
 @ClientEndpoint
-public class WebServerSecureTest extends WebserverTestBase {
-
-    @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return getDeploymentInternal();
-    }
+public class WebServerTomcat8BasicSecureTest extends WebServerTomcat7BasicSecureTest {
 
     @Test
     @RunAsClient
     public void testWebchat(@RouteURL("secure-jws-app") URL url) throws Exception {
-        checkWebChat(url.toURI(), WebServerSecureTest.class);
+        checkWebChat(url.toURI(), WebServerTomcat8BasicSecureTest.class);
     }
 }

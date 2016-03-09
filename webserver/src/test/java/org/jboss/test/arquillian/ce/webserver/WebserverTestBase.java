@@ -80,13 +80,12 @@ public abstract class WebserverTestBase {
         final String[] responseMessage = new String[1];
         String prepareUrl = prepareUrl(url);
         log.info("ROUTE: " + prepareUrl);
+        log.info("Using class endpoint: " + clazz);
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 
         if (ssl) {
             setDefaultWebSocketClientSslProvider();
         }
-
-        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-
         //This session will receive the message sent by the sender session
         Session receiver = container.connectToServer(clazz, new URI(prepareUrl));
 
