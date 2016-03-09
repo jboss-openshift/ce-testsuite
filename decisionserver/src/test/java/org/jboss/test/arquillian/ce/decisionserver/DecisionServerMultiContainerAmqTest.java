@@ -23,15 +23,17 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
-import org.jboss.arquillian.ce.api.RunInPod;
+import java.net.URL;
+
+import javax.naming.NamingException;
+
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.naming.NamingException;
 
 
 /**
@@ -39,14 +41,11 @@ import javax.naming.NamingException;
  */
 
 @RunWith(Arquillian.class)
-@RunInPod
-@ExternalDeployment
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-amq-s2i.json",
-        labels = "deploymentConfig=kie-app",
         parameters = {
                 //the container with the bigger name will always get deployed first
-                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "HelloRulesContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0-SNAPSHOT|" +
-                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0-SNAPSHOT"),
+                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "HelloRulesContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final|" +
+                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final"),
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}"),
                 @TemplateParameter(name = "MQ_USERNAME", value = "${mq.username:kieserver}"),
@@ -55,7 +54,16 @@ import javax.naming.NamingException;
 )
 public class DecisionServerMultiContainerAmqTest extends DecisionServerAmqTest {
 
+    @RouteURL("kie-app")
+    private URL routeURL;
+
+    @Override
+    protected URL getRouteURL() {
+        return routeURL;
+    }
+
     @Test
+    @RunAsClient
     public void testSecondDecisionServerContainer() throws Exception {
         checkSecondDecisionServerContainer();
     }
@@ -66,6 +74,7 @@ public class DecisionServerMultiContainerAmqTest extends DecisionServerAmqTest {
     }
 
     @Test
+    @RunAsClient
     public void testFireAllRulesInSecondContainer() throws Exception {
         checkFireAllRulesInSecondContainer();
     }

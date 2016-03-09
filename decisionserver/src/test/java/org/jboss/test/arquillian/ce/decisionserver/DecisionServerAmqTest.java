@@ -23,17 +23,18 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
+import java.net.URL;
+
 import javax.naming.NamingException;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.RunInPod;
-import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
@@ -44,10 +45,7 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@RunInPod
-@ExternalDeployment
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-amq-s2i.json",
-        labels = "deploymentConfig=kie-app",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}"),
@@ -56,14 +54,15 @@ import org.junit.runner.RunWith;
         }
 )
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/jboss-image-streams.json"),
         @OpenShiftResource("classpath:decisionserver-service-account.json"),
         @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
 public class DecisionServerAmqTest extends DecisionServerTestBase {
 
+    @RouteURL("kie-app")
+    private URL routeURL;
+
     @Deployment
-    @RunInPodDeployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
 
@@ -75,17 +74,25 @@ public class DecisionServerAmqTest extends DecisionServerTestBase {
         return war;
     }
 
-    @Test
-    public void testDecisionServerCapabilities() throws Exception {
-        checkDecisionServerCapabilities();
+    @Override
+    protected URL getRouteURL() {
+        return routeURL;
     }
 
     @Test
+    @RunAsClient
+    public void testDecisionServerCapabilities() throws Exception {
+        checkDecisionServerCapabilities(getRouteURL());
+    }
+
+    @Test
+    @RunAsClient
     public void testDecisionServerContainer() throws Exception {
         checkDecisionServerContainer();
     }
 
     @Test
+    @RunAsClient
     public void testFireAllRules() throws Exception {
         checkFireAllRules();
     }

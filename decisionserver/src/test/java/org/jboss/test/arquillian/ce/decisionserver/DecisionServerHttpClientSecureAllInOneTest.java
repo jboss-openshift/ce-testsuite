@@ -24,11 +24,11 @@
 package org.jboss.test.arquillian.ce.decisionserver;
 
 import io.fabric8.utils.Base64Encoder;
-import org.jboss.arquillian.ce.api.ExternalDeployment;
+
+import java.net.URL;
+
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.RunInPod;
-import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
@@ -43,32 +43,33 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@RunInPod
-@ExternalDeployment
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-https-s2i.json",
-    labels = "application=kie-app",
     parameters = {
         //the container with the bigger name will always get deployed first
-        @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "HelloRulesContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0-SNAPSHOT|" +
-            "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0-SNAPSHOT"),
+        @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "HelloRulesContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final|" +
+            "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final"),
         @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
         @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
     }
 )
 @OpenShiftResources({
-    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/jboss-image-streams.json"),
     @OpenShiftResource("classpath:decisionserver-service-account.json"),
     @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
 public class DecisionServerHttpClientSecureAllInOneTest extends DecisionServerTestBase {
 
     @Deployment
-    @RunInPodDeployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
         war.addAsLibraries(Libraries.transitive("org.apache.httpcomponents", "httpclient"));
         war.addClass(Base64Encoder.class);
         return war;
+    }
+
+    @Override
+    protected URL getRouteURL() {
+        // no client side tests
+        return null;
     }
 
     @Test

@@ -25,10 +25,11 @@ package org.jboss.test.arquillian.ce.decisionserver;
 
 import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
-import org.jboss.arquillian.ce.api.RunInPod;
+import java.net.URL;
+
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
@@ -37,18 +38,19 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@RunInPod
-@ExternalDeployment
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-https-s2i.json",
-        labels = "application=kie-app",
         parameters = {
 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
 })
 public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
+
+    @RouteURL("secure-kie-app")
+    private URL routeURL;
+
     @Override
-    protected String getDecisionserverRouteHost() {
-        return "https://secure-kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";
+    protected URL getRouteURL() {
+        return routeURL;
     }
 
     // only needed for non-production test scenarios

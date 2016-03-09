@@ -23,7 +23,10 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
+import io.fabric8.utils.Base64Encoder;
+
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +43,6 @@ import javax.net.ssl.SSLContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import io.fabric8.utils.Base64Encoder;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -59,7 +61,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
-import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -128,14 +129,14 @@ public abstract class DecisionServerTestBase {
         return war;
     }
 
+    protected abstract URL getRouteURL();
+
     /*
     * Returns the kieService client
     */
-    protected KieServicesClient getKieRestServiceClient() throws Exception {
-        Properties properties = Tools.loadProperties(DecisionServerTestBase.class, FILENAME);
-        String username = properties.getProperty("kie.username");
-        String password = properties.getProperty("kie.password");
-        KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newRestConfiguration(resolveHost(), username, password);
+    protected KieServicesClient getKieRestServiceClient(URL baseURL) throws Exception {
+        KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newRestConfiguration(new URL(baseURL,
+                "/kie-server/services/rest/server").toString(), KIE_USERNAME, KIE_PASSWORD);
         kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
         return KieServicesFactory.newKieServicesClient(kieServicesConfiguration);
     }
@@ -156,22 +157,6 @@ public abstract class DecisionServerTestBase {
         KieServicesConfiguration config = KieServicesFactory.newJMSConfiguration(connectionFactory, requestQueue, responseQueue, MQ_USERNAME, MQ_PASSWORD);
         config.setMarshallingFormat(MarshallingFormat.XSTREAM);
         return KieServicesFactory.newKieServicesClient(config);
-    }
-
-    /*
-     * Returns the decisionServerRouteHost
-     */
-    protected String getDecisionserverRouteHost() {
-        return "http://kie-app-%s.router.default.svc.cluster.local/kie-server/services/rest/server";
-    }
-
-    /*
-    * Return the resolved endpoint's host/uri
-    */
-    protected String resolveHost() {
-        String resolvedHost = String.format(getDecisionserverRouteHost(), configuration.getNamespace());
-        log.info("Testing against URL: " + resolvedHost);
-        return resolvedHost;
     }
 
     /*
@@ -211,7 +196,7 @@ public abstract class DecisionServerTestBase {
      * Verifies the server capabilities, for decisionserver-openshift:6.2 it
      * should be KieServer BRM
      */
-    public void checkDecisionServerCapabilities() throws Exception {
+    public void checkDecisionServerCapabilities(URL url) throws Exception {
         log.info("Running test checkDecisionServerCapabilities");
         // for untrusted connections
         prepareClientInvocation();
@@ -220,7 +205,7 @@ public abstract class DecisionServerTestBase {
         String serverCapabilitiesResult = "";
 
         // Getting the KieServiceClient
-        KieServicesClient kieServicesClient = getKieRestServiceClient();
+        KieServicesClient kieServicesClient = getKieRestServiceClient(url);
         KieServerInfo serverInfo = kieServicesClient.getServerInfo().getResult();
 
         // Reading Server capabilities
@@ -242,7 +227,7 @@ public abstract class DecisionServerTestBase {
         // for untrusted connections
         prepareClientInvocation();
 
-        List<KieContainerResource> kieContainers = getKieRestServiceClient().listContainers().getResult().getContainers();
+        List<KieContainerResource> kieContainers = getKieRestServiceClient(getRouteURL()).listContainers().getResult().getContainers();
 
         // verify the KieContainer Name
         Assert.assertEquals("HelloRulesContainer", kieContainers.get(0).getContainerId());
@@ -259,7 +244,7 @@ public abstract class DecisionServerTestBase {
         // for untrusted connections
         prepareClientInvocation();
 
-        KieServicesClient client = getKieRestServiceClient();
+        KieServicesClient client = getKieRestServiceClient(getRouteURL());
 
         ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("HelloRulesContainer", batchCommand());
 
@@ -356,7 +341,7 @@ public abstract class DecisionServerTestBase {
         log.info("Running test checkSecondDecisionServerContainer");
         // for untrusted connections
         prepareClientInvocation();
-        List<KieContainerResource> kieContainers = getKieRestServiceClient().listContainers().getResult().getContainers();
+        List<KieContainerResource> kieContainers = getKieRestServiceClient(getRouteURL()).listContainers().getResult().getContainers();
 
         //kieContainers size should be 2
         Assert.assertEquals(2, kieContainers.size());
@@ -375,7 +360,7 @@ public abstract class DecisionServerTestBase {
         log.info("Running test checkFireAllRulesInSecondContainer");
         // for untrusted connections
         prepareClientInvocation();
-        KieServicesClient client = getKieRestServiceClient();
+        KieServicesClient client = getKieRestServiceClient(getRouteURL());
 
         ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("AnotherContainer", batchCommand());
 
@@ -535,11 +520,15 @@ public abstract class DecisionServerTestBase {
     private HttpResponse genericResponse(String host, String uri) throws Exception {
         //request
         HttpGet request = new HttpGet(host + uri);
-        //setting header
-        request.setHeader("accept", "application/xml");
-        //setting authorization
-        request.setHeader("Authorization", "Basic " + authEncoding());
-        return getClient().execute(request);
+        try {
+            //setting header
+            request.setHeader("accept", "application/xml");
+            //setting authorization
+            request.setHeader("Authorization", "Basic " + authEncoding());
+            return getClient().execute(request);
+        } catch (Throwable e) {
+            throw new RuntimeException(String.format("Error executing request: %s", request), e);
+        }
     }
 
     /* Verifies the server capabilities using httpClient, for decisionserver-openshift:6.2 it

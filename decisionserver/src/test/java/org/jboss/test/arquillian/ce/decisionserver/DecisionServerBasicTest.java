@@ -23,16 +23,15 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
+import java.net.URL;
+
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.RunInPod;
-import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,45 +41,40 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@RunInPod
-@ExternalDeployment
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-basic-s2i.json",
-        labels = "application=kie-app",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/jboss-image-streams.json"),
         @OpenShiftResource("classpath:decisionserver-service-account.json"),
         @OpenShiftResource("classpath:decisionserver-app-secret.json")
 })
 public class DecisionServerBasicTest extends DecisionServerTestBase {
 
-    @Deployment
-    @RunInPodDeployment
-    public static WebArchive getDeployment() throws Exception {
-        WebArchive war = getDeploymentInternal();
+    @RouteURL("kie-app")
+    private URL routeURL;
 
-        war.addClass(DecisionServerBasicTest.class);
-        war.addClass(DecisionServerBasicSecureTest.class);
-        war.addClass(DecisionServerBasicMulltiContainerTest.class);
-
-        return war;
+    @Override
+    protected URL getRouteURL() {
+        return routeURL;
     }
 
     @Test
+    @RunAsClient
     public void testDecisionServerCapabilities() throws Exception {
-        checkDecisionServerCapabilities();
+        checkDecisionServerCapabilities(getRouteURL());
     }
 
     @Test
+    @RunAsClient
     public void testDecisionServerContainer() throws Exception {
         checkDecisionServerContainer();
     }
 
     @Test
+    @RunAsClient
     public void testFireAllRules() throws Exception {
         checkFireAllRules();
     }
