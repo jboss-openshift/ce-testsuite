@@ -23,6 +23,10 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
+import java.net.URL;
+
+import javax.websocket.ClientEndpoint;
+
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
@@ -33,16 +37,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.websocket.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author fspolti
@@ -65,7 +59,7 @@ public class WebServerSecureTest extends WebserverTestBase {
 
     @Test
     @RunAsClient
-    public void testWebchat(@RouteURL("secure-jws-app") URL url) throws InterruptedException, IOException, DeploymentException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
+    public void testWebchat(@RouteURL("secure-jws-app") URL url) throws Exception {
         checkWebChat(url.toURI(), WebServerSecureTest.class);
     }
 }

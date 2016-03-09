@@ -23,28 +23,21 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import io.undertow.websockets.jsr.DefaultWebSocketClientSslProvider;
-import junit.framework.Assert;
-import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.websocket.*;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
+import javax.websocket.ContainerProvider;
+import javax.websocket.MessageHandler;
+import javax.websocket.Session;
+import javax.websocket.WebSocketContainer;
+
+import junit.framework.Assert;
+import org.jboss.arquillian.ce.api.Tools;
+import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 /**
  * @author fspolti
@@ -63,13 +56,6 @@ public abstract class WebserverTestBase {
     }
 
     /*
-    * Return the container provider to create the UndertowSession
-    */
-    private WebSocketContainer container() {
-        return ContainerProvider.getWebSocketContainer();
-    }
-
-    /*
     * Returns the correct websocket URI
     */
     public String prepareUrl(URI uri) {
@@ -79,49 +65,30 @@ public abstract class WebserverTestBase {
                 : uri.toString().replace("https","wss") + "" + URI;
     }
 
-    /*
-    * Configure the SSLContext to accept untrusted connections
-    */
-    public SSLContext getSslContext() throws KeyManagementException, NoSuchAlgorithmException {
-        // Create a trust manager that does not validate certificate chains
-        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return new java.security.cert.X509Certificate[]{};
-            }
-
-            public void checkClientTrusted(X509Certificate[] chain,
-                                           String authType) throws CertificateException {
-            }
-
-            public void checkServerTrusted(X509Certificate[] chain,
-                                           String authType) throws CertificateException {
-            }
-        }};
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init( null, trustAllCerts, new java.security.SecureRandom());
-        return sslContext;
-    }
-
-    private void setDefaultWebSocketClientSslProvider() throws NoSuchAlgorithmException, KeyManagementException {
+    private void setDefaultWebSocketClientSslProvider() throws Exception {
         log.info("Setting DefaultWebSocketClientSslProvider");
-        io.undertow.websockets.jsr.DefaultWebSocketClientSslProvider.setSslContext(getSslContext());
+        io.undertow.websockets.jsr.DefaultWebSocketClientSslProvider.setSslContext(Tools.getTlsSslContext());
     }
 
     /*
     * Check if the websocket-chat is working as expected.
     * It starts 2 sessions, sender and receiver
     */
-    public void checkWebChat(URI url, Class clazz) throws URISyntaxException, IOException, DeploymentException, InterruptedException, KeyManagementException, NoSuchAlgorithmException {
+    public void checkWebChat(URI url, Class clazz) throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         //The response, in this case can be only 1 message.
         final String[] responseMessage = new String[1];
-        log.info("ROUTE: " + prepareUrl(url));
+        String prepareUrl = prepareUrl(url);
+        log.info("ROUTE: " + prepareUrl);
 
         if (ssl) {
             setDefaultWebSocketClientSslProvider();
         }
+
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+
         //This session will receive the message sent by the sender session
-        Session receiver = container().connectToServer(clazz, new URI(prepareUrl(url)));
+        Session receiver = container.connectToServer(clazz, new URI(prepareUrl));
 
         //Reading message from websocket
         synchronized (receiver) {
@@ -143,7 +110,7 @@ public abstract class WebserverTestBase {
             setDefaultWebSocketClientSslProvider();
         }
         //This session will send a message to the receiver session
-        Session sender = container().connectToServer(clazz, new URI(prepareUrl(url)));
+        Session sender = container.connectToServer(clazz, new URI(prepareUrl));
         sender.getBasicRemote().sendText("Hello world!!");
 
         latch.await(1, TimeUnit.SECONDS);
