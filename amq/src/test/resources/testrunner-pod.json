@@ -1,0 +1,83 @@
+{
+	"kind": "Pod",
+	"apiVersion": "v1",
+	"metadata": {
+		"name": "testrunner",
+		"labels": {
+			"application": "testrunner"
+		}
+	},
+
+	"spec": {
+		"containers": [
+			{
+				"name": "testrunner",
+				"readinessProbe": {
+					"exec": {
+						"command": [
+							"/bin/bash",
+							"-c",
+							"curl -s --digest -L http://localhost:9990/management --header \"Content-Type: application/json\" -d '{\"operation\":\"read-attribute\",\"name\":\"server-state\",\"json.pretty\":1}' | grep -iq running"
+						]
+					}
+				},
+
+				"volumeMounts": [
+					{
+						"mountPath": "/opt/eap/certs",
+						"name": "testrunner-pvol"
+					}
+				],
+
+				"image": "jboss-eap-6/eap64-openshift:1.2",
+				"ports": [
+					{
+						"containerPort": 8080,
+						"protocol": "TCP"
+					},
+
+					{
+						"containerPort": 9990,
+						"protocol": "TCP"
+					},
+
+					{
+						"containerPort": 9999,
+						"protocol": "TCP"
+					},
+					{
+						"containerPort": 8787,
+						"protocol": "TCP"
+					}
+				],
+
+				"env": [
+					{
+						"name": "ADMIN_USERNAME",
+						"value": "admin"
+					},
+
+					{
+						"name": "ADMIN_PASSWORD",
+						"value": "Admin#70365"
+					},
+
+					{
+						"name": "DEBUG",
+						"value": "true"
+					}
+				]
+			}
+		],
+
+		"volumes": [
+			{
+				"name": "testrunner-pvol",
+				"persistentVolumeClaim": 
+				{
+					"claimName": "testrunner-claim"
+				}
+			}
+		]
+	}
+}

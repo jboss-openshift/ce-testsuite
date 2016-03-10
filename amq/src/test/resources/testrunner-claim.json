@@ -1,0 +1,26 @@
+{
+	"apiVersion": "v1",
+	"kind": "List",
+	"items": [
+		{
+		    "apiVersion": "v1",
+		    "kind": "PersistentVolumeClaim",
+		    "metadata": {
+		        "name": "testrunner-claim",
+		        "labels": {
+		            "application": "testrunner"
+		        }
+		    },
+		    "spec": {
+		        "accessModes": [
+		            "ReadWriteOnce"
+		        ],
+		        "resources": {
+		            "requests": {
+		                "storage": "100Mi"
+		            }
+		        }
+		    }
+		}
+	]
+}

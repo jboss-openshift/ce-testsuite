@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLContext;
+
 import org.fusesource.mqtt.client.BlockingConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Message;
@@ -73,7 +75,9 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
         @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value = "${kubernetes.namespace}")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
-@OpenShiftResources({@OpenShiftResource("classpath:amq-internal-imagestream.json")})
+@OpenShiftResources({
+	@OpenShiftResource("classpath:amq-internal-imagestream.json")
+})
 public class AmqTest {
 
     static final String FILENAME = "amq.properties";
@@ -82,7 +86,6 @@ public class AmqTest {
     static final String PASSWORD = System.getProperty("amq.password", "redhat");
 
     @Deployment
-    @RunInPodDeployment
     public static WebArchive getDeployment() throws IOException {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML(new StringAsset("<web-app/>"));
@@ -114,9 +117,9 @@ public class AmqTest {
     public void testOpenWireConnection() throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
         String sent = "Arquillian test";
-        client.produceOpenWireJms(sent);
+        client.produceOpenWireJms(sent,false);
 
-        String received = client.consumeOpenWireJms();
+        String received = client.consumeOpenWireJms(false);
 
         assertEquals(sent, received);
     }
@@ -139,7 +142,7 @@ public class AmqTest {
         String sent = "Arquillian test - MQTT";
 
         MQTT mqtt = new MQTT();
-        mqtt.setHost("tcp://" + System.getenv("AMQ_TEST_AMQ_MQTT_SERVICE_HOST") + ":1883");
+        mqtt.setHost("mqtt://" + System.getenv("AMQ_TEST_AMQ_MQTT_SERVICE_HOST") + ":1883");
         mqtt.setUserName(USERNAME);
         mqtt.setPassword(PASSWORD);
 
@@ -161,7 +164,7 @@ public class AmqTest {
     public void testStompConnection() throws Exception {
         // TODO: Plan to use StompJms: https://github.com/fusesource/stompjms
         String sent = "Arquillian test - STOMP";
-        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_STOMP_SERVICE_HOST") + ":61613");
+        AmqClient client = createAmqClient("stomp://" + System.getenv("AMQ_TEST_AMQ_STOMP_SERVICE_HOST") + ":61613");
 
         client.produceStomp(sent);
 
