@@ -25,12 +25,7 @@ package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
-import org.jboss.arquillian.ce.api.RunInPod;
-import org.jboss.arquillian.ce.api.RunInPodDeployment;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
@@ -49,10 +44,7 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@RunInPod
-@ExternalDeployment
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-basic.json",
-    labels = "application=amq-test",
     parameters = {
         @TemplateParameter(name = "MQ_USERNAME", value = "ce"),
         @TemplateParameter(name = "MQ_PASSWORD", value = "ce"),
@@ -61,12 +53,8 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
         @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
         @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
-        @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
-        @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value = "${kubernetes.namespace}")})
+        @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
-@OpenShiftResources({
-    @OpenShiftResource("classpath:amq-internal-imagestream.json")
-})
 public class AmqSecuredTest {
 
     static final String FILENAME = "amq.properties";
@@ -75,7 +63,6 @@ public class AmqSecuredTest {
     static final String PASSWORD = System.getProperty("amq.password", "redhat");
 
     @Deployment
-    @RunInPodDeployment
     public static WebArchive getDeployment() throws IOException {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML(new StringAsset("<web-app/>"));
