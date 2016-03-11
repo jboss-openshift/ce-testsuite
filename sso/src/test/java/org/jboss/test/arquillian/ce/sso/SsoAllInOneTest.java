@@ -28,6 +28,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.test.arquillian.ce.sso.support.Client;
@@ -49,8 +51,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 @RunWith(Arquillian.class)
-@ExternalDeployment
-@Template(url = "https://raw.githubusercontent.com/bdecoste/application-templates/ssoTP/sso/sso70-postgresql-eap64.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/sso/demo/sso70-all-in-one-demo.json",
 		labels = "application=helloworld,component=eap",
 		parameters = {
 				@TemplateParameter(name = "HOSTNAME_HTTP", value="helloworld${openshift.domain}"),
@@ -59,39 +60,52 @@ import org.json.simple.parser.JSONParser;
 				@TemplateParameter(name = "SSO_HOSTNAME_HTTPS", value="secure-sso${openshift.domain}"),
 				@TemplateParameter(name = "SSO_URI", value="https://secure-sso${openshift.domain}/auth"),
 				@TemplateParameter(name = "ARTIFACT_DIR", value="app-jee/target,app-profile-jee/target"),
-				@TemplateParameter(name = "APPLICATION_ROUTES", value="http://helloworld${openshift.domain};https://secure-helloworld${openshift.domain}"),
-                @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value="${kubernetes.namespace}")})
+				@TemplateParameter(name = "APPLICATION_ROUTES", value="http://helloworld${openshift.domain};https://secure-helloworld${openshift.domain}")
+                })
 @OpenShiftResources({
         @OpenShiftResource("classpath:sso-service-account.json"),
         @OpenShiftResource("classpath:sso-app-secret.json"),
         @OpenShiftResource("classpath:sso-demo-secret.json"),
-        @OpenShiftResource("classpath:eap-app-secret.json"),
-        @OpenShiftResource("classpath:ssoeap-image-stream.json"),
-        @OpenShiftResource("classpath:sso-image-stream.json"),
-        @OpenShiftResource("classpath:postgresql-image-stream.json")
+        @OpenShiftResource("classpath:eap-app-secret.json")
 })
 public class SsoAllInOneTest extends SsoEapTestBase
 {
 	
 	public SsoAllInOneTest() {
-		route = "helloworld";
-		secureRoute = "secure-helloworld";
 	}
+	
+	@RouteURL("helloworld")
+    private URL routeURL;
+	
+	@RouteURL("secure-helloworld")
+    private URL secureRouteURL;
+	
+	@Override
+    protected URL getRouteURL() {
+    	System.out.println("!!!!!!!!!!!!!!!!!! getRouteURL " + routeURL);
+        return routeURL;
+    }
+	
+	@Override
+    protected URL getSecureRouteURL() {
+    	System.out.println("!!!!!!!!!!!!!!!!!! getSecureRouteURL " + secureRouteURL);
+        return secureRouteURL;
+    }
 	
 	@Test
     @RunAsClient
     public void testLogin() throws Exception {
-		login(HTTP, route + System.getProperty("openshift.domain"));
+		login(getRouteURL().toString());
     }
 	
 	@Test
     @RunAsClient
     public void testSecureLogin() throws Exception {
-		login(HTTPS, secureRoute + System.getProperty("openshift.domain"));
+		login(getRouteURL().toString());
 	}
 	
-	protected void login(String protocol, String host) throws Exception {
-        Client client = new Client(protocol + "://" + host);
+	protected void login(String host) throws Exception {
+        Client client = new Client(host);
        
         String result = client.get("app-profile-jee/profile.jsp");
         System.out.println("!!!!!! result " + result);
@@ -101,17 +115,17 @@ public class SsoAllInOneTest extends SsoEapTestBase
 	@Test
     @RunAsClient
     public void testOidcLogin() throws Exception {
-		oidcLogin(HTTP, route + System.getProperty("openshift.domain"), "redirect_uri=http%3A%2F%2Fhelloworld" + System.getProperty("openshift.domain") + "%2Fapp-profile-jee%2Fprofile.jsp");
+		oidcLogin(getRouteURL().toString(), "redirect_uri=http%3A%2F%2Fhelloworld" + System.getProperty("openshift.domain") + "%2Fapp-profile-jee%2Fprofile.jsp");
 	}
 	
 	@Test
     @RunAsClient
     public void testSecureOidcLogin() throws Exception {
-		oidcLogin(HTTPS, secureRoute + System.getProperty("openshift.domain"), "redirect_uri=https%3A%2F%2Fsecure-helloworld" + System.getProperty("openshift.domain") + "%2Fapp-profile-jee%2Fprofile.jsp");
+		oidcLogin(getSecureRouteURL().toString(), "redirect_uri=https%3A%2F%2Fsecure-helloworld" + System.getProperty("openshift.domain") + "%2Fapp-profile-jee%2Fprofile.jsp");
 	}
         
-    protected void oidcLogin(String protocol, String host, String expected) throws Exception {
-        Client client = new Client(protocol + "://" + host);
+    protected void oidcLogin(String host, String expected) throws Exception {
+        Client client = new Client(host);
 
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("username", "demouser"));
@@ -134,7 +148,7 @@ public class SsoAllInOneTest extends SsoEapTestBase
         params.add(new BasicNameValuePair("grant_type", "password"));
         params.add(new BasicNameValuePair("client_id", "admin-cli"));
         
-        Client client = new Client(HTTP + "://" + host + "/auth");
+        Client client = new Client("http://" + host + "/auth");
         String result = client.post("realms/master/protocol/openid-connect/token", params);
         
         assertFalse(result.contains("error_description"));

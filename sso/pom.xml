@@ -17,11 +17,12 @@
     <packaging>jar</packaging>
     <name>SSO CE Testsuite</name>
     <description>SSO Cloud Enablement Testsuite</description>
+    
+    <properties>
+        <version.org.jboss.as.arquillian.container>7.2.0.Final</version.org.jboss.as.arquillian.container>
+    </properties>
 
     <dependencies>
-
-        <!-- Tests - add any external existing tests here -->
-
 
         <!-- TODO -->
 
@@ -42,7 +43,20 @@
             <artifactId>json-simple</artifactId>
         </dependency>
 
+
         <!-- Test Utils -->
+
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-jmx</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
@@ -52,13 +66,14 @@
 
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-fabric8</artifactId>
+            <artifactId>arquillian-ce-cube</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-template</artifactId>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-arquillian-container-remote</artifactId>
+            <version>${version.org.jboss.as.arquillian.container}</version>
             <scope>test</scope>
         </dependency>
 
@@ -68,64 +83,23 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- KIE -->
+
         <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-core</artifactId>
-            <scope>test</scope>
+            <groupId>org.kie.server</groupId>
+            <artifactId>kie-server-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.shrinkwrap</groupId>
-            <artifactId>shrinkwrap-api</artifactId>
-            <scope>test</scope>
+            <groupId>org.kie.server</groupId>
+            <artifactId>kie-server-client</artifactId>
         </dependency>
 
-        <!-- Deps -->
+        <!-- Dependencies needed to use JMS/AMQ -->
 
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-spi</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-impl-base</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.core</groupId>
-            <artifactId>arquillian-core-impl-base</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.test</groupId>
-            <artifactId>arquillian-test-impl-base</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-api</artifactId>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
         </dependency>
 
     </dependencies>
@@ -188,7 +162,12 @@
                                 <include>org/jboss/**/*Test.java</include>
                             </includes>
                             <systemPropertyVariables>
-            					<openshift.domain>.openshift</openshift.domain>
+            					<openshift.domain>.router.default.svc.cluster.local</openshift.domain>
+            					<sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
+                                <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
+                                <kubernetes.master>${kubernetes.master}</kubernetes.master>
+                                <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
+                                <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
             				</systemPropertyVariables>
                         </configuration>
                     </plugin>
