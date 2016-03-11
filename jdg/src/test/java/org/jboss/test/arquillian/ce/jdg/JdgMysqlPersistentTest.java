@@ -39,37 +39,27 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.jdg.support.RESTCache;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * @author Jonh Wendell
- */
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-mysql-persistent.json",
-        labels = "deploymentConfig=datagrid-app",
-        parameters = {
-                @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-                @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass"),
-                @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value="openshift")})
+          parameters = {
+              @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
+              @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
         @OpenShiftResource("classpath:datagrid-service-account.json"),
         @OpenShiftResource("classpath:datagrid-app-secret.json")
 })
-public class JdgPVTest {
-    private static final Logger log = Logger.getLogger(JdgPVTest.class.getName());
+public class JdgMysqlPersistentTest extends JdgTestSecureBase {
+    private static final Logger log = Logger.getLogger(JdgMysqlPersistentTest.class.getName());
 
     @Deployment
     public static WebArchive getDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
-        war.setWebXML(new StringAsset("<web-app/>"));
-        war.addPackage(RESTCache.class.getPackage());
-        return war;
+        return getDeploymentInternal();
     }
 
     @Test
@@ -78,8 +68,8 @@ public class JdgPVTest {
         String host = System.getenv("DATAGRID_APP_SERVICE_HOST");
         int port = Integer.parseInt(System.getenv("DATAGRID_APP_SERVICE_PORT"));
         RESTCache<String, Object> cache = new RESTCache<>("default", new URL("http://" + host + ":" + port), "rest");
-        cache.put("foo1", "bar1");
-        assertEquals("bar1", cache.get("foo1"));
+        cache.put("beforeShutdown", "shouldWork");
+        assertEquals("shouldWork", cache.get("beforeShutdown"));
     }
 
     private void restartPod(OpenShiftHandle adapter, String name) throws Exception {
@@ -103,6 +93,6 @@ public class JdgPVTest {
         String host = System.getenv("DATAGRID_APP_SERVICE_HOST");
         int port = Integer.parseInt(System.getenv("DATAGRID_APP_SERVICE_PORT"));
         RESTCache<String, Object> cache = new RESTCache<>("default", new URL("http://" + host + ":" + port), "rest");
-        assertEquals("bar1", cache.get("foo1"));
+        assertEquals("shouldWork", cache.get("beforeShutdown"));
     }
 }
