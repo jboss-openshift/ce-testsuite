@@ -23,14 +23,10 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,11 +41,11 @@ import java.net.URL;
         labels = "application=jws-app"
 )
 @ClientEndpoint
-public class WebServerTomcat8BasicSecureTest extends WebServerTomcat7BasicSecureTest {
+public class WebServerTomcat8BasicSecureTest extends WebServerTomcat8BasicTest {
 
     @Test
     @RunAsClient
-    public void testWebchat(@RouteURL("secure-jws-app") URL url) throws Exception {
+    public void testWebchatSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
         checkWebChat(url.toURI(), WebServerTomcat8BasicSecureTest.class);
     }
 }

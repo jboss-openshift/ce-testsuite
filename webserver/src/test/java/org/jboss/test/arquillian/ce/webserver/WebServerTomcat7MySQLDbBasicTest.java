@@ -23,8 +23,6 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -34,22 +32,22 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.websocket.ClientEndpoint;
 import java.net.URL;
 
 /**
  * @author fspolti
  */
+
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat8-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-mysql-s2i.json",
         labels = "application=jws-app"
 )
-@OpenShiftResources({
-        @OpenShiftResource("classpath:webserver-service-account.json"),
-        @OpenShiftResource("classpath:webserver-app-secret.json")
-})
-@ClientEndpoint
-public class WebServerTomcat8BasicTest extends WebserverTestBase {
+public class WebServerTomcat7MySQLDbBasicTest extends WebserverTestBase {
+
+    private final String summary = "Testing MySQL Todo list";
+    private final String summaryHttps = "Testing MySQL Todo list HTTPS";
+    private final String description = "This todo was added by Arquillian Test using HTTP.";
+    private final String descriptionHttps = "This todo was added by Arquillian Test using HTTPS.";
 
     @Deployment
     public static WebArchive getDeployment() throws Exception {
@@ -58,7 +56,25 @@ public class WebServerTomcat8BasicTest extends WebserverTestBase {
 
     @Test
     @RunAsClient
-    public void testWebchat(@RouteURL("jws-app") URL url) throws Exception {
-        checkWebChat(url.toURI(), WebServerTomcat8BasicTest.class);
+    public void testMySQLDBTodoListAddItems(@RouteURL("jws-app") URL url) throws Exception {
+        checkTodoListAddItems(url.toString(),summary, description);
+    }
+
+    @Test
+    @RunAsClient
+    public void testMySQLDBTodoListAddItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
+        checkTodoListAddItems(url.toString(),summaryHttps, descriptionHttps);
+    }
+
+    @Test
+    @RunAsClient
+    public void testMySQLDBTodoListAddedItems(@RouteURL("jws-app") URL url) throws Exception {
+        checkTodoListAddedItems(url.toString(),summary, description);
+    }
+
+    @Test
+    @RunAsClient
+    public void testMySQLDBTodoListAddedItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
+        checkTodoListAddedItems(url.toString(),summaryHttps, descriptionHttps);
     }
 }
