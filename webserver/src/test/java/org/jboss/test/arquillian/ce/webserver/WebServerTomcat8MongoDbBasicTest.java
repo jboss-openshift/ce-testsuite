@@ -24,28 +24,17 @@
 package org.jboss.test.arquillian.ce.webserver;
 
 import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.websocket.ClientEndpoint;
-import java.net.URL;
 
 /**
  * @author fspolti
  */
+
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-https-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat8-mongodb-s2i.json",
         labels = "application=jws-app"
 )
-@ClientEndpoint
-public class WebServerTomcat7BasicSecureTest extends WebServerTomcat7BasicTest {
+public class WebServerTomcat8MongoDbBasicTest extends WebServerTomcat7MongoDbBasicTest {
 
-    @Test
-    @RunAsClient
-    public void testWebchatSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
-        checkWebChat(url.toURI(), WebServerTomcat7BasicSecureTest.class);
-    }
 }
