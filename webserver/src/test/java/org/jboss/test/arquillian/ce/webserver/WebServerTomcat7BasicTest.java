@@ -23,10 +23,6 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import java.net.URL;
-
-import javax.websocket.ClientEndpoint;
-
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
@@ -37,6 +33,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.websocket.ClientEndpoint;
+import java.net.URL;
 
 /**
  * @author fspolti
