@@ -23,6 +23,8 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
+import org.jboss.arquillian.ce.api.OpenShiftResource;
+import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -42,6 +44,10 @@ import java.net.URL;
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-mongodb-s2i.json",
         labels = "application=jws-app"
 )
+@OpenShiftResources({
+        @OpenShiftResource("classpath:webserver-service-account.json"),
+        @OpenShiftResource("classpath:webserver-app-secret.json")
+})
 public class WebServerTomcat7MongoDbBasicTest extends WebserverTestBase {
 
     private final String summary = "Testing MongoDB Todo list";
