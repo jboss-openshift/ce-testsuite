@@ -58,13 +58,11 @@ public class SsoServerBasicTest extends SsoServerTestBase
 	
 	@Override
     protected URL getRouteURL() {
-    	System.out.println("!!!!!!!!!!!!!!!!!! getRouteURL " + routeURL);
         return routeURL;
     }
 	
 	@Override
     protected URL getSecureRouteURL() {
-    	System.out.println("!!!!!!!!!!!!!!!!!! getSecureRouteURL " + secureRouteURL);
         return secureRouteURL;
     }
 	

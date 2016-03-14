@@ -102,7 +102,6 @@ public abstract class SsoServerTestBase extends SsoTestBase {
         params.add(new BasicNameValuePair("login", "submit"));
         
         String result = client.post("auth",params);
-        System.out.println("!!!!!! result " + result);
         assertTrue(result.contains("Welcome to Red Hat Single Sign-On"));
     }
 

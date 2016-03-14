@@ -30,6 +30,7 @@
 		<version.junit>4.10</version.junit>
 		<version.javax.servlet.api>3.1.0</version.javax.servlet.api>
 		<version.slf4j>1.7.5</version.slf4j>
+		<version.org.jboss.as.arquillian.container>7.2.0.Final</version.org.jboss.as.arquillian.container>
 		<!-- JDG -->
 		<version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
 		<spymemcached.version>2.8.1</spymemcached.version>
@@ -106,6 +107,13 @@
 				<groupId>org.kohsuke.metainf-services</groupId>
 				<artifactId>metainf-services</artifactId>
 				<version>${version.meta-inf}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.as</groupId>
+				<artifactId>jboss-as-arquillian-container-remote</artifactId>
+				<version>${version.org.jboss.as.arquillian.container}</version>
+				<scope>test</scope>
 			</dependency>
 
 			<!-- External tests -->

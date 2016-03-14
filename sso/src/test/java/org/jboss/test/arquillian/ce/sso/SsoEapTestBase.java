@@ -48,7 +48,6 @@ public abstract class SsoEapTestBase extends SsoTestBase {
     protected void appRoute(String host) {
         Client client = new Client(host);
         String result = client.get("app-profile-jee");
-        System.out.println("!!!!!! result " + result);
         assertTrue(result.contains("profile.jsp"));
     }
 

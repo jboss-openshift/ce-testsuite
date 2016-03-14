@@ -18,10 +18,6 @@
     <name>JDG CE Testsuite</name>
     <description>JDG Cloud Enablement Testsuite</description>
 
-    <properties>
-        <version.org.jboss.as.arquillian.container>7.2.0.Final</version.org.jboss.as.arquillian.container>
-    </properties>
-
     <dependencies>
 
         <!-- Tests - add any external existing tests here -->
@@ -76,7 +72,6 @@
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-container-remote</artifactId>
-            <version>${version.org.jboss.as.arquillian.container}</version>
             <scope>test</scope>
         </dependency>
 

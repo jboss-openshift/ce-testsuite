@@ -18,10 +18,6 @@
     <name>SSO CE Testsuite</name>
     <description>SSO Cloud Enablement Testsuite</description>
     
-    <properties>
-        <version.org.jboss.as.arquillian.container>7.2.0.Final</version.org.jboss.as.arquillian.container>
-    </properties>
-
     <dependencies>
 
         <!-- TODO -->
@@ -73,7 +69,6 @@
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-container-remote</artifactId>
-            <version>${version.org.jboss.as.arquillian.container}</version>
             <scope>test</scope>
         </dependency>
 

@@ -50,8 +50,6 @@ public class Client {
 
     public Client(String basicUrl) {
         this.basicUrl = basicUrl;
-        
-        System.out.println("!!!!!!!!!!!!! basicUrl " + basicUrl);
     }
     
     public String get(String key) {
@@ -63,9 +61,7 @@ public class Client {
         	
         	HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         	HttpGet request = new HttpGet(basicUrl + "/" + key);
-        	
-        	System.out.println("!!!!!!!!!!!!! url " + basicUrl + "/" + key);
-        	
+
         	if (headers != null){
         		for (NameValuePair header : headers) 
         			request.addHeader(header.getName(), header.getValue());
@@ -101,9 +97,7 @@ public class Client {
         	
         	UrlEncodedFormEntity entity = new UrlEncodedFormEntity(params, Consts.UTF_8);
         	request.setEntity(entity);
-        	
-        	System.out.println("!!!!!!!!!!!!! request " + request.getURI());
-             
+
             HttpResponse response = client.execute(request);
             
             int statusCode = response.getStatusLine().getStatusCode();
@@ -113,7 +107,6 @@ public class Client {
             if (statusCode == 302 ) {
             	Header[] location = response.getHeaders("Location");
             	for (Header header : location){
-            		System.out.println("!!!! header " + header);
             		return header.getValue();
             	}
             }         

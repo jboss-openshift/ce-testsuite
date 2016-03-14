@@ -82,13 +82,11 @@ public class SsoAllInOneTest extends SsoEapTestBase
 	
 	@Override
     protected URL getRouteURL() {
-    	System.out.println("!!!!!!!!!!!!!!!!!! getRouteURL " + routeURL);
         return routeURL;
     }
 	
 	@Override
     protected URL getSecureRouteURL() {
-    	System.out.println("!!!!!!!!!!!!!!!!!! getSecureRouteURL " + secureRouteURL);
         return secureRouteURL;
     }
 	
@@ -108,7 +106,6 @@ public class SsoAllInOneTest extends SsoEapTestBase
         Client client = new Client(host);
        
         String result = client.get("app-profile-jee/profile.jsp");
-        System.out.println("!!!!!! result " + result);
         assertTrue(result.contains("kc-form-login"));
     }
 	
@@ -133,7 +130,6 @@ public class SsoAllInOneTest extends SsoEapTestBase
         params.add(new BasicNameValuePair("login", "submit"));
         
         String result = client.post("app-profile-jee/profile.jsp",params);
-        System.out.println("!!!!!! result " + result);
         assertTrue(result.contains(expected));
     }
     
@@ -157,14 +153,12 @@ public class SsoAllInOneTest extends SsoEapTestBase
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject)jsonParser.parse(result);
         String accessToken = (String)jsonObject.get("access_token");
-        System.out.println("!!! accessToken " + accessToken);
-        
+
         params = new ArrayList<>(2);
         params.add(new BasicNameValuePair("Accept", "application/json"));
         params.add(new BasicNameValuePair("Authorization", "Bearer " + accessToken));
         
         result = client.get("admin/realms/demo/clients", params);
-        System.out.println("!!! result " + result);
         Iterator clients = ((JSONArray)jsonParser.parse(result)).iterator();
         while (clients.hasNext()) {
         	jsonObject = (JSONObject)clients.next();
