@@ -30,6 +30,7 @@ import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,24 +63,28 @@ public class WebServerTomcat7MySQLDbBasicTest extends WebserverTestBase {
 
     @Test
     @RunAsClient
+    @InSequence(1)
     public void testMySQLDBTodoListAddItems(@RouteURL("jws-app") URL url) throws Exception {
         checkTodoListAddItems(url.toString(),summary, description);
     }
 
     @Test
     @RunAsClient
+    @InSequence(2)
     public void testMySQLDBTodoListAddItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
         checkTodoListAddItems(url.toString(),summaryHttps, descriptionHttps);
     }
 
     @Test
     @RunAsClient
+    @InSequence(3)
     public void testMySQLDBTodoListAddedItems(@RouteURL("jws-app") URL url) throws Exception {
         checkTodoListAddedItems(url.toString(),summary, description);
     }
 
     @Test
     @RunAsClient
+    @InSequence(4)
     public void testMySQLDBTodoListAddedItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
         checkTodoListAddedItems(url.toString(),summaryHttps, descriptionHttps);
     }
