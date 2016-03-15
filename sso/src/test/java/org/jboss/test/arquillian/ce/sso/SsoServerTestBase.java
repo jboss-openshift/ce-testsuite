@@ -26,11 +26,9 @@ package org.jboss.test.arquillian.ce.sso;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.junit.Test;
@@ -68,11 +66,11 @@ public abstract class SsoServerTestBase extends SsoTestBase {
     }
                
     protected void restRoute(String host) {
-        List<NameValuePair> params = new ArrayList<>(4);
-        params.add(new BasicNameValuePair("username", "admin"));
-        params.add(new BasicNameValuePair("password", "admin"));
-        params.add(new BasicNameValuePair("grant_type", "password"));
-        params.add(new BasicNameValuePair("client_id", "admin-cli"));
+        Map<String, String> params = new HashMap<>();
+        params.put("username", "admin");
+        params.put("password", "admin");
+        params.put("grant_type", "password");
+        params.put("client_id", "admin-cli");
         
         Client client = new Client(host + "auth");
         String result = client.post("realms/master/protocol/openid-connect/token", params);
@@ -96,10 +94,10 @@ public abstract class SsoServerTestBase extends SsoTestBase {
     protected void login(String host) throws Exception {
         Client client = new Client(host);
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("username", "admin"));
-        params.add(new BasicNameValuePair("password", "admin"));
-        params.add(new BasicNameValuePair("login", "submit"));
+        Map<String, String> params = new HashMap<>();
+        params.put("username", "admin");
+        params.put("password", "admin");
+        params.put("login", "submit");
         
         String result = client.post("auth",params);
         assertTrue(result.contains("Welcome to Red Hat Single Sign-On"));
