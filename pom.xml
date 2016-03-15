@@ -178,6 +178,12 @@
 
 			<dependency>
 				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-ce-httpclient</artifactId>
+				<version>${version.ce-arq}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
 				<artifactId>arquillian-ce-shrinkwrap</artifactId>
 				<version>${version.ce-arq}</version>
 			</dependency>

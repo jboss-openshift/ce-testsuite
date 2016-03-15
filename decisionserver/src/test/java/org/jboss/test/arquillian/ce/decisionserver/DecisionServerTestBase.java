@@ -23,8 +23,6 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import io.fabric8.utils.Base64Encoder;
-
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,29 +36,15 @@ import javax.jms.ConnectionFactory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.util.EntityUtils;
+import io.fabric8.utils.Base64Encoder;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
+import org.jboss.arquillian.ce.httpclient.HttpClient;
+import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
+import org.jboss.arquillian.ce.httpclient.HttpRequest;
+import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -424,54 +408,11 @@ public abstract class DecisionServerTestBase {
         Assert.assertEquals("Hello " + person.getName() + "!", greeting.getSalutation());
     }
 
-    //HttpClient tests
-    /*
-    * Allow httpClient to use untrusted connections
-    * The code below was tested with httpclient 4.3.6-redhat-1
-    * code example from; http://literatejava.com/networks/ignore-ssl-certificate-errors-apache-httpclient-4-4/
-    */
-    public static HttpClient acceptUntrustedConnClient() throws Exception {
-        HttpClientBuilder b = HttpClientBuilder.create();
-
-        // setup a Trust Strategy that allows all certificates.
-        //
-        SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-            public boolean isTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws java.security.cert.CertificateException {
-                return true;
-            }
-
-        }).build();
-        b.setSslcontext(sslContext);
-
-        // don't check Hostnames, either.
-        //      -- use SSLConnectionSocketFactory.getDefaultHostnameVerifier(), if you don't want to weaken
-        HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-
-        // here's the special part:
-        //      -- need to create an SSL Socket Factory, to use our weakened "trust strategy";
-        //      -- and create a Registry, to register it.
-        //
-        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, (X509HostnameVerifier) hostnameVerifier);
-        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-            .register("http", PlainConnectionSocketFactory.getSocketFactory())
-            .register("https", sslSocketFactory)
-            .build();
-
-        // now, we create connection-manager using our Registry.
-        //      -- allows multi-threaded use
-        PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-        b.setConnectionManager(connMgr);
-
-        // finally, build the HttpClient;
-        //      -- done!
-        return b.build();
-    }
-
     /*
      * Returns httpClient client
      */
     private HttpClient getClient() throws Exception {
-        return acceptUntrustedConnClient();
+        return HttpClientBuilder.untrustedConnectionClient();
     }
 
     /*
@@ -494,7 +435,7 @@ public abstract class DecisionServerTestBase {
     private HttpResponse responseFireAllRules(String host, String containerId) throws Exception {
 
         //request
-        HttpPost request = new HttpPost(host + "/kie-server/services/rest/server/containers/instances/" + containerId);
+        HttpRequest request = HttpClientBuilder.doPOST(host + "/kie-server/services/rest/server/containers/instances/" + containerId);
         //setting headers
         request.setHeader("accept", "application/xml");
         request.setHeader("X-KIE-ContentType", "XSTREAM");
@@ -505,11 +446,10 @@ public abstract class DecisionServerTestBase {
         request.setHeader("Authorization", "Basic " + authEncoding());
 
         //Set the request post body
-        StringEntity userEntity = new StringEntity(streamXML());
-        request.setEntity(userEntity);
+        request.setEntity(streamXML());
 
         //performing request
-        HttpClient client = acceptUntrustedConnClient();
+        HttpClient client = getClient();
         return client.execute(request);
     }
 
@@ -519,7 +459,7 @@ public abstract class DecisionServerTestBase {
     */
     private HttpResponse genericResponse(String host, String uri) throws Exception {
         //request
-        HttpGet request = new HttpGet(host + uri);
+        HttpRequest request = HttpClientBuilder.doGET(host + uri);
         try {
             //setting header
             request.setHeader("accept", "application/xml");
@@ -543,11 +483,10 @@ public abstract class DecisionServerTestBase {
         HttpResponse response = genericResponse(HOST, URI);
 
         //response code should be 200
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+        Assert.assertEquals(200, response.getResponseCode());
 
         // retrieving output response
-        HttpEntity httpEntity = response.getEntity();
-        String output = EntityUtils.toString(httpEntity);
+        String output = response.getResponseBodyAsString();
         System.out.println(output);
 
         //converting response in a object (org.kie.server.api.model.ServiceResponse)
@@ -580,11 +519,10 @@ public abstract class DecisionServerTestBase {
         HttpResponse response = genericResponse(HOST, URI);
 
         //response code should be 200
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+        Assert.assertEquals(200, response.getResponseCode());
 
         // retrieving output response
-        HttpEntity httpEntity = response.getEntity();
-        String output = EntityUtils.toString(httpEntity);
+        String output = response.getResponseBodyAsString();
 
         //converting response in a object (org.kie.server.api.model.ServiceResponse)
         JAXBContext jaxbContent = JAXBContext.newInstance(ServiceResponse.class);
@@ -618,11 +556,10 @@ public abstract class DecisionServerTestBase {
         HttpResponse response = responseFireAllRules(HOST, "HelloRulesContainer");
 
         //response code should be 200
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+        Assert.assertEquals(200, response.getResponseCode());
 
         // retrieving output response
-        HttpEntity httpEntity = response.getEntity();
-        String output = EntityUtils.toString(httpEntity);
+        String output = response.getResponseBodyAsString();
 
         Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
         ServiceResponse serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
@@ -651,11 +588,10 @@ public abstract class DecisionServerTestBase {
         HttpResponse response = responseFireAllRules(HOST, "AnotherContainer");
 
         //response code should be 200
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+        Assert.assertEquals(200, response.getResponseCode());
 
         // retrieving output response
-        HttpEntity httpEntity = response.getEntity();
-        String output = EntityUtils.toString(httpEntity);
+        String output = response.getResponseBodyAsString();
 
         Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
         ServiceResponse serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
