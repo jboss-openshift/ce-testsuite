@@ -56,9 +56,9 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "SSO_HOSTNAME_HTTP", value = "sso${openshift.domain}"),
         @TemplateParameter(name = "SSO_HOSTNAME_HTTPS", value = "secure-sso${openshift.domain}"),
         @TemplateParameter(name = "SSO_URI", value = "https://secure-sso${openshift.domain}/auth"),
-        @TemplateParameter(name = "ARTIFACT_DIR", value = "app-jee/target,app-profile-jee/target"),
         @TemplateParameter(name = "APPLICATION_ROUTES", value = "http://helloworld${openshift.domain};https://secure-helloworld${openshift.domain}")
-    })
+    }
+)
 @OpenShiftResources({
     @OpenShiftResource("classpath:sso-service-account.json"),
     @OpenShiftResource("classpath:sso-app-secret.json"),

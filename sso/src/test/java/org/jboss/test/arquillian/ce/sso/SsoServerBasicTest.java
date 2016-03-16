@@ -36,12 +36,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/sso/sso70-basic.json",
-		labels = "application=ssobasic",
-		parameters = {
-                @TemplateParameter(name = "APPLICATION_NAME", value="ssobasic"),
-                @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-                @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
-                })
+		labels = "application=sso")
 @OpenShiftResources({
         @OpenShiftResource("classpath:sso-service-account.json"),
         @OpenShiftResource("classpath:sso-app-secret.json"),
@@ -50,10 +45,10 @@ import org.junit.runner.RunWith;
 public class SsoServerBasicTest extends SsoServerTestBase
 {
 	
-	@RouteURL("ssobasic")
+	@RouteURL("sso")
     private URL routeURL;
 	
-	@RouteURL("secure-ssobasic")
+	@RouteURL("secure-sso")
     private URL secureRouteURL;
 	
 	@Override

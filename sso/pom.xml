@@ -162,7 +162,7 @@
                                 <include>org/jboss/**/*Test.java</include>
                             </includes>
                             <systemPropertyVariables>
-            					<openshift.domain>.router.default.svc.cluster.local</openshift.domain>
+            					<openshift.domain>.cloudapps.example.com</openshift.domain>
             					<sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
                                 <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
                                 <kubernetes.master>${kubernetes.master}</kubernetes.master>
