@@ -7,6 +7,7 @@ target/
 .project
 .settings/
 .classpath
+.metadata
 jdg-internal-imagestream.json
 decisionserver-internal-imagestream.json
 amq-internal-imagestream.json
