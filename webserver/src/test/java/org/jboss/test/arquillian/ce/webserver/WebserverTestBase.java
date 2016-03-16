@@ -25,6 +25,7 @@ package org.jboss.test.arquillian.ce.webserver;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +39,7 @@ import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 
 import junit.framework.Assert;
+import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
@@ -94,6 +96,9 @@ public abstract class WebserverTestBase {
         log.info("ROUTE: " + prepareUrl);
         log.info("Using class endpoint: " + clazz);
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        //setting default timeout to avoid this issue
+        //java.io.IOException: UT003035: Connection timed out
+        container.setDefaultMaxSessionIdleTimeout(120000); //2 minutes
 
         if (ssl) {
             setDefaultWebSocketClientSslProvider();
@@ -138,7 +143,7 @@ public abstract class WebserverTestBase {
     }
 
     /*
-    * Return an ArrayList<NameValuePair> with the parameters to be inserted in the todo list.
+    * Return a ArrayList<NameValuePair> with the parameters to be inserted in the todo list.
     */
     public Map<String, String> getParams(String summary, String description) {
         Map<String, String> params = new HashMap<>();
@@ -164,17 +169,33 @@ public abstract class WebserverTestBase {
     }
 
     /*
-    * Test the if the todos were successfully addded by checkMongoDBTodoListAddItems()
+    * Test the if the todo were successfully added by checkTodoListAddItems()
     */
     public void checkTodoListAddedItems(String URL, String summary, String description) throws Exception {
 
+        log.info("Cheking if the summary [" + summary + "] and description [" + description + "] was successfully added.");
         HttpRequest request = HttpClientBuilder.doGET(URL);
         HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
         String responseString = response.getResponseBodyAsString();
 
-        //The response is in html format, we need to check if the response contains the itens added before
+        //responseString cannot be null
+        Assert.assertNotNull(responseString);
+
+        //The response is in html format, we need to check if the response contains the items added before
         Assert.assertTrue(responseString.contains(summary));
         Assert.assertTrue(responseString.contains(description));
     }
 
+    /*
+    * Restart the running database pods to make sure the data saved before will not get lost
+    * @throws Exception for any issue
+    */
+    public void restartPods(OpenShiftHandle adapter, List<String> pods) throws Exception {
+        for (String p: pods) {
+            log.info(String.format("Scalling down pod [%s]", p));
+            adapter.scaleDeployment(p,0);
+            log.info(String.format("Scalling up pod [%s]", p));
+            adapter.scaleDeployment(p,1);
+        }
+    }
 }
