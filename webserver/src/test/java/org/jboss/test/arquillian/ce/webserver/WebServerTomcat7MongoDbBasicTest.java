@@ -30,26 +30,31 @@ import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.websocket.ClientEndpoint;
 import java.net.URL;
 
 /**
  * @author fspolti
  */
+
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat8-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-mongodb-s2i.json",
         labels = "application=jws-app"
 )
 @OpenShiftResources({
         @OpenShiftResource("classpath:webserver-service-account.json"),
         @OpenShiftResource("classpath:webserver-app-secret.json")
 })
-@ClientEndpoint
-public class WebServerTomcat8BasicTest extends WebserverTestBase {
+public class WebServerTomcat7MongoDbBasicTest extends WebserverTestBase {
+
+    private final String summary = "Testing MongoDB Todo list";
+    private final String summaryHttps = "Testing MongoDB Todo list HTTPS";
+    private final String description = "This todo was added by Arquillian Test using HTTP.";
+    private final String descriptionHttps = "This todo was added by Arquillian Test using HTTPS.";
 
     @Deployment
     public static WebArchive getDeployment() throws Exception {
@@ -58,7 +63,29 @@ public class WebServerTomcat8BasicTest extends WebserverTestBase {
 
     @Test
     @RunAsClient
-    public void testWebchat(@RouteURL("jws-app") URL url) throws Exception {
-        checkWebChat(url.toURI(), WebServerTomcat8BasicTest.class);
+    @InSequence(1)
+    public void testMongoDBTodoListAddItems(@RouteURL("jws-app") URL url) throws Exception {
+        checkTodoListAddItems(url.toString(),summary, description);
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(2)
+    public void testMongoDBTodoListAddItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
+        checkTodoListAddItems(url.toString(),summaryHttps, descriptionHttps);
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(3)
+    public void testMongoDBTodoListAddedItems(@RouteURL("jws-app") URL url) throws Exception {
+        checkTodoListAddedItems(url.toString(),summary, description);
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(4)
+    public void testMongoDBTodoListAddedItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
+        checkTodoListAddedItems(url.toString(),summaryHttps, descriptionHttps);
     }
 }

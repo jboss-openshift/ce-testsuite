@@ -23,10 +23,9 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import io.fabric8.utils.Base64Encoder;
-
 import java.net.URL;
 
+import io.fabric8.utils.Base64Encoder;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
@@ -61,6 +60,7 @@ public class DecisionServerHttpClientSecureAllInOneTest extends DecisionServerTe
     @Deployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
+        war.addAsLibraries(Libraries.single("org.jboss.arquillian.container", "arquillian-ce-httpclient"));
         war.addAsLibraries(Libraries.transitive("org.apache.httpcomponents", "httpclient"));
         war.addClass(Base64Encoder.class);
         return war;

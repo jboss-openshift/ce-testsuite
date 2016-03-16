@@ -24,9 +24,13 @@
 package org.jboss.test.arquillian.ce.webserver;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.websocket.ContainerProvider;
 import javax.websocket.MessageHandler;
@@ -35,6 +39,9 @@ import javax.websocket.WebSocketContainer;
 
 import junit.framework.Assert;
 import org.jboss.arquillian.ce.api.Tools;
+import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
+import org.jboss.arquillian.ce.httpclient.HttpRequest;
+import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -58,13 +65,17 @@ public abstract class WebserverTestBase {
     /*
     * Returns the correct websocket URI
     */
-    public String prepareUrl(URI uri) {
+    public String prepareWsUrl(URI uri) {
         //setting ssl to true if SSL is being used
         ssl = uri.toString().startsWith("https");
-        return uri.toString().startsWith("http") ? uri.toString().replace("http","ws") + "" + URI
-                : uri.toString().replace("https","wss") + "" + URI;
+        return uri.toString().startsWith("http") ? uri.toString().replace("http", "ws") + "" + URI
+            : uri.toString().replace("https", "wss") + "" + URI;
     }
 
+    /*
+    * Set the undertow's custom sslContext to ignore untrusted connections.
+    *   ** Do not use it in production **
+    */
     private void setDefaultWebSocketClientSslProvider() throws Exception {
         log.info("Setting DefaultWebSocketClientSslProvider");
         io.undertow.websockets.jsr.DefaultWebSocketClientSslProvider.setSslContext(Tools.getTlsSslContext());
@@ -72,13 +83,14 @@ public abstract class WebserverTestBase {
 
     /*
     * Check if the websocket-chat is working as expected.
+    * websocket-chat sources: https://github.com/jboss-openshift/openshift-quickstarts/tree/master/tomcat-websocket-chat
     * It starts 2 sessions, sender and receiver
     */
     public void checkWebChat(URI url, Class clazz) throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         //The response, in this case can be only 1 message.
         final String[] responseMessage = new String[1];
-        String prepareUrl = prepareUrl(url);
+        String prepareUrl = prepareWsUrl(url);
         log.info("ROUTE: " + prepareUrl);
         log.info("Using class endpoint: " + clazz);
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -97,7 +109,7 @@ public abstract class WebserverTestBase {
                     //The onMessage method will print when a client is connected or disconnected,
                     //we should avoid these kind of messages
                     if (!message.contains("has joined") && !message.contains("disconnected")) {
-                        log.info("Message sent by Guest 1 -> " + message);
+                        log.info("Message received -> " + message);
                         responseMessage[0] = message;
                         latch.countDown();
                     }
@@ -117,6 +129,52 @@ public abstract class WebserverTestBase {
         sender.close();
         receiver.close();
 
-        Assert.assertEquals("Guest1: Hello world!!", responseMessage[0]);
+        // When more than 1 test is performed there will exist more than 2 users, this number
+        // will be incremented, we have to accpet Guest*: Hello world!!
+        String pattern = "Guest(\\d+): Hello world!!";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(responseMessage[0]);
+        Assert.assertTrue(m.matches());
     }
+
+    /*
+    * Return an ArrayList<NameValuePair> with the parameters to be inserted in the todo list.
+    */
+    public Map<String, String> getParams(String summary, String description) {
+        Map<String, String> params = new HashMap<>();
+        params.put("summary", summary);
+        params.put("description", description);
+        return params;
+    }
+
+    /*
+    * Test the todolist, this test will add a new todo on list.
+    */
+    public void checkTodoListAddItems(String URL, String summary, String description) throws Exception {
+
+        log.info("ROUTE: " + URL);
+        log.info("Adding the following item in the todo list [Summary]: " + summary + " - [Description]: " + description);
+        HttpRequest request = HttpClientBuilder.doPOST(URL);
+
+        request.setEntity(getParams(summary, description));
+
+        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
+        //there is a redirect
+        Assert.assertEquals(302, response.getResponseCode());
+    }
+
+    /*
+    * Test the if the todos were successfully addded by checkMongoDBTodoListAddItems()
+    */
+    public void checkTodoListAddedItems(String URL, String summary, String description) throws Exception {
+
+        HttpRequest request = HttpClientBuilder.doGET(URL);
+        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
+        String responseString = response.getResponseBodyAsString();
+
+        //The response is in html format, we need to check if the response contains the itens added before
+        Assert.assertTrue(responseString.contains(summary));
+        Assert.assertTrue(responseString.contains(description));
+    }
+
 }

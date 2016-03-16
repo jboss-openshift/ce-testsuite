@@ -25,38 +25,29 @@ package org.jboss.test.arquillian.ce.sso;
 
 import static junit.framework.Assert.assertTrue;
 
+import java.net.URL;
+
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.junit.Test;
 
-public abstract class SsoEapTestBase {
-
-    public static final String HTTP = "http";
-    public static final String HTTPS = "https";
-
-    protected String route;
-    protected String secureRoute;
+public abstract class SsoEapTestBase extends SsoTestBase {
     
     @Test
     @RunAsClient
     public void testAppRoute() throws Exception {
-        String host = route + System.getProperty("openshift.domain");
-        
-        appRoute(HTTP, host);
+        appRoute(getRouteURL().toString());
     }
 
     @Test
     @RunAsClient
     public void testSecureAppRoute() throws Exception { 	
-    	String host = secureRoute + System.getProperty("openshift.domain");
-    	
-    	appRoute(HTTPS, host);
+    	appRoute(getSecureRouteURL().toString());
     }
         
-    protected void appRoute(String protocol, String host) {
-        Client client = new Client(protocol + "://" + host );
+    protected void appRoute(String host) {
+        Client client = new Client(host);
         String result = client.get("app-profile-jee");
-        System.out.println("!!!!!! result " + result);
         assertTrue(result.contains("profile.jsp"));
     }
 

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2015 Red Hat Inc. and/or its affiliates and other
+ * Copyright 2016 Red Hat Inc. and/or its affiliates and other
  * contributors as indicated by the @author tags. All rights reserved.
  * See the copyright.txt in the distribution for a full listing of
  * individual contributors.
@@ -21,44 +21,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.test.arquillian.ce.webserver;
+package org.jboss.test.arquillian.ce.jdg;
 
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
+import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.websocket.ClientEndpoint;
-import java.net.URL;
-
-/**
- * @author fspolti
- */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat8-basic-s2i.json",
-        labels = "application=jws-app"
-)
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-postgresql.json",
+          parameters = {
+              @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
+              @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")})
+@RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
-        @OpenShiftResource("classpath:webserver-service-account.json"),
-        @OpenShiftResource("classpath:webserver-app-secret.json")
+        @OpenShiftResource("classpath:datagrid-service-account.json"),
+        @OpenShiftResource("classpath:datagrid-app-secret.json")
 })
-@ClientEndpoint
-public class WebServerTomcat8BasicTest extends WebserverTestBase {
-
+public class JdgPostgresqlTest extends JdgTestSecureBase {
     @Deployment
-    public static WebArchive getDeployment() throws Exception {
+    public static WebArchive getDeployment() {
         return getDeploymentInternal();
     }
 
-    @Test
-    @RunAsClient
-    public void testWebchat(@RouteURL("jws-app") URL url) throws Exception {
-        checkWebChat(url.toURI(), WebServerTomcat8BasicTest.class);
-    }
 }

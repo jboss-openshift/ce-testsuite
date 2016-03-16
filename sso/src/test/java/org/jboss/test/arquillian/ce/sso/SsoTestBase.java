@@ -23,99 +23,30 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import java.net.URL;
+import java.util.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.test.arquillian.ce.sso.support.Client;
-import org.junit.Test;
-
+/**
+ * @author Filippe Spolti
+ * @author Ales justin
+ */
 public abstract class SsoTestBase {
-    public static final String HTTP = "http";
-    public static final String HTTPS = "https";
+    protected final Logger log = Logger.getLogger(getClass().getName());
 
-    protected String route;
-    protected String secureRoute;
-    
-    @Test
-    @RunAsClient
-    public void testConsoleRoute() throws Exception {
-        String host = route + System.getProperty("openshift.domain");
-        
-        consoleRoute(HTTP, host);
-    }
+    /* @ArquillianResource
+    protected ConfigurationHandle configuration;
 
-    @Test
-    @RunAsClient
-    public void testSecureConsoleRoute() throws Exception { 	
-    	String host = secureRoute + System.getProperty("openshift.domain");
-    	
-    	consoleRoute(HTTPS, host);
-    }
-        
-    protected void consoleRoute(String protocol, String host) {
-        Client client = new Client(protocol + "://" + host + "/auth");
-        String result = client.get("admin/master/console/#/realms/master");
-        assertTrue(result.contains("realm.js"));
-    }
-    
-    @Test
-    @RunAsClient
-    public void testRestRoute() throws Exception {
-    	String host = route + System.getProperty("openshift.domain");
-    	restRoute(HTTP, host);
-    }
-    
-    @Test
-    @RunAsClient
-    public void testSecureRestRoute() throws Exception {
-    	String host = secureRoute + System.getProperty("openshift.domain");
-    	
-    	restRoute(HTTPS, host);
-    }
-               
-    protected void restRoute(String protocol, String host) {
-        List<NameValuePair> params = new ArrayList<>(4);
-        params.add(new BasicNameValuePair("username", "admin"));
-        params.add(new BasicNameValuePair("password", "admin"));
-        params.add(new BasicNameValuePair("grant_type", "password"));
-        params.add(new BasicNameValuePair("client_id", "admin-cli"));
-        
-        Client client = new Client(protocol + "://" + host + "/auth");
-        String result = client.post("realms/master/protocol/openid-connect/token", params);
-        
-        assertFalse(result.contains("error_description"));
-        assertTrue(result.contains("access_token"));
-    }
-    
-    @Test
-    @RunAsClient
-    public void testLogin() throws Exception {
-		login(HTTP, route + System.getProperty("openshift.domain"));
-	}
-	
-	@Test
-    @RunAsClient
-    public void testSecureOidcLogin() throws Exception {
-		login(HTTPS, secureRoute + System.getProperty("openshift.domain"));
-	}
-        
-    protected void login(String protocol, String host) throws Exception {
-        Client client = new Client(protocol + "://" + host);
+    protected static WebArchive getDeploymentInternal() throws Exception {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("username", "admin"));
-        params.add(new BasicNameValuePair("password", "admin"));
-        params.add(new BasicNameValuePair("login", "submit"));
-        
-        String result = client.post("auth",params);
-        System.out.println("!!!!!! result " + result);
-        assertTrue(result.contains("Welcome to Red Hat Single Sign-On"));
-    }
+        war.setWebXML("web.xml");
+        war.addClass(SsoTestBase.class);
 
+        return war;
+    } */
+    
+    protected abstract URL getRouteURL();
+    
+    protected abstract URL getSecureRouteURL();
 }
