@@ -44,10 +44,6 @@
 					{
 						"containerPort": 9999,
 						"protocol": "TCP"
-					},
-					{
-						"containerPort": 8787,
-						"protocol": "TCP"
 					}
 				],
 

@@ -20,10 +20,11 @@
           http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
   
     <!-- Uncomment to have test archives exported to the file system for inspection -->
-    <!-- -->
+    <!-- 
     <engine>
 	         <property name="deploymentExportPath">target/arquillian</property>
     </engine>
+    -->
     
     <!-- Force the use of the Servlet 3.0 protocol with all containers, as it is the most mature -->
     <defaultProtocol type="jmx-as7" />
@@ -41,7 +42,7 @@
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <!-- Ports to be proxied locally, <container>:<port> -->
-        <property name="proxiedContainerPorts">testrunner:9999,testrunner:9990,testrunner:8080,testrunner:8787</property>
+        <property name="proxiedContainerPorts">testrunner:9999,testrunner:9990,testrunner:8080</property>
     </extension>
 
     <!--

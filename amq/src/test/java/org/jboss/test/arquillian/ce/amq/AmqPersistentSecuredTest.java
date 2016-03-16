@@ -41,6 +41,7 @@ import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Message;
 import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
+import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
@@ -50,7 +51,10 @@ import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -65,9 +69,10 @@ import org.junit.runner.RunWith;
  * @author Ricardo Martinelli
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-ssl.json", 
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-persistent-ssl.json", 
 	parameters = {
 		@TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
+		@TemplateParameter(name = "MQ_TOPICS", value = "topics.mqtt"),
 		@TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
 		@TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
 		@TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
@@ -79,7 +84,7 @@ import org.junit.runner.RunWith;
 	@OpenShiftResource("classpath:amq-app-secret.json"),
 	@OpenShiftResource("classpath:testrunner-claim.json")
 })
-public class AmqSecuredTest extends AmqSslTestSupport {
+public class AmqPersistentSecuredTest extends AmqSslTestSupport {
 
 	static final String FILENAME = "amq.properties";
 
@@ -88,10 +93,12 @@ public class AmqSecuredTest extends AmqSslTestSupport {
 
 	private BrokerService svc;
 	
-    private String openWireMessage = "Arquillian test - Secured OpenWire";
-    private String amqpMessage = "Arquillian Test - Secured AMQP";
-    private String mqttMessage = "Arquillian test - Secured MQTT";
-    private String stompMessage = "Arquillian test - Secured STOMP";
+	private String openWireMessage = "Arquillian test - Persistent Secured OpenWire";
+	private String amqpMessage = "Arquillian Test - Persistent Secured AMQP";
+	private String stompMessage = "Arquillian Test - Persistent Secured STOMP";
+	private String mqttMessage = "Arquillian test - Persistent Secured MQTT";
+
+	private static BlockingConnection receiveConnection;
 
 	@Deployment
 	public static WebArchive getDeployment() throws IOException {
@@ -100,11 +107,11 @@ public class AmqSecuredTest extends AmqSslTestSupport {
 		war.addPackage(AmqClient.class.getPackage());
 
 		war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-client"));
-		war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-mqtt"));
+		war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-broker"));
 		war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-stomp"));
+		war.addAsLibraries(Libraries.transitive("org.fusesource.mqtt-client", "mqtt-client"));
 		war.addAsLibraries(Libraries.transitive("org.fusesource.stompjms", "stompjms-client"));
 		war.addAsLibraries(Libraries.transitive("org.apache.qpid", "qpid-jms-client"));
-		war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-broker"));
 
 		Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
 		handle.addProperty("amq.username", USERNAME);
@@ -136,26 +143,29 @@ public class AmqSecuredTest extends AmqSslTestSupport {
 	}
 	
 	private AmqClient createAmqClient(String url) throws Exception {
-		Properties properties = Tools.loadProperties(AmqSecuredTest.class, FILENAME);
+		Properties properties = Tools.loadProperties(AmqPersistentSecuredTest.class, FILENAME);
 		String username = properties.getProperty("amq.username");
 		String password = properties.getProperty("amq.password");
 
 		return new AmqClient(url, username, password);
 	}
-
-	@Test
-	public void testSecuredOpenwire() throws Exception {
-		AmqClient client = createAmqClient("ssl://" + System.getenv("AMQ_TEST_AMQ_TCP_SSL_SERVICE_HOST") + ":61617");
-
-		client.produceOpenWireJms(openWireMessage, true);
-		String received = client.consumeOpenWireJms(true);
-
-		assertEquals(openWireMessage, received);
+	
+	private void restartAmq(OpenShiftHandle handler) throws Exception {
+		handler.scaleDeployment("amq-test-amq", 0);
+    	handler.scaleDeployment("amq-test-amq", 1);
 	}
-
+	
 	@Test
-	@SuppressWarnings("unused")
-	public void testSecuredAmqp() throws Exception {
+    @InSequence(1)
+    public void testOpenWireProduceConnection() throws Exception {
+    	AmqClient client = createAmqClient("ssl://" + System.getenv("AMQ_TEST_AMQ_TCP_SSL_SERVICE_HOST") + ":61617");
+        
+    	client.produceOpenWireJms(openWireMessage,false);
+    }
+	
+	@Test
+    @InSequence(2)
+    public void testAmqpProduceConnection() throws Exception {
 		StringBuilder connectionUrl = new StringBuilder();
 		connectionUrl.append("amqps://");
 		connectionUrl.append(System.getenv("AMQ_TEST_AMQ_AMQP_SSL_SERVICE_HOST"));
@@ -167,41 +177,92 @@ public class AmqSecuredTest extends AmqSslTestSupport {
 		AmqClient client = createAmqClient(connectionUrl.toString());
 
 		client.produceAmqp(amqpMessage);
-
-		String received = client.consumeAmqp();
-		assertEquals(amqpMessage, received);
-	}
+    }
 	
 	@Test
-	public void testSecuredMqtt() throws Exception {
-		MQTT mqtt = new MQTT();
-		mqtt.setHost("ssl://" + System.getenv("AMQ_TEST_AMQ_MQTT_SSL_SERVICE_HOST") + ":8883");
-		mqtt.setUserName(USERNAME);
-		mqtt.setPassword(PASSWORD);
-		mqtt.setSslContext(getSSLContext());
+    @InSequence(3)
+    public void testStompProduceConnection() throws Exception {
+        AmqClient client = createAmqClient("ssl://" + System.getenv("AMQ_TEST_AMQ_STOMP_SSL_SERVICE_HOST") + ":61612");
 
-		BlockingConnection connection = mqtt.blockingConnection();
-		connection.connect();
-
-		Topic[] topics = { new Topic("topics/foo", QoS.AT_LEAST_ONCE) };
-		connection.subscribe(topics);
-
-		connection.publish("topics/foo", mqttMessage.getBytes(), QoS.AT_LEAST_ONCE, false);
-
-		Message msg = connection.receive(5, TimeUnit.SECONDS);
-
-		String received = new String(msg.getPayload());
-		assertEquals(mqttMessage, received);
-	}
-
+        client.produceStomp(stompMessage);
+    }
+	
 	@Test
-	public void testSecuredStomp() throws Exception {
-		AmqClient client = createAmqClient("ssl://" + System.getenv("AMQ_TEST_AMQ_STOMP_SSL_SERVICE_HOST") + ":61612");
+    @InSequence(4)
+    public void testMqttProduceConnection() throws Exception {
+        MQTT mqtt = new MQTT();
+        mqtt.setHost("ssl://" + System.getenv("AMQ_TEST_AMQ_MQTT_SSL_SERVICE_HOST") + ":8883");
+        mqtt.setUserName(USERNAME);
+        mqtt.setPassword(PASSWORD);
 
-		client.produceStomp(stompMessage);
-		String received = client.consumeStomp();
-		
-		assertEquals(stompMessage, received);
-	}
+        BlockingConnection  connection = mqtt.blockingConnection();
+        connection.connect();
+        
+        receiveConnection = mqtt.blockingConnection();
+        receiveConnection.connect();
+        
+        Topic[] topics = {new Topic("topics/mqtt", QoS.AT_LEAST_ONCE)};
+        receiveConnection.subscribe(topics);
+
+        connection.publish("topics/mqtt", mqttMessage.getBytes(), QoS.AT_LEAST_ONCE, true);
+        
+        connection.disconnect();
+    }
+    
+    @Test
+    @RunAsClient
+    @InSequence(5)
+    public void testRestartAmq(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+    	restartAmq(adapter);
+    }
+    
+    @Test
+    @InSequence(6)
+    public void testOpenWireConsumeConnection() throws Exception {
+    	AmqClient client = createAmqClient("ssl://" + System.getenv("AMQ_TEST_AMQ_TCP_SSL_SERVICE_HOST") + ":61617");
+        
+        String received = client.consumeOpenWireJms(false);
+        
+        assertEquals(openWireMessage, received);
+    }
+    
+    @Test
+    @InSequence(7)
+    public void testAmqpConsumeConnection() throws Exception {
+    	StringBuilder connectionUrl = new StringBuilder();
+		connectionUrl.append("amqps://");
+		connectionUrl.append(System.getenv("AMQ_TEST_AMQ_AMQP_SSL_SERVICE_HOST"));
+		connectionUrl.append(":5671?transport.trustStoreLocation=");
+		connectionUrl.append(System.getProperty("javax.net.ssl.trustStore"));
+		connectionUrl.append("&transport.trustStorePassword=");
+		connectionUrl.append(System.getProperty("javax.net.ssl.trustStorePassword"));
+		connectionUrl.append("&transport.verifyHost=false");
+		AmqClient client = createAmqClient(connectionUrl.toString());
+
+        String received = client.consumeAmqp();
+
+        assertEquals(amqpMessage, received);
+    }
+    
+    @Test
+    @InSequence(8)
+    public void testStompConsumeConnection() throws Exception {
+        AmqClient client = createAmqClient("ssl://" + System.getenv("AMQ_TEST_AMQ_STOMP_SSL_SERVICE_HOST") + ":61612");
+
+        String received = client.consumeStomp();
+
+        assertEquals(stompMessage, received);
+    }
+
+    @Test
+    @InSequence(9)
+    public void testMqttConnection() throws Exception {
+        Message msg = receiveConnection.receive(5, TimeUnit.SECONDS);
+
+        String received = new String(msg.getPayload());
+        receiveConnection.disconnect();
+        
+        assertEquals(mqttMessage, received);
+    }
 
 }

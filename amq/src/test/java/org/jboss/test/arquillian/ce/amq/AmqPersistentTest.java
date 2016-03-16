@@ -28,12 +28,14 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import org.fusesource.mqtt.client.BlockingConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Message;
 import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
+import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
@@ -43,7 +45,10 @@ import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -55,9 +60,10 @@ import org.junit.runner.RunWith;
  * @author Ricardo Martinelli
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-basic.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-persistent.json",
     parameters = {
         @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
+        @TemplateParameter(name = "MQ_TOPICS", value = "topics.mqtt"),
         @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
         @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
         @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
@@ -66,17 +72,20 @@ import org.junit.runner.RunWith;
 @OpenShiftResources({
 	@OpenShiftResource("classpath:testrunner-claim.json") // Because SSL tests requires testrunner pod to be persistent it is required for all tests to create the pvc even if not used
 })
-public class AmqTest {
+public class AmqPersistentTest {
+	
+	private static final Logger log = Logger.getLogger(AmqPersistentTest.class.getName());
 
     static final String FILENAME = "amq.properties";
-
     static final String USERNAME = System.getProperty("amq.username", "amq-test");
     static final String PASSWORD = System.getProperty("amq.password", "redhat");
-    
-    private String openWireMessage = "Arquillian test - OpenWire";
-    private String amqpMessage = "Arquillian Test - AMQP";
-    private String mqttMessage = "Arquillian test - MQTT";
-    private String stompMessage = "Arquillian test - STOMP";
+
+	private String openWireMessage = "Arquillian test - Persistent OpenWire";
+	private String amqpMessage = "Arquillian Test - Persistent AMQP";
+	private String stompMessage = "Arquillian Test - Persistent STOMP";
+	private String mqttMessage = "Arquillian test - Persistent MQTT";
+
+	private static BlockingConnection receiveConnection;
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
@@ -95,65 +104,113 @@ public class AmqTest {
         handle.addProperty("amq.password", PASSWORD);
         handle.store(war);
 
-        return war;
+		return war;
     }
 
     private AmqClient createAmqClient(String url) throws Exception {
-        Properties properties = Tools.loadProperties(AmqTest.class, FILENAME);
+        Properties properties = Tools.loadProperties(AmqPersistentTest.class, FILENAME);
         String username = properties.getProperty("amq.username");
         String password = properties.getProperty("amq.password");
         return new AmqClient(url, username, password);
     }
+    
+    private void restartAmq(OpenShiftHandle handler) throws Exception {
+		handler.scaleDeployment("amq-test-amq", 0);
+    	handler.scaleDeployment("amq-test-amq", 1);
+	}
 
     @Test
-    public void testOpenWireConnection() throws Exception {
+    @InSequence(1)
+    public void testOpenWireProduceConnection() throws Exception {
     	AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-
-    	client.produceOpenWireJms(openWireMessage,false);
-        String received = client.consumeOpenWireJms(false);
         
-        assertEquals(openWireMessage, received);
+    	client.produceOpenWireJms(openWireMessage,false);
     }
-
+    
     @Test
-    public void testAmqpConnection() throws Exception {
+    @InSequence(2)
+    public void testAmqpProduceConnection() throws Exception {
         AmqClient client = createAmqClient("amqp://" + System.getenv("AMQ_TEST_AMQ_AMQP_SERVICE_HOST") + ":5672");
 
         client.produceAmqp(amqpMessage);
-        String received = client.consumeAmqp();
-        
-        assertEquals(amqpMessage, received);
     }
-
+    
     @Test
-    public void testMqttConnection() throws Exception {
+    @InSequence(3)
+    public void testStompProduceConnection() throws Exception {
+        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_STOMP_SERVICE_HOST") + ":61613");
+
+        client.produceStomp(stompMessage);
+    }
+    
+    @Test
+    @InSequence(4)
+    public void testMqttProduceConnection() throws Exception {
         MQTT mqtt = new MQTT();
         mqtt.setHost("tcp://" + System.getenv("AMQ_TEST_AMQ_MQTT_SERVICE_HOST") + ":1883");
         mqtt.setUserName(USERNAME);
         mqtt.setPassword(PASSWORD);
 
-        BlockingConnection connection = mqtt.blockingConnection();
+        BlockingConnection  connection = mqtt.blockingConnection();
         connection.connect();
+        
+        receiveConnection = mqtt.blockingConnection();
+        receiveConnection.connect();
+        
+        Topic[] topics = {new Topic("topics/mqtt", QoS.AT_LEAST_ONCE)};
+        receiveConnection.subscribe(topics);
 
-        Topic[] topics = {new Topic("topics/foo", QoS.AT_LEAST_ONCE)};
-        connection.subscribe(topics);
-
-        connection.publish("topics/foo", mqttMessage.getBytes(), QoS.AT_LEAST_ONCE, false);
-
-        Message msg = connection.receive(5, TimeUnit.SECONDS);
-
-        String received = new String(msg.getPayload());
-        assertEquals(mqttMessage, received);
+        connection.publish("topics/mqtt", mqttMessage.getBytes(), QoS.AT_LEAST_ONCE, true);
+        
+        connection.disconnect();
+    }
+    
+    @Test
+    @RunAsClient
+    @InSequence(5)
+    public void testRestartAmq(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+    	restartAmq(adapter);
     }
 
     @Test
-    public void testStompConnection() throws Exception {
+    @InSequence(6)
+    public void testOpenWireConsumeConnection() throws Exception {
+    	AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
+        
+        String received = client.consumeOpenWireJms(false);
+        
+        assertEquals(openWireMessage, received);
+    }
+    
+    @Test
+    @InSequence(7)
+    public void testAmqpConsumeConnection() throws Exception {
+        AmqClient client = createAmqClient("amqp://" + System.getenv("AMQ_TEST_AMQ_AMQP_SERVICE_HOST") + ":5672");
+
+        String received = client.consumeAmqp();
+
+        assertEquals(amqpMessage, received);
+    }
+    
+    @Test
+    @InSequence(8)
+    public void testStompConsumeConnection() throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_STOMP_SERVICE_HOST") + ":61613");
 
-        client.produceStomp(stompMessage);
         String received = client.consumeStomp();
-        
+
         assertEquals(stompMessage, received);
+    }
+
+    @Test
+    @InSequence(9)
+    public void testMqttConnection() throws Exception {
+        Message msg = receiveConnection.receive(5, TimeUnit.SECONDS);
+
+        String received = new String(msg.getPayload());
+        receiveConnection.disconnect();
+        
+        assertEquals(mqttMessage, received);
     }
 
 }

@@ -24,7 +24,6 @@
 package org.jboss.test.arquillian.ce.amq.support;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -36,17 +35,13 @@ import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.net.ssl.SSLContext;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQSslConnectionFactory;
 import org.apache.qpid.jms.JmsConnectionFactory;
 import org.apache.qpid.jms.transports.TransportSslOptions;
 import org.fusesource.stomp.jms.StompJmsConnectionFactory;
-import org.jboss.arquillian.ce.api.Tools;
 
 /**
  * @author Ricardo Martinelli
@@ -191,8 +186,8 @@ public class AmqClient {
 			conn.start();
 
 			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
 			Queue q = session.createQueue("QUEUES.FOO");
+			
 			MessageProducer producer = session.createProducer(q);
 
 			producer.send(session.createTextMessage(message));
