@@ -36,12 +36,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/sso/sso70-mysql.json",
-		labels = "application=ssomysql,component=server",
-        parameters = {
-                @TemplateParameter(name = "APPLICATION_NAME", value="ssomysql"),
-                @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-                @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
-                })
+		labels = "application=sso,component=server")
 @OpenShiftResources({
     @OpenShiftResource("classpath:sso-service-account.json"),
     @OpenShiftResource("classpath:sso-app-secret.json"),
@@ -49,10 +44,10 @@ import org.junit.runner.RunWith;
 })
 public class SsoServerMysqlTest extends SsoServerTestBase
 {
-	@RouteURL("ssomysql")
+	@RouteURL("sso")
     private URL routeURL;
 	
-	@RouteURL("secure-ssomysql")
+	@RouteURL("secure-sso")
     private URL secureRouteURL;
 	
 	@Override

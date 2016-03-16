@@ -36,12 +36,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/sso/sso70-postgresql.json",
-		labels = "application=ssopostgresql,component=server",
-        parameters = {
-                @TemplateParameter(name = "APPLICATION_NAME", value="ssopostgresql"),
-                @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-                @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
-                })
+		labels = "application=sso,component=server")
 @OpenShiftResources({
     @OpenShiftResource("classpath:sso-service-account.json"),
     @OpenShiftResource("classpath:sso-app-secret.json"),
@@ -50,10 +45,10 @@ import org.junit.runner.RunWith;
 public class SsoServerPostgresqlTest extends SsoServerTestBase
 {
 	
-	@RouteURL("ssopostgresql")
+	@RouteURL("sso")
     private URL routeURL;
 	
-	@RouteURL("secure-ssopostgresql")
+	@RouteURL("secure-sso")
     private URL secureRouteURL;
 	
 	@Override

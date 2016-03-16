@@ -39,6 +39,7 @@ public class Client {
     public String get(String key, Map<String, String> headers) {
         try {
         	HttpClient client = createHttpClient_AcceptsUntrustedCerts();
+        	
             HttpRequest request = HttpClientBuilder.doGET(basicUrl + "/" + key);
 
         	if (headers != null){
