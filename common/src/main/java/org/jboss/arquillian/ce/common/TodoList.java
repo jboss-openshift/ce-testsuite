@@ -30,7 +30,6 @@ import java.util.UUID;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
-
 import org.junit.Assert;
 
 /**
@@ -38,10 +37,11 @@ import org.junit.Assert;
  */
 public class TodoList {
     /**
-     * Inserts an item in the todo example service.
-     * This method is a helper for the full verson, and
-     * inserts a random summary and description.
-     * @param url The url for the service
+     * Inserts an item in the todo example service. This method is a helper for
+     * the full verson, and inserts a random summary and description.
+     * 
+     * @param url
+     *            The url for the service
      * @throws Exception
      */
     public static void insertItem(String url) throws Exception {
@@ -52,9 +52,13 @@ public class TodoList {
 
     /**
      * Inserts an item in the todo example service.
-     * @param url The url for the service
-     * @param summary The summary to be inserted in the todo list
-     * @param description The description of the item
+     * 
+     * @param url
+     *            The url for the service
+     * @param summary
+     *            The summary to be inserted in the todo list
+     * @param description
+     *            The description of the item
      * @throws Exception
      */
     public static void insertItem(String url, String summary, String description) throws Exception {
@@ -73,13 +77,26 @@ public class TodoList {
         checkItem(url, summary, description);
     }
 
-    private static void checkItem(String url, String summary, String description) throws Exception {
+    /**
+     * Checks if an item is present at the todo list.
+     * 
+     * @param url
+     *            The url for the service
+     * @param summary
+     *            The summary to be checked
+     * @param description
+     *            The description to be checked
+     * @throws Exception
+     */
+    public static void checkItem(String url, String summary, String description) throws Exception {
         HttpRequest request = HttpClientBuilder.doGET(url);
         HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
+        Assert.assertEquals(200, response.getResponseCode());
+
         String responseString = response.getResponseBodyAsString();
 
         /* TODO: Improve this check */
-        Assert.assertTrue(responseString.contains(summary));
-        Assert.assertTrue(responseString.contains(description));
+        Assert.assertTrue("Response: " + responseString + " - Summary: " + summary, responseString.contains(summary));
+        Assert.assertTrue("Response: " + responseString + " - Description: " + description, responseString.contains(description));
     }
 }
