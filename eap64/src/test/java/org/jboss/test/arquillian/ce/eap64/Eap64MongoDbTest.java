@@ -11,9 +11,9 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-mysql-s2i.json", parameters = {
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-mongodb-s2i.json", parameters = {
         @TemplateParameter(name = "HTTPS_NAME", value = "jboss"),
         @TemplateParameter(name = "HTTPS_PASSWORD", value = "mykeystorepass") })
 @OpenShiftResource("classpath:eap-app-secret.json")
-public class Eap64MysqlTest extends Eap64TestDbBase {
+public class Eap64MongoDbTest extends Eap64TestDbBase {
 }
