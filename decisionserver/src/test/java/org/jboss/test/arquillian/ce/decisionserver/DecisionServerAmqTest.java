@@ -65,12 +65,9 @@ public class DecisionServerAmqTest extends DecisionServerTestBase {
     @Deployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
-
         war.addAsLibraries(Libraries.transitive("org.apache.activemq","activemq-all"));
-
         war.addClass(DecisionServerAmqTest.class);
         war.addClass(DecisionServerMultiContainerAmqTest.class);
-
         return war;
     }
 

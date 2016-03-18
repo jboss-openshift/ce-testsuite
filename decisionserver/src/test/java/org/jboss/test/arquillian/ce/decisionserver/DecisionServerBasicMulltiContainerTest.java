@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver62-basic-s2i.json",
         parameters = {
-                //the container with the bigger name will always get deployed first
+                //the Containers list will be sorted in alphabetical order
                 @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "HelloRulesContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final|" +
                         "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final"),
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),

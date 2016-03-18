@@ -23,22 +23,6 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import java.io.StringReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Logger;
-
-import javax.jms.ConnectionFactory;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
 import io.fabric8.utils.Base64Encoder;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
@@ -72,6 +56,17 @@ import org.kie.server.client.RuleServicesClient;
 import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
+import javax.jms.ConnectionFactory;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.net.URL;
+import java.util.*;
+import java.util.logging.Logger;
+
 
 /**
  * @author Filippe Spolti
@@ -97,12 +92,11 @@ public abstract class DecisionServerTestBase {
 
     protected static WebArchive getDeploymentInternal() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
-
         war.setWebXML("web.xml");
         war.addClass(DecisionServerTestBase.class);
         war.addPackage(Person.class.getPackage());
         war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
-
+        war.addAsLibraries(Libraries.transitive("org.jboss.arquillian.container", "arquillian-ce-httpclient"));
         Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
         handle.addProperty("kie.username", KIE_USERNAME);
         handle.addProperty("kie.password", KIE_PASSWORD);
@@ -114,6 +108,19 @@ public abstract class DecisionServerTestBase {
     }
 
     protected abstract URL getRouteURL();
+
+    /*
+    * Sort the kieContainers list in alphabetical order
+    * To sort the list just add the following in the desired method:
+    * Collections.sort(KieContainersList, ALPHABETICAL_ORDER);
+    */
+    static final Comparator<KieContainerResource> ALPHABETICAL_ORDER =
+            new Comparator<KieContainerResource>() {
+                @Override
+                public int compare(KieContainerResource o1, KieContainerResource o2) {
+                    return o1.getContainerId().compareTo(o2.getContainerId());
+                }
+            };
 
     /*
     * Returns the kieService client
@@ -213,10 +220,19 @@ public abstract class DecisionServerTestBase {
 
         List<KieContainerResource> kieContainers = getKieRestServiceClient(getRouteURL()).listContainers().getResult().getContainers();
 
+        // Sorting kieContainerList
+        Collections.sort(kieContainers, ALPHABETICAL_ORDER);
         // verify the KieContainer Name
-        Assert.assertEquals("HelloRulesContainer", kieContainers.get(0).getContainerId());
+
+        //When the multicontainer test is running, the HelloRulesContainer will not be the first anymore
+        int pos = 0;
+        if (kieContainers.size() > 1) {
+            pos = 1;
+        }
+
+        Assert.assertEquals("HelloRulesContainer", kieContainers.get(pos).getContainerId());
         // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
+        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(pos).getStatus());
     }
 
     /*
@@ -308,10 +324,18 @@ public abstract class DecisionServerTestBase {
         log.info("Trying to connect to AMQ HOST: " + AMQ_HOST);
         List<KieContainerResource> kieContainers = getKieJmsServiceClient().listContainers().getResult().getContainers();
 
+        //When the multicontainer test is running, the HelloRulesContainer will not be the first anymore
+        int pos = 0;
+        if (kieContainers.size() > 1) {
+            pos = 1;
+        }
+
+        // Sorting kieContainerList
+        Collections.sort(kieContainers, ALPHABETICAL_ORDER);
         // verify the KieContainer Name
-        Assert.assertEquals("HelloRulesContainer", kieContainers.get(0).getContainerId());
+        Assert.assertEquals("HelloRulesContainer", kieContainers.get(pos).getContainerId());
         // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
+        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(pos).getStatus());
     }
 
     //Multiple Container Tests
@@ -327,13 +351,16 @@ public abstract class DecisionServerTestBase {
         prepareClientInvocation();
         List<KieContainerResource> kieContainers = getKieRestServiceClient(getRouteURL()).listContainers().getResult().getContainers();
 
+        // Sorting kieContainerList
+        Collections.sort(kieContainers, ALPHABETICAL_ORDER);
+
         //kieContainers size should be 2
         Assert.assertEquals(2, kieContainers.size());
 
         // verify the KieContainer Name
-        Assert.assertEquals("AnotherContainer", kieContainers.get(1).getContainerId());
+        Assert.assertEquals("AnotherContainer", kieContainers.get(0).getContainerId());
         // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(1).getStatus());
+        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
     }
 
     /*
@@ -372,13 +399,16 @@ public abstract class DecisionServerTestBase {
         log.info("Running test checkDecisionServerSecondContainerAMQ");
         List<KieContainerResource> kieContainers = getKieJmsServiceClient().listContainers().getResult().getContainers();
 
+        // Sorting kieContainerList
+        Collections.sort(kieContainers, ALPHABETICAL_ORDER);
+
         //kieContainers size should be 2
         Assert.assertEquals(2, kieContainers.size());
 
         // verify the KieContainer Name
-        Assert.assertEquals("AnotherContainer", kieContainers.get(1).getContainerId());
+        Assert.assertEquals("AnotherContainer", kieContainers.get(0).getContainerId());
         // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(1).getStatus());
+        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
     }
 
     /*
@@ -531,16 +561,21 @@ public abstract class DecisionServerTestBase {
         ServiceResponse serviceResponse = (ServiceResponse) unmarshaller.unmarshal(new StringReader(output));
         KieContainerResourceList kieContainers = (KieContainerResourceList) serviceResponse.getResult();
 
+        List<KieContainerResource> containers = kieContainers.getContainers();
+
+        // Sorting kieContainerList
+        Collections.sort(containers, ALPHABETICAL_ORDER);
+
         //kieContainers's should be 2
         Assert.assertEquals(2, kieContainers.getContainers().size());
 
+
         // verify the first KieContainer Name
-        Assert.assertEquals("HelloRulesContainer", kieContainers.getContainers().get(0).getContainerId());
+        Assert.assertEquals("AnotherContainer", kieContainers.getContainers().get(0).getContainerId());
         // verify the KieContainer Status
         Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.getContainers().get(0).getStatus());
-
         // verify the second KieContainer Name
-        Assert.assertEquals("AnotherContainer", kieContainers.getContainers().get(1).getContainerId());
+        Assert.assertEquals("HelloRulesContainer", kieContainers.getContainers().get(1).getContainerId());
         // verify the KieContainer Status
         Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.getContainers().get(1).getStatus());
     }
