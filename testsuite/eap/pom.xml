@@ -20,6 +20,7 @@
     <description>Cloud Enablement Testsuite -- EAP testsuite</description>
 
     <modules>
+        <module>eap64</module>
         <module>compat</module>
         <module>integration</module>
     </modules>

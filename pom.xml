@@ -55,6 +55,7 @@
 	</properties>
 
 	<modules>
+		<module>common</module>
 		<module>tests</module>
 		<module>web</module>
 		<module>wildfly</module>
@@ -102,6 +103,12 @@
 
 	<dependencyManagement>
 		<dependencies>
+
+			<dependency>
+				<groupId>org.jboss.ce.testsuite</groupId>
+				<artifactId>common-ce-testsuite</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.kohsuke.metainf-services</groupId>
@@ -394,7 +401,6 @@
 			<modules>
 				<module>amq</module>
 				<module>decisionserver</module>
-				<module>eap64</module>
 				<module>jdg</module>
 				<module>sso</module>
 				<module>webserver</module>
@@ -424,19 +430,6 @@
 
 			<modules>
 				<module>decisionserver</module>
-			</modules>
-		</profile>
-
-		<profile>
-			<id>eap64</id>
-			<activation>
-				<property>
-					<name>eap64</name>
-				</property>
-			</activation>
-
-			<modules>
-				<module>eap64</module>
 			</modules>
 		</profile>
 
