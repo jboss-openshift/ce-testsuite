@@ -9,6 +9,10 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
+	<properties>
+		<version.org.jboss.as.arquillian.container>7.2.0.Final</version.org.jboss.as.arquillian.container>
+	</properties>
+
 	<!-- Model Version -->
 	<modelVersion>4.0.0</modelVersion>
 
@@ -18,8 +22,48 @@
 	<name>A-MQ CE Testsuite</name>
 	<description>A-MQ Cloud Enablement Testsuite</description>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${version.dependency.plugin}</version><!--$NO-MVN-MAN-VER$ -->
+				<executions>
+					<execution>
+						<id>unpack-dependencies</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeGroupIds>org.jboss</includeGroupIds>
+							<includeTypes>test-jar</includeTypes>
+							<includeScope>test</includeScope>
+							<outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${version.surefire.plugin}</version><!--$NO-MVN-MAN-VER$ -->
+				<configuration>
+					<runOrder>alphabetical</runOrder>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+					<includes>
+						<include>org/jboss/**/*Test.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 
+		<!-- General APIs -->
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms</artifactId>
@@ -29,43 +73,53 @@
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-client</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-mqtt</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-stomp</artifactId>
+			<artifactId>activemq-broker</artifactId>
 		</dependency>
 
+		<!-- MQTT -->
 		<dependency>
 			<groupId>org.fusesource.mqtt-client</groupId>
 			<artifactId>mqtt-client</artifactId>
 		</dependency>
 
+		<!-- STOMP -->
 		<dependency>
 			<groupId>org.fusesource.stompjms</groupId>
 			<artifactId>stompjms-client</artifactId>
 		</dependency>
 
+		<!-- AMQP -->
 		<dependency>
 			<groupId>org.apache.qpid</groupId>
 			<artifactId>qpid-jms-client</artifactId>
 		</dependency>
 
+		<!-- Other -->
 		<dependency>
 			<groupId>org.jboss.logging</groupId>
 			<artifactId>jboss-logging</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Test Utils -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.protocol</groupId>
+			<artifactId>arquillian-protocol-jmx</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>
@@ -81,74 +135,15 @@
 
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-ce-template</artifactId>
+			<artifactId>arquillian-ce-cube</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-arquillian-container-remote</artifactId>
+			<version>${version.org.jboss.as.arquillian.container}</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.arquillian.junit</groupId>
-			<artifactId>arquillian-junit-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.shrinkwrap</groupId>
-			<artifactId>shrinkwrap-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Deps -->
-
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-container-spi</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.arquillian.protocol</groupId>
-			<artifactId>arquillian-protocol-servlet</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-container-impl-base</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.arquillian.junit</groupId>
-			<artifactId>arquillian-junit-container</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.arquillian.core</groupId>
-			<artifactId>arquillian-core-impl-base</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.arquillian.test</groupId>
-			<artifactId>arquillian-test-impl-base</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-ce-api</artifactId>
 		</dependency>
 
 	</dependencies>
@@ -211,6 +206,14 @@
 							<includes>
 								<include>org/jboss/**/*Test.java</include>
 							</includes>
+							<systemPropertyVariables>
+                                <!-- Custom DNS resolver for OpenShift routes -->
+                                <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
+                                <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
+                                <kubernetes.master>${kubernetes.master}</kubernetes.master>
+                                <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
+                                <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
+                            </systemPropertyVariables>
 						</configuration>
 					</plugin>
 				</plugins>

@@ -24,7 +24,6 @@
 package org.jboss.test.arquillian.ce.amq.support;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -36,11 +35,12 @@ import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQSslConnectionFactory;
+import org.apache.qpid.jms.JmsConnectionFactory;
+import org.apache.qpid.jms.transports.TransportSslOptions;
 import org.fusesource.stomp.jms.StompJmsConnectionFactory;
 
 /**
@@ -57,6 +57,18 @@ public class AmqClient {
 		this.username = username;
 		this.password = password;
 	}
+	
+	private ConnectionFactory getAMQConnectionFactory(boolean secured) throws Exception {
+		if(secured) {
+			ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(this.connectionUrl);
+			cf.setTrustStore(System.getProperty("javax.net.ssl.trustStore"));
+			cf.setTrustStorePassword("password");
+			
+			return cf;
+		}
+		ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory(this.connectionUrl);
+		return cf;
+	}
 
 	private void close(Connection connection) throws JMSException {
 		if (connection != null) {
@@ -64,11 +76,11 @@ public class AmqClient {
 		}
 	}
 
-	public String consumeOpenWireJms() throws JMSException {
+	public String consumeOpenWireJms(boolean isSecured) throws Exception {
 		Connection conn = null;
 		try {
-			ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory(username, password, this.connectionUrl);
-			conn = cf.createConnection();
+			ConnectionFactory cf = getAMQConnectionFactory(isSecured);
+			conn = cf.createConnection(username, password);
 			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			Destination qFoo = session.createQueue("QUEUES.FOO");
 
@@ -83,11 +95,11 @@ public class AmqClient {
 		}
 	}
 
-	public void produceOpenWireJms(String message) throws JMSException {
+	public void produceOpenWireJms(String message, boolean isSecured) throws Exception {
 		Connection conn = null;
 		try {
-			ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory(username, password, this.connectionUrl);
-			conn = cf.createConnection();
+			ConnectionFactory cf = getAMQConnectionFactory(isSecured);
+			conn = cf.createConnection(username, password);
 			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			Destination qFoo = session.createQueue("QUEUES.FOO");
 
@@ -103,26 +115,23 @@ public class AmqClient {
 	}
 
 	public String consumeAmqp() throws JMSException, NamingException {
-		Properties props = new Properties();
-		props.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.qpid.jms.jndi.JmsInitialContextFactory");
-		props.put("connectionfactory.arquillianConnectionFactory", connectionUrl);
-		props.put("queue.foo", "foo");
-
-		Context context = new InitialContext(props);
-		ConnectionFactory factory = (ConnectionFactory) context.lookup("arquillianConnectionFactory");
-		Destination destination = (Destination) context.lookup("foo");
-
+		TransportSslOptions options = new TransportSslOptions();
+		options.setTrustStoreLocation(System.getProperty("javax.net.ssl.trustStore"));
+		options.setTrustStorePassword("password");
+		options.setVerifyHost(false);
+		ConnectionFactory factory = new JmsConnectionFactory(connectionUrl);
+		
 		Connection connection = factory.createConnection(username, password);
 		try {
 			connection.start();
 
 			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-			MessageConsumer consumer = session.createConsumer(destination);
-
-			connection.start();
+			Queue q = session.createQueue("QUEUES.BAR");
+			MessageConsumer consumer = session.createConsumer(q);
 
 			Message msg = consumer.receive();
+			
 			return ((TextMessage) msg).getText();
 		} finally {
 			close(connection);
@@ -130,21 +139,16 @@ public class AmqClient {
 	}
 
 	public void produceAmqp(String message) throws JMSException, NamingException {
-		Properties props = new Properties();
-		props.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.qpid.jms.jndi.JmsInitialContextFactory");
-		props.put("connectionfactory.arquillianConnectionFactory", connectionUrl);
-		props.put("queue.foo", "foo");
+		ConnectionFactory factory = new JmsConnectionFactory(connectionUrl);
 
-		Context context = new InitialContext(props);
-		ConnectionFactory factory = (ConnectionFactory) context.lookup("arquillianConnectionFactory");
-		Destination destination = (Destination) context.lookup("foo");
-
-		Connection connection = factory.createConnection(username, password);
+		Connection conn = factory.createConnection(username, password);
 		try {
-			connection.start();
+			conn.start();
 
-			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			MessageProducer producer = session.createProducer(destination);
+			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			
+			Queue q = session.createQueue("QUEUES.BAR");
+			MessageProducer producer = session.createProducer(q);
 
 			TextMessage msg = session.createTextMessage(message);
 			producer.send(msg);
@@ -152,7 +156,7 @@ public class AmqClient {
 			producer.close();
 			session.close();
 		} finally {
-			close(connection);
+			close(conn);
 		}
 	}
 
@@ -165,7 +169,9 @@ public class AmqClient {
 
 			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			Queue q = session.createQueue("QUEUES.FOO");
+			
 			MessageConsumer consumer = session.createConsumer(q);
+			
 			return ((TextMessage) consumer.receive()).getText();
 		} finally {
 			close(conn);
@@ -180,8 +186,8 @@ public class AmqClient {
 			conn.start();
 
 			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
 			Queue q = session.createQueue("QUEUES.FOO");
+			
 			MessageProducer producer = session.createProducer(q);
 
 			producer.send(session.createTextMessage(message));
