@@ -59,7 +59,6 @@
 		<module>tests</module>
 		<module>web</module>
 		<module>wildfly</module>
-		<module>testsuite</module>
 	</modules>
 
 	<build>
@@ -401,6 +400,7 @@
 			<modules>
 				<module>amq</module>
 				<module>decisionserver</module>
+				<module>eap</module>
 				<module>jdg</module>
 				<module>sso</module>
 				<module>webserver</module>
@@ -430,6 +430,19 @@
 
 			<modules>
 				<module>decisionserver</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>eap</id>
+			<activation>
+				<property>
+					<name>eap</name>
+				</property>
+			</activation>
+
+			<modules>
+				<module>eap</module>
 			</modules>
 		</profile>
 
