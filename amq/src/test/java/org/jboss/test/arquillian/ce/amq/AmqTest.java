@@ -26,7 +26,6 @@ package org.jboss.test.arquillian.ce.amq;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.fusesource.mqtt.client.BlockingConnection;
@@ -39,13 +38,8 @@ import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.api.Tools;
-import org.jboss.arquillian.ce.shrinkwrap.Files;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
 import org.junit.Test;
@@ -64,15 +58,10 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-	@OpenShiftResource("classpath:testrunner-claim.json") // Because SSL tests requires testrunner pod to be persistent it is required for all tests to create the pvc even if not used
+    @OpenShiftResource("classpath:testrunner-claim.json") // Because SSL tests requires testrunner pod to be persistent it is required for all tests to create the pvc even if not used
 })
-public class AmqTest {
+public class AmqTest extends AmqTestBase {
 
-    static final String FILENAME = "amq.properties";
-
-    static final String USERNAME = System.getProperty("amq.username", "amq-test");
-    static final String PASSWORD = System.getProperty("amq.password", "redhat");
-    
     private String openWireMessage = "Arquillian test - OpenWire";
     private String amqpMessage = "Arquillian Test - AMQP";
     private String mqttMessage = "Arquillian test - MQTT";
@@ -80,38 +69,16 @@ public class AmqTest {
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
-        war.setWebXML(new StringAsset("<web-app/>"));
-        war.addPackage(AmqClient.class.getPackage());
-
-        war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-client"));
-        war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-mqtt"));
-        war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-stomp"));
-        war.addAsLibraries(Libraries.transitive("org.fusesource.stompjms", "stompjms-client"));
-        war.addAsLibraries(Libraries.transitive("org.apache.qpid", "qpid-jms-client"));
-
-        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        handle.addProperty("amq.username", USERNAME);
-        handle.addProperty("amq.password", PASSWORD);
-        handle.store(war);
-
-        return war;
-    }
-
-    private AmqClient createAmqClient(String url) throws Exception {
-        Properties properties = Tools.loadProperties(AmqTest.class, FILENAME);
-        String username = properties.getProperty("amq.username");
-        String password = properties.getProperty("amq.password");
-        return new AmqClient(url, username, password);
+        return getDeploymentBase();
     }
 
     @Test
     public void testOpenWireConnection() throws Exception {
-    	AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
+        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
 
-    	client.produceOpenWireJms(openWireMessage,false);
+        client.produceOpenWireJms(openWireMessage, false);
         String received = client.consumeOpenWireJms(false);
-        
+
         assertEquals(openWireMessage, received);
     }
 
@@ -121,7 +88,7 @@ public class AmqTest {
 
         client.produceAmqp(amqpMessage);
         String received = client.consumeAmqp();
-        
+
         assertEquals(amqpMessage, received);
     }
 
@@ -152,7 +119,7 @@ public class AmqTest {
 
         client.produceStomp(stompMessage);
         String received = client.consumeStomp();
-        
+
         assertEquals(stompMessage, received);
     }
 

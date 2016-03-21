@@ -48,152 +48,151 @@ import org.fusesource.stomp.jms.StompJmsConnectionFactory;
  */
 public class AmqClient {
 
-	private final String connectionUrl;
-	private final String username;
-	private final String password;
+    private final String connectionUrl;
+    private final String username;
+    private final String password;
 
-	public AmqClient(String connectionUrl, String username, String password) throws IOException {
-		this.connectionUrl = connectionUrl;
-		this.username = username;
-		this.password = password;
-	}
-	
-	private ConnectionFactory getAMQConnectionFactory(boolean secured) throws Exception {
-		if(secured) {
-			ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(this.connectionUrl);
-			cf.setTrustStore(System.getProperty("javax.net.ssl.trustStore"));
-			cf.setTrustStorePassword("password");
-			
-			return cf;
-		}
-		ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory(this.connectionUrl);
-		return cf;
-	}
+    public AmqClient(String connectionUrl, String username, String password) throws IOException {
+        this.connectionUrl = connectionUrl;
+        this.username = username;
+        this.password = password;
+    }
 
-	private void close(Connection connection) throws JMSException {
-		if (connection != null) {
-			connection.close();
-		}
-	}
+    private ConnectionFactory getAMQConnectionFactory(boolean secured) throws Exception {
+        if (secured) {
+            ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(this.connectionUrl);
+            cf.setTrustStore(System.getProperty("javax.net.ssl.trustStore"));
+            cf.setTrustStorePassword("password");
 
-	public String consumeOpenWireJms(boolean isSecured) throws Exception {
-		Connection conn = null;
-		try {
-			ConnectionFactory cf = getAMQConnectionFactory(isSecured);
-			conn = cf.createConnection(username, password);
-			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			Destination qFoo = session.createQueue("QUEUES.FOO");
+            return cf;
+        }
+        return new ActiveMQConnectionFactory(this.connectionUrl);
+    }
 
-			MessageConsumer consumer = session.createConsumer(qFoo);
+    private void close(Connection connection) throws JMSException {
+        if (connection != null) {
+            connection.close();
+        }
+    }
 
-			conn.start();
+    public String consumeOpenWireJms(boolean isSecured) throws Exception {
+        Connection conn = null;
+        try {
+            ConnectionFactory cf = getAMQConnectionFactory(isSecured);
+            conn = cf.createConnection(username, password);
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Destination qFoo = session.createQueue("QUEUES.FOO");
 
-			Message msg = consumer.receive();
-			return ((TextMessage) msg).getText();
-		} finally {
-			close(conn);
-		}
-	}
+            MessageConsumer consumer = session.createConsumer(qFoo);
 
-	public void produceOpenWireJms(String message, boolean isSecured) throws Exception {
-		Connection conn = null;
-		try {
-			ConnectionFactory cf = getAMQConnectionFactory(isSecured);
-			conn = cf.createConnection(username, password);
-			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			Destination qFoo = session.createQueue("QUEUES.FOO");
+            conn.start();
 
-			MessageProducer producer = session.createProducer(qFoo);
+            Message msg = consumer.receive();
+            return ((TextMessage) msg).getText();
+        } finally {
+            close(conn);
+        }
+    }
 
-			conn.start();
+    public void produceOpenWireJms(String message, boolean isSecured) throws Exception {
+        Connection conn = null;
+        try {
+            ConnectionFactory cf = getAMQConnectionFactory(isSecured);
+            conn = cf.createConnection(username, password);
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Destination qFoo = session.createQueue("QUEUES.FOO");
 
-			Message msg = session.createTextMessage(message);
-			producer.send(msg);
-		} finally {
-			close(conn);
-		}
-	}
+            MessageProducer producer = session.createProducer(qFoo);
 
-	public String consumeAmqp() throws JMSException, NamingException {
-		TransportSslOptions options = new TransportSslOptions();
-		options.setTrustStoreLocation(System.getProperty("javax.net.ssl.trustStore"));
-		options.setTrustStorePassword("password");
-		options.setVerifyHost(false);
-		ConnectionFactory factory = new JmsConnectionFactory(connectionUrl);
-		
-		Connection connection = factory.createConnection(username, password);
-		try {
-			connection.start();
+            conn.start();
 
-			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Message msg = session.createTextMessage(message);
+            producer.send(msg);
+        } finally {
+            close(conn);
+        }
+    }
 
-			Queue q = session.createQueue("QUEUES.BAR");
-			MessageConsumer consumer = session.createConsumer(q);
+    public String consumeAmqp() throws JMSException, NamingException {
+        TransportSslOptions options = new TransportSslOptions();
+        options.setTrustStoreLocation(System.getProperty("javax.net.ssl.trustStore"));
+        options.setTrustStorePassword("password");
+        options.setVerifyHost(false);
+        ConnectionFactory factory = new JmsConnectionFactory(connectionUrl);
 
-			Message msg = consumer.receive();
-			
-			return ((TextMessage) msg).getText();
-		} finally {
-			close(connection);
-		}
-	}
+        Connection connection = factory.createConnection(username, password);
+        try {
+            connection.start();
 
-	public void produceAmqp(String message) throws JMSException, NamingException {
-		ConnectionFactory factory = new JmsConnectionFactory(connectionUrl);
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-		Connection conn = factory.createConnection(username, password);
-		try {
-			conn.start();
+            Queue q = session.createQueue("QUEUES.BAR");
+            MessageConsumer consumer = session.createConsumer(q);
 
-			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			
-			Queue q = session.createQueue("QUEUES.BAR");
-			MessageProducer producer = session.createProducer(q);
+            Message msg = consumer.receive();
 
-			TextMessage msg = session.createTextMessage(message);
-			producer.send(msg);
+            return ((TextMessage) msg).getText();
+        } finally {
+            close(connection);
+        }
+    }
 
-			producer.close();
-			session.close();
-		} finally {
-			close(conn);
-		}
-	}
+    public void produceAmqp(String message) throws JMSException, NamingException {
+        ConnectionFactory factory = new JmsConnectionFactory(connectionUrl);
 
-	public String consumeStomp() throws Exception {
-		StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-		factory.setBrokerURI(connectionUrl);
-		Connection conn = factory.createConnection(username, password);
-		try {
-			conn.start();
+        Connection conn = factory.createConnection(username, password);
+        try {
+            conn.start();
 
-			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			Queue q = session.createQueue("QUEUES.FOO");
-			
-			MessageConsumer consumer = session.createConsumer(q);
-			
-			return ((TextMessage) consumer.receive()).getText();
-		} finally {
-			close(conn);
-		}
-	}
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-	public void produceStomp(String message) throws Exception {
-		StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-		factory.setBrokerURI(connectionUrl);
-		Connection conn = factory.createConnection(username, password);
-		try {
-			conn.start();
+            Queue q = session.createQueue("QUEUES.BAR");
+            MessageProducer producer = session.createProducer(q);
 
-			Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			Queue q = session.createQueue("QUEUES.FOO");
-			
-			MessageProducer producer = session.createProducer(q);
+            TextMessage msg = session.createTextMessage(message);
+            producer.send(msg);
 
-			producer.send(session.createTextMessage(message));
-		} finally {
-			close(conn);
-		}
-	}
+            producer.close();
+            session.close();
+        } finally {
+            close(conn);
+        }
+    }
+
+    public String consumeStomp() throws Exception {
+        StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
+        factory.setBrokerURI(connectionUrl);
+        Connection conn = factory.createConnection(username, password);
+        try {
+            conn.start();
+
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue q = session.createQueue("QUEUES.FOO");
+
+            MessageConsumer consumer = session.createConsumer(q);
+
+            return ((TextMessage) consumer.receive()).getText();
+        } finally {
+            close(conn);
+        }
+    }
+
+    public void produceStomp(String message) throws Exception {
+        StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
+        factory.setBrokerURI(connectionUrl);
+        Connection conn = factory.createConnection(username, password);
+        try {
+            conn.start();
+
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue q = session.createQueue("QUEUES.FOO");
+
+            MessageProducer producer = session.createProducer(q);
+
+            producer.send(session.createTextMessage(message));
+        } finally {
+            close(conn);
+        }
+    }
 
 }
