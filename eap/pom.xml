@@ -19,19 +19,7 @@
     <name>CE Testsuite -- EAP testsuite</name>
     <description>Cloud Enablement Testsuite -- EAP testsuite</description>
 
-    <modules>
-        <module>eap64</module>
-        <module>compat</module>
-        <module>integration</module>
-    </modules>
-
 	<profiles>
-		<profile>
-			<id>default</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
 
 		<profile>
 			<id>all</id>
@@ -42,8 +30,27 @@
 				</property>
 			</activation>
 
+			<properties>
+				<skipTests>true</skipTests>
+			</properties>
+
 			<modules>
 				<module>eap64</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<!-- Existing EAP tests - from testsuite (requires custom mvn build) -->
+
+			<id>testsuite</id>
+
+			<activation>
+				<property>
+					<name>testsuite</name>
+				</property>
+			</activation>
+
+			<modules>
 				<module>compat</module>
 				<module>integration</module>
 			</modules>
