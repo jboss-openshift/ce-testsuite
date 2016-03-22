@@ -63,12 +63,12 @@ ___
 ###### Running all tests
 For this example we'll consider the IP address 192.168.1.254 for required parameters, Example:
 ```sh
-$ mvn clean install -Pwebserver -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
+$ mvn clean package test -Pwebserver -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
 ```
 ###### Running a specific test and ignoring the cleanup after the tests gets finished
 Example:
 ```sh
-$ mvn clean install -Pwebserver -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254 -Dtest=WebServerTomcat7BasicTest -Dkubernetes.ignore.cleanup=true
+$ mvn clean package test -Pwebserver -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254 -Dtest=WebServerTomcat7BasicTest -Dkubernetes.ignore.cleanup=true
 ```
 
 #### What this tests cover?

@@ -21,7 +21,7 @@ The queues and topics are created at the moment the tests starts, example:
         @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
         @TemplateParameter(name = "MQ_TOPICS", value = "TOPICS.FOO,TOPICS.BAR"),
 ```
-The tests basically consists in send e consume messages using the following protocols:
+The tests basically consists in send and consume messages using the following protocols:
   - [Openwire](http://activemq.apache.org/openwire.html)
   - [AMQP - Advanced Message Queuing Protocol](https://www.amqp.org/)
   - [Mqtt](http://mqtt.org/)
