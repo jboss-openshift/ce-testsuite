@@ -257,6 +257,12 @@
 			</dependency>
 
 			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${version.slf4j}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>org.arquillian.extension</groupId>
 				<artifactId>arquillian-governor-ignore</artifactId>
 				<version>${version.arquillian.governor}</version>
@@ -274,6 +280,12 @@
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-client</artifactId>
+				<version>${version.activemq}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-broker</artifactId>
 				<version>${version.activemq}</version>
 			</dependency>
 

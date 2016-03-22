@@ -25,8 +25,6 @@ public class AmqTestBase {
         war.addClasses(classes);
 
         war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-client"));
-        war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-mqtt"));
-        war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-stomp"));
         war.addAsLibraries(Libraries.transitive("org.apache.qpid", "qpid-jms-client"));
         war.addAsLibraries(Libraries.transitive("org.fusesource.mqtt-client", "mqtt-client"));
         war.addAsLibraries(Libraries.transitive("org.fusesource.stompjms", "stompjms-client"));
@@ -40,7 +38,7 @@ public class AmqTestBase {
     }
 
     protected AmqClient createAmqClient(String url) throws Exception {
-        Properties properties = Tools.loadProperties(AmqPersistentTest.class, FILENAME);
+        Properties properties = Tools.loadProperties(getClass(), FILENAME);
         String username = properties.getProperty("amq.username");
         String password = properties.getProperty("amq.password");
         return new AmqClient(url, username, password);
