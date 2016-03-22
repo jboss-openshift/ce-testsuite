@@ -1,4 +1,4 @@
-# CE-Testsuite - Decision Server
+# CE-Testsuite - JBoss DataGrid
 
 This testsuite will test all JBoss DataGrid S2I application templates which are:
  
