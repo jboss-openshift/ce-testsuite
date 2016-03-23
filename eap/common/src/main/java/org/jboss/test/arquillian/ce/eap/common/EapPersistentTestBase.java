@@ -1,4 +1,4 @@
-package org.jboss.test.arquillian.ce.eap64;
+package org.jboss.test.arquillian.ce.eap.common;
 
 import java.net.URL;
 import java.util.UUID;
@@ -14,12 +14,13 @@ import org.junit.Test;
 
 /**
  * @author Jonh Wendell
+ * @author Marko Luksa
  */
+public abstract class EapPersistentTestBase {
 
-public abstract class Eap64PersistentTestBase {
-    private final static Logger log = Logger.getLogger(Eap64PersistentTestBase.class.getName());
+    private final static Logger log = Logger.getLogger(org.jboss.test.arquillian.ce.eap.common.EapPersistentTestBase.class.getName());
 
-    abstract String[] getRCNames();
+    protected abstract String[] getRCNames();
 
     @RouteURL("eap-app")
     private URL url;

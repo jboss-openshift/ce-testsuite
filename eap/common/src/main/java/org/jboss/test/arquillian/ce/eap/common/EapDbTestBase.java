@@ -1,4 +1,4 @@
-package org.jboss.test.arquillian.ce.eap64;
+package org.jboss.test.arquillian.ce.eap.common;
 
 import java.net.URL;
 
@@ -9,9 +9,9 @@ import org.junit.Test;
 
 /**
  * @author Jonh Wendell
+ * @author Marko Luksa
  */
-
-public abstract class Eap64TestDbBase {
+public abstract class EapDbTestBase {
     @RouteURL("eap-app")
     private URL url;
 

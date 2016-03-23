@@ -21,7 +21,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.test.arquillian.ce.eap64;
+package org.jboss.test.arquillian.ce.eap70;
 
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.junit.Arquillian;
@@ -29,10 +29,10 @@ import org.jboss.test.arquillian.ce.eap.common.EapBasicTestBase;
 import org.junit.runner.RunWith;
 
 /**
- * @author Jonh Wendell
+ * @author Marko Luksa
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-basic-s2i.json")
-public class Eap64BasicTest extends EapBasicTestBase {
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap70-basic-s2i.json")
+public class Eap70BasicTest extends EapBasicTestBase {
 
 }

@@ -23,13 +23,11 @@
 
 package org.jboss.test.arquillian.ce.eap64;
 
-import java.net.URL;
-
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.test.arquillian.ce.eap.common.EapHttpsTestBase;
 import org.junit.runner.RunWith;
 
 /**
@@ -42,12 +40,6 @@ parameters = {
         @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
         })
 @OpenShiftResource("classpath:eap-app-secret.json")
-public class Eap64HttpsTest extends Eap64BasicTest {
-    @RouteURL("secure-eap-app")
-    private URL url;
+public class Eap64HttpsTest extends EapHttpsTestBase {
 
-    @Override
-    protected URL getUrl() {
-        return url;
-    }
 }

@@ -13,10 +13,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
-    <artifactId>eap64-ce-testsuite</artifactId>
+    <artifactId>eap70-ce-testsuite</artifactId>
     <packaging>jar</packaging>
-    <name>EAP 6.x CE Testsuite</name>
-    <description>EAP 6.x Cloud Enablement Testsuite</description>
+    <name>EAP 7.x CE Testsuite</name>
+    <description>EAP 7.x Cloud Enablement Testsuite</description>
 
     <dependencies>
 
@@ -114,11 +114,11 @@
 
         <!-- Run tests against wildfly -->
         <profile>
-            <id>eap64</id>
+            <id>eap70</id>
 
             <activation>
                 <property>
-                    <name>eap64</name>
+                    <name>eap70</name>
                 </property>
             </activation>
 
