@@ -21,7 +21,7 @@ The queues and topics are created at the moment the tests starts, example:
         @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
         @TemplateParameter(name = "MQ_TOPICS", value = "TOPICS.FOO,TOPICS.BAR"),
 ```
-The tests basically consists in send and consume messages using the following protocols:
+The tests basically consists in send e consume messages using the following protocols:
   - [Openwire](http://activemq.apache.org/openwire.html)
   - [AMQP - Advanced Message Queuing Protocol](https://www.amqp.org/)
   - [Mqtt](http://mqtt.org/)
@@ -39,13 +39,18 @@ The CE-Testsuite is divided by profiles, to enable the **AMQ** profile all you n
 ```
 ###### Required ce-arq parameteres
   - -P**profile_name**
-  - -Dkubernetes.master=**address of your running OSE instance (master node)**
+    - -Pamq
+  - -Dkubernetes.master=**address of your running OSE instance (master note)**
+    - -Dkubernetes.master=https://openshift-master.mydomain.com:8443
   - -Dkubernetes.registry.url=**the registry address running in your ose instance**
+    - -Dkubernetes.registry.url=openshift-master.mydomain.com:5001
   - -Ddocker.url=**Docker url address**
+    - -Ddocker.url=https://openshift-master.mydomain.com2375
 
 ###### Optional ce-arq parameteres
   - -Dtest=**The test class name, if you want to run only one test, otherwise all tests will be executed**
-  - -Dkubernetes.ignore.cleanup=true **(default is false), It will ignore the resources cleanup, so you can take a look in the used pods for troubleshooting**
+    - -Dtest=testOpenWireConnection
+  - -Dkubernetes.ignore.cleanup=true **(default is false), It will ignore the resources cleanup, so you can take a look in the used pods to troubleshooting**
 
 > **All those are java parameters, so use -D.**
 ___

@@ -26,7 +26,7 @@
 		<version.meta-inf>1.6</version.meta-inf>
 		<version.arquillian>1.1.11.Final</version.arquillian>
 		<version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
-		<version.eap>7.5.6.Final-redhat-SNAPSHOT</version.eap>
+		<version.eap>7.5.5.Final-redhat-SNAPSHOT</version.eap> <!--eap 6.4.5/6 -->
 		<version.junit>4.10</version.junit>
 		<version.javax.servlet.api>3.1.0</version.javax.servlet.api>
 		<version.slf4j>1.7.5</version.slf4j>

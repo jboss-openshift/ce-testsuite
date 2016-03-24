@@ -2,7 +2,7 @@
 
 The EAP testsuite is subdivided in three subprojects:
   - eap64
-  - eap7
+  - eap70
   - integration
 
 ### How to run the tests
@@ -13,9 +13,18 @@ The Ce-Testsuite uses the [ce-arq](https://github.com/jboss-openshift/ce-arq) wh
 
 ###### Required ce-arq parameteres
   - -P**profile_name**
-  - -Dkubernetes.master=**address of your running OSE instance (master node)**
+    - -Pjdg
+  - -Dkubernetes.master=**address of your running OSE instance (master note)**
+    - -Dkubernetes.master=https://openshift-master.mydomain.com:8443
   - -Dkubernetes.registry.url=**the registry address running in your ose instance**
+    - -Dkubernetes.registry.url=openshift-master.mydomain.com:5001
   - -Ddocker.url=**Docker url address**
+    - -Ddocker.url=https://openshift-master.mydomain.com2375
+  - -Drouter.hostIP=**The OSE router IP**
+    - -Drouter.hostIP=192.168.1.254
+      - You can change this parameter name in the pom.xml
+      - For EAP 7, this parameter was changed to **router.host**
+
 
 ###### Optional ce-arq parameteres
   - -Dtest=**The test class name, if you want to run only one test, otherwise all tests will be executed**
@@ -49,17 +58,17 @@ For the EAP 6.4 tests the following quickistarts are used:
 
 The CE-Testsuite is divided by profiles, to enable the **eap64** profile all you need to do is to use the following maven parameter:
 ```sh
--Peap64
+-Peap,eap64
 ```
 ###### Running all tests
 For this example we'll consider the IP address 192.168.1.254 for required parameters, Example:
 ```sh
-$ mvn clean package test -Peap64 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375
+$ mvn clean package test -Peap,eap64 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
 ```
 ###### Running a specific test and ignoring the cleanup after the tests gets finished
 Example:
 ```sh
-$ mvn clean package test -Peap64 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Dtest=Eap64BasicTest -Dkubernetes.ignore.cleanup=true
+$ mvn clean package test -Peap,eap64 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254 -Dtest=Eap64BasicTest -Dkubernetes.ignore.cleanup=true
 ```
 ___
 
@@ -81,24 +90,77 @@ For the EAP 7 tests the following quickistarts are used:
   - [todolist-mongodb](https://github.com/jboss-openshift/openshift-quickstarts/tree/master/todolist/todolist-mongodb)
   - [todolist-jdbc](https://github.com/jboss-openshift/openshift-quickstarts/tree/master/todolist/todolist-jdbc)
 
-The CE-Testsuite is divided by profiles, to enable the **eap64** profile all you need to do is to use the following maven parameter:
+The CE-Testsuite is divided by profiles, to enable the **eap70** profile all you need to do is to use the following maven parameter:
 ```sh
--Peap7
+-Peap,eap70
 ```
 ###### Running all tests
 For this example we'll consider the IP address 192.168.1.254 for required parameters, Example:
 ```sh
-$ mvn clean package test -Peap7-Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375
+$ mvn clean package test -Peap,eap70 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.host=192.168.1.254
 ```
 ###### Running a specific test and ignoring the cleanup after the tests gets finished
 Example:
 ```sh
-$ mvn clean package test -Peap7 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Dtest=Eap7BasicTest -Dkubernetes.ignore.cleanup=true
+$ mvn clean package test -Peap,eap70 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.host=192.168.1.254 -Dtest=Eap70BasicTest -Dkubernetes.ignore.cleanup=true
 ```
 
 ___
 #### Integration
-TODO
+EAP integration will run all integration tests from EAP project. FOr this tests we are using EAP 6.4.5.
+To be able to run this tests you may have to download the [source coude](https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=40901&product=appplatform&version=6.4&downloadType=patches) and build the needed dependencies. To build the dependencies please follow the steps below:
+
+##### Enable the test-jar in the testsuite sub-project pom.xml:
+Add the following content on **EAP_SRC/testsuite/pom.xml
+```java
+        <plugins>
+           <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <version>2.2</version>
+               <executions>
+                   <execution>
+                       <goals>
+                           <goal>test-jar</goal>
+                       </goals>
+                   </execution>
+               </executions>
+           </plugin>
+...
+```
+
+##### Build the testsuite sub-project:
+Example:
+```sh
+cd $EAP_SRC/testsuite && mvn clean install
+```
+
+The above command will generate the required jars, which are:
+
+  - $EAP_SRC/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar
+  - $EAP_SRC/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.5.5.Final-redhat-SNAPSHOT-tests.jar
+ 
+Install the jars manually:
+
+```sh
+mvn install:install-file -Dfile=/dados/sources/jboss-eap-6.4.5-src/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-basic -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
+
+mvn install:install-file -Dfile=/dados/sources/jboss-eap-6.4.5-src/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-smoke -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
+```
+
+After building the needed dependencies :
+```sh
+mvn clean package -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:237
+```
+
+If you are going to use a newer EAP version, remember to change parent pom.xml according EAP version that you are using:
+```java
+<version.eap>7.5.5.Final-redhat-SNAPSHOT</version.eap>
+```
+
+```sh
+mvn clean package -Peap,integration -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
+```
 
 ___
  
@@ -116,6 +178,7 @@ This test covers all basic operations to make sure the docker image generated by
   - Todo list (Persistent)
     - Add items in the todo list, restart do pods (scale up and scale down) and then check if the added itens remains there as expected.
   - kitchensink: add a new contact and verifies if it was successfully added.
+  
 All tests above are executed using HTTP and HTTPS protocols.
 
 

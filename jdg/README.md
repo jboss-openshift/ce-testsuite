@@ -39,13 +39,20 @@ The CE-Testsuite is divided by profiles, to enable the **JDG** profile all you n
 ```
 ###### Required ce-arq parameteres
   - -P**profile_name**
+    - -Pjdg
   - -Dkubernetes.master=**address of your running OSE instance (master note)**
+    - -Dkubernetes.master=https://openshift-master.mydomain.com:8443
   - -Dkubernetes.registry.url=**the registry address running in your ose instance**
+    - -Dkubernetes.registry.url=openshift-master.mydomain.com:5001
   - -Ddocker.url=**Docker url address**
+    - -Ddocker.url=https://openshift-master.mydomain.com2375
   - -Drouter.hostIP=**The OSE router IP**
+    - -Drouter.hostIP=192.168.1.254
+      - You can change this parameter name in the pom.xml
 
 ###### Optional ce-arq parameteres
   - -Dtest=**The test class name, if you want to run only one test, otherwise all tests will be executed**
+    - -Dtest=JdgMysqlTest
   - -Dkubernetes.ignore.cleanup=true **(default is false), It will ignore the resources cleanup, so you can take a look in the used pods to troubleshooting**
 
 > **All those are java parameters, so use -D.**
