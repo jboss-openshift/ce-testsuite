@@ -30,7 +30,7 @@
         <version.org.hornetq>2.3.25.SP6-redhat-1</version.org.hornetq>
         <version.org.jboss.xnio>3.1.0.Final</version.org.jboss.xnio>
         <version.alpn-boot>8.1.0.v20141016</version.alpn-boot>
-        </properties>
+    </properties>
 
     <profiles>
         <profile>
@@ -445,10 +445,22 @@
                 </dependency>
 
                 <!-- Test Utils -->
+                <dependency>
+                    <groupId>org.jboss.arquillian.junit</groupId>
+                    <artifactId>arquillian-junit-container</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.protocol</groupId>
+                    <artifactId>arquillian-protocol-jmx</artifactId>
+                    <scope>test</scope>
+                </dependency>
 
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-ce-api</artifactId>
+                    <artifactId>arquillian-ce-shrinkwrap</artifactId>
+                    <scope>test</scope>
                 </dependency>
 
                 <dependency>
@@ -457,25 +469,37 @@
                     <scope>test</scope>
                 </dependency>
 
-                <!-- dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-ce-eap6</artifactId>
-                </dependency -->
-
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-ce-wildfly</artifactId>
+                    <artifactId>arquillian-ce-cube</artifactId>
+                    <scope>test</scope>
                 </dependency>
 
                 <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-ce-mgmtclient</artifactId>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
+                    <scope>test</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
                     <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-ce-httpclient</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.googlecode.json-simple</groupId>
+                    <artifactId>json-simple</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.ce.testsuite</groupId>
+                    <artifactId>common-ce-testsuite</artifactId>
                 </dependency>
 
                 <dependency>
@@ -511,18 +535,7 @@
 
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-container-spi</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-container-impl-base</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.junit</groupId>
-                    <artifactId>arquillian-junit-container</artifactId>
                     <scope>test</scope>
                 </dependency>
 
