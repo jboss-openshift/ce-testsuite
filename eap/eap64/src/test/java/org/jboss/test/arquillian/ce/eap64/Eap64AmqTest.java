@@ -25,6 +25,7 @@ package org.jboss.test.arquillian.ce.eap64;
 
 import java.net.URL;
 
+import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
@@ -34,6 +35,8 @@ import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,16 +57,51 @@ public class Eap64AmqTest {
     @RouteURL("secure-eap-app")
     private URL secureUrl;
 
+    @ArquillianResource
+    OpenShiftHandle adapter;
+
     @Test
     @RunAsClient
+    @InSequence(1)
     public void testPageRendering() throws Exception {
         actualTestPageRendering(url.toString());
     }
 
     @Test
     @RunAsClient
+    @InSequence(2)
     public void testSecurePageRendering() throws Exception {
         actualTestPageRendering(secureUrl.toString());
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(3)
+    public void testLogMessages() throws Exception {
+        testLogContains("Received Message from queue: This is message ");
+        testLogContains("Received Message from topic: This is message ");
+    }
+
+    private void testLogContains(String prefix) throws Exception {
+        final int TRIES = 5;
+        int i = 0;
+        while (i < TRIES) {
+            String podLog = adapter.getLog("eap-app-1");
+            if (messagesExist(podLog, prefix))
+                break;
+            Thread.sleep(5 * 1000);
+            i++;
+        }
+        if (i >= TRIES)
+            throw new Exception(String.format("Message '%s' not found in log", prefix));
+    }
+
+    private boolean messagesExist(String podLog, String prefix) {
+        for (int i = 1; i <= 5; i++) {
+            if (!podLog.contains(prefix + i))
+                return false;
+        }
+        return true;
     }
 
     private void actualTestPageRendering(String baseUrl) throws Exception {
