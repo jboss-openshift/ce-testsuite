@@ -66,7 +66,7 @@ import org.junit.runner.RunWith;
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
     @OpenShiftResource("classpath:amq-app-secret.json"),
-    @OpenShiftResource("classpath:testrunner-claim.json")
+    @OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqPersistentSecuredTest extends AmqSslTestBase {
 

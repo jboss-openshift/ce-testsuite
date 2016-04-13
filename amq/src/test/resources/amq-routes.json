@@ -1,0 +1,102 @@
+{
+	"apiVersion": "v1",
+	"kind": "List",
+	"items": [
+		{
+		    "apiVersion": "v1",
+		    "kind": "Route",
+		    "metadata": {
+		        "name": "amq-test-tcp",
+		        "selfLink": "/oapi/v1/namespaces/amq-test/routes/amq-test-tcp",
+		        "labels": {
+		            "application": "amq-test"
+		        }
+		    },
+		    "spec": {
+		        "host": "tcp-amq.router.default.svc.cluster.local",
+		        "to": {
+		            "kind": "Service",
+		            "name": "amq-test-amq-tcp-ssl"
+		        },
+		        "port": {
+		            "targetPort": "61617"
+		        },
+                "tls": {
+                	"termination": "passthrough"
+                }
+		    }
+		},
+		{
+		    "kind": "Route",
+		    "apiVersion": "v1",
+		    "metadata": {
+		        "name": "amq-test-amqp",
+		        "selfLink": "/oapi/v1/namespaces/amq-test/routes/amq-test-amqp",
+		        "labels": {
+		            "application": "amq-test"
+		        }
+		    },
+		    "spec": {
+		        "host": "amqp-amq.router.default.svc.cluster.local",
+		        "to": {
+		            "kind": "Service",
+		            "name": "amq-test-amq-amqp-ssl"
+		        },
+		        "port": {
+		            "targetPort": "5671"
+		        },
+                "tls": {
+                	"termination": "passthrough"
+                }
+		    }
+		},
+		{
+		    "kind": "Route",
+		    "apiVersion": "v1",
+		    "metadata": {
+		        "name": "amq-test-mqtt",
+		        "selfLink": "/oapi/v1/namespaces/amq-test/routes/amq-test-mqtt",
+		        "labels": {
+		            "application": "amq-test"
+		        }
+		    },
+		    "spec": {
+		        "host": "mqtt-amq.router.default.svc.cluster.local",
+		        "to": {
+		            "kind": "Service",
+		            "name": "amq-test-amq-mqtt-ssl"
+		        },
+		        "port": {
+		            "targetPort": "8883"
+		        },
+                "tls": {
+                	"termination": "passthrough"
+                }
+		    }
+		},
+		{
+		    "kind": "Route",
+		    "apiVersion": "v1",
+		    "metadata": {
+		        "name": "amq-test-stomp",
+		        "selfLink": "/oapi/v1/namespaces/amq-test/routes/amq-test-stomp",
+		        "labels": {
+		            "application": "amq-test"
+		        }
+		    },
+		    "spec": {
+		        "host": "stomp-amq.router.default.svc.cluster.local",
+		        "to": {
+		            "kind": "Service",
+		            "name": "amq-test-amq-stomp-ssl"
+		        },
+		        "port": {
+		            "targetPort": "61612"
+		        },
+                "tls": {
+                	"termination": "passthrough"
+                }
+		    }
+		}
+	]
+}

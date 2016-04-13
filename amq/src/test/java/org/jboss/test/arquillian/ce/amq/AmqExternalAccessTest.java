@@ -25,7 +25,6 @@ package org.jboss.test.arquillian.ce.amq;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.fusesource.mqtt.client.BlockingConnection;
@@ -38,46 +37,51 @@ import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import java.util.logging.Logger;
 
-/**
- * @author Ricardo Martinelli
- */
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-ssl.json",
-    parameters = {
-        @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
-        @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
-        @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
-        @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
-        @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
-        @TemplateParameter(name = "AMQ_TRUSTSTORE_PASSWORD", value = "password"),
-        @TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
+	parameters = {
+		@TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
+		@TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
+		@TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
+		@TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
+		@TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
+		@TemplateParameter(name = "AMQ_TRUSTSTORE_PASSWORD", value = "password"),
+		@TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-    @OpenShiftResource("classpath:amq-app-secret.json"),
-    @OpenShiftResource("classpath:testrunner-secret.json")
+@OpenShiftResource("classpath:amq-routes.json"),
+@OpenShiftResource("classpath:amq-app-secret.json"),
+@OpenShiftResource("classpath:testrunner-secret.json")
 })
-public class AmqSecuredTest extends AmqSslTestBase {
-
-    private String openWireMessage = "Arquillian test - Secured OpenWire";
-    private String amqpMessage = "Arquillian Test - Secured AMQP";
-    private String mqttMessage = "Arquillian test - Secured MQTT";
-    private String stompMessage = "Arquillian test - Secured STOMP";
-
-    @Deployment
-    public static WebArchive getDeployment() throws IOException {
-        return getSslDeploymentBase();
-    }
-
-    @Test
-    public void testSecuredOpenwire() throws Exception {
-        AmqClient client = createAmqClient("ssl://" + System.getenv("AMQ_TEST_AMQ_TCP_SSL_SERVICE_HOST") + ":61617");
+public class AmqExternalAccessTest extends AmqSslTestBase {
+	
+	private static final Logger log = Logger.getLogger(AmqExternalAccessTest.class.getName());
+	
+	static final String STOMP_URL = "ssl://stomp-amq.router.default.svc.cluster.local:443";
+	static final String MQTT_URL = "ssl://mqtt-amq.router.default.svc.cluster.local:443";
+	static final String AMQP_URL = "amqps://amqp-amq.router.default.svc.cluster.local:443";
+	static final String OPENWIRE_URL = "ssl://tcp-amq.router.default.svc.cluster.local:443";
+	
+    static final String USERNAME = System.getProperty("amq.username", "amq-test");
+    static final String PASSWORD = System.getProperty("amq.password", "redhat");
+    
+    private String openWireMessage = "Arquillian test - OpenWire";
+    private String amqpMessage = "Arquillian Test - AMQP";
+    private String mqttMessage = "Arquillian test - MQTT";
+    private String stompMessage = "Arquillian test - STOMP";
+    
+    
+	@Test
+	@RunAsClient
+    public void testOpenWireConnection() throws Exception {
+        AmqClient client = new AmqClient(OPENWIRE_URL, USERNAME, PASSWORD);
 
         client.produceOpenWireJms(openWireMessage, true);
         String received = client.consumeOpenWireJms(true);
@@ -86,31 +90,30 @@ public class AmqSecuredTest extends AmqSslTestBase {
     }
 
     @Test
-    @SuppressWarnings("unused")
-    public void testSecuredAmqp() throws Exception {
-        StringBuilder connectionUrl = new StringBuilder();
-        connectionUrl.append("amqps://");
-        connectionUrl.append(System.getenv("AMQ_TEST_AMQ_AMQP_SSL_SERVICE_HOST"));
-        connectionUrl.append(":5671?transport.trustStoreLocation=");
+    @RunAsClient
+    public void testAmqpConnection() throws Exception {
+    	StringBuilder connectionUrl = new StringBuilder();
+        connectionUrl.append("amqps://stomp-amq.router.default.svc.cluster.local:443");
+        connectionUrl.append("?transport.trustStoreLocation=");
         connectionUrl.append(System.getProperty("javax.net.ssl.trustStore"));
         connectionUrl.append("&transport.trustStorePassword=");
         connectionUrl.append(System.getProperty("javax.net.ssl.trustStorePassword"));
         connectionUrl.append("&transport.verifyHost=false");
-        AmqClient client = createAmqClient(connectionUrl.toString());
+        AmqClient client = new AmqClient(connectionUrl.toString(), USERNAME, PASSWORD);
 
         client.produceAmqp(amqpMessage);
-
         String received = client.consumeAmqp();
+
         assertEquals(amqpMessage, received);
     }
 
-    @Test
-    public void testSecuredMqtt() throws Exception {
+//    @Test
+//    @RunAsClient
+    public void testMqttConnection() throws Exception {
         MQTT mqtt = new MQTT();
-        mqtt.setHost("ssl://" + System.getenv("AMQ_TEST_AMQ_MQTT_SSL_SERVICE_HOST") + ":8883");
+        mqtt.setHost(MQTT_URL);
         mqtt.setUserName(USERNAME);
         mqtt.setPassword(PASSWORD);
-        mqtt.setSslContext(getSSLContext());
 
         BlockingConnection connection = mqtt.blockingConnection();
         connection.connect();
@@ -127,13 +130,14 @@ public class AmqSecuredTest extends AmqSslTestBase {
     }
 
     @Test
-    public void testSecuredStomp() throws Exception {
-        AmqClient client = createAmqClient("ssl://" + System.getenv("AMQ_TEST_AMQ_STOMP_SSL_SERVICE_HOST") + ":61612");
+    @RunAsClient
+    public void testStompConnection() throws Exception {
+        AmqClient client = new AmqClient(STOMP_URL, USERNAME, PASSWORD);
 
         client.produceStomp(stompMessage);
         String received = client.consumeStomp();
 
         assertEquals(stompMessage, received);
     }
-
+	
 }
