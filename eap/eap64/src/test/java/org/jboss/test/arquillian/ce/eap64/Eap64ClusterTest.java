@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -27,7 +28,6 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -135,15 +135,14 @@ public class Eap64ClusterTest {
      * This happens in another thread and continues until we reach only one pod
      * in activity.
      * 
-     * The HTTP requests must continue to work correctly, as the openshift router
-     * should redirect them to any working pod.
+     * The HTTP requests must continue to work correctly, as the openshift
+     * router should redirect them to any working pod.
      * 
      * @param url
      * @throws Exception
      */
     @Test
     @RunAsClient
-    @Ignore
     public void testAppStillWorksWhenScalingDown(@RouteURL("eap-app") URL url) throws Exception {
         // Number of HTTP requests we are going to do
         final int REQUESTS = 100;
@@ -173,6 +172,93 @@ public class Eap64ClusterTest {
             }
 
             Thread.sleep(1000);
+        }
+    }
+
+    /**
+     * This one tests the behavior when a client is doing a long HTTP request
+     * and the pod which is serving it dies (or, in this case it's killed).
+     * 
+     * We have two expected results:
+     * 
+     * (1) - If the request is shorter than 60 seconds it should be OK, because
+     * openshift has a graceful timeout of 60 seconds by default.
+     * 
+     * (2) - If the request is longer than 60 seconds we should expect a
+     * disconnect in our HTTP connection.
+     * 
+     * @param url
+     * @throws Exception
+     */
+    @Test
+    @RunAsClient
+    public void testLongRequest(@RouteURL("eap-app") URL url) throws Exception {
+        final int DELAY_BETWEEN_REQUESTS = 5;
+        final String serviceUrl = url.toString();
+
+        scale(2);
+
+        doDelayRequest(serviceUrl, 20, true);
+
+        log.info(String.format("Waiting %d seconds before doing the second long request", DELAY_BETWEEN_REQUESTS));
+        Thread.sleep(DELAY_BETWEEN_REQUESTS * 1000);
+
+        doDelayRequest(serviceUrl, 200, false);
+    }
+
+    private void doDelayRequest(String url, int seconds, boolean shouldSucceed) throws Exception {
+        HttpRequest request = HttpClientBuilder.doGET(url + "/cluster1/Hi");
+        HttpResponse response = client.execute(request);
+        String body = response.getResponseBodyAsString();
+        assertTrue("Got an invalid response: " + body, body.startsWith("Served from node: "));
+        log.info(String.format("HI - BODY = %s", body));
+
+        String podName = getHostName(body);
+        request = HttpClientBuilder.doGET(String.format("%s/cluster1/Delay?d=%d", url, seconds));
+        (new killPod(podName)).start();
+        log.info(String.format("About to request DELAY with %d seconds", seconds));
+        response = client.execute(request);
+        body = response.getResponseBodyAsString();
+        int stars = StringUtils.countMatches(body, "*");
+        log.info(String.format("DELAY - BODY = %s", body));
+        if (shouldSucceed)
+            assertEquals(String.format("Number of stars (%d) should match number of seconds (%d)", stars, seconds),
+                    seconds, stars);
+        else
+            assertFalse(String.format("Number of stars (%d) should not match number of seconds (%d)", stars, seconds),
+                    seconds == stars);
+    }
+
+    private String getHostName(String body) {
+        String parts1[] = body.split(": ");
+        String parts2[] = parts1[1].split("/");
+        return parts2[0];
+    }
+
+    private class killPod extends Thread {
+        String podName;
+        int initialDelay;
+
+        public killPod(String podName, int initialDelay) {
+            log.info(String.format("killPod created with name %s. Waiting %d secs to start killing\n", podName,
+                    initialDelay));
+            this.podName = podName;
+            this.initialDelay = initialDelay;
+        }
+
+        public killPod(String podName) {
+            this(podName, 5);
+        }
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(initialDelay * 1000);
+                log.info("Now killing " + podName);
+                adapter.killPod(podName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
