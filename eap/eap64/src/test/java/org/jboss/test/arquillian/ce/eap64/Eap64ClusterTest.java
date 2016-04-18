@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -59,7 +60,7 @@ public class Eap64ClusterTest {
     @Before
     public void Setup() throws Exception {
         token = config.getToken();
-        assertFalse("Auth token must be provided", token.isEmpty());
+        assertFalse("Auth token must be provided", token == null || token.isEmpty());
 
         client = HttpClientBuilder.untrustedConnectionClient();
     }
@@ -116,15 +117,21 @@ public class Eap64ClusterTest {
 
     private List<String> getPods() throws Exception {
         List<String> pods = adapter.getPods();
-        pods.removeIf(p -> p.endsWith("-build") || !p.startsWith("eap-app-"));
+
+        //pods.removeIf(p -> p.endsWith("-build") || !p.startsWith("eap-app-"));
+        Iterator<String> iterator = pods.iterator();
+        while (iterator.hasNext()) {
+            String p = iterator.next();
+            if (p.endsWith("-build") || !p.startsWith("eap-app-")) {
+                iterator.remove();
+            }
+        }
 
         return pods;
     }
 
     private String buildURL(String podName) {
-        final String PROXY_URL = "%s/api/%s/namespaces/%s/pods/%s:%s/proxy%s";
-        return String.format(PROXY_URL, config.getKubernetesMaster(), config.getApiVersion(), config.getNamespace(),
-                podName, 8080, "/cluster1/StoreInSession");
+        return adapter.url(podName, 8080, "/cluster1/StoreInSession", null);
     }
 
     /**
@@ -137,8 +144,8 @@ public class Eap64ClusterTest {
      * 
      * The HTTP requests must continue to work correctly, as the openshift
      * router should redirect them to any working pod.
-     * 
-     * @param url
+     *
+     * @param url route url
      * @throws Exception
      */
     @Test
@@ -186,8 +193,8 @@ public class Eap64ClusterTest {
      * 
      * (2) - If the request is longer than 60 seconds we should expect a
      * disconnect in our HTTP connection.
-     * 
-     * @param url
+     *
+     * @param url route url
      * @throws Exception
      */
     @Test
@@ -215,7 +222,7 @@ public class Eap64ClusterTest {
 
         String podName = getHostName(body);
         request = HttpClientBuilder.doGET(String.format("%s/cluster1/Delay?d=%d", url, seconds));
-        (new killPod(podName)).start();
+        (new DeletePod(podName)).start();
         log.info(String.format("About to request DELAY with %d seconds", seconds));
         response = client.execute(request);
         body = response.getResponseBodyAsString();
@@ -235,18 +242,17 @@ public class Eap64ClusterTest {
         return parts2[0];
     }
 
-    private class killPod extends Thread {
+    private class DeletePod extends Thread {
         String podName;
         int initialDelay;
 
-        public killPod(String podName, int initialDelay) {
-            log.info(String.format("killPod created with name %s. Waiting %d secs to start killing\n", podName,
-                    initialDelay));
+        public DeletePod(String podName, int initialDelay) {
+            log.info(String.format("DeletePod created with name %s. Waiting %d secs to start deleting.\n", podName, initialDelay));
             this.podName = podName;
             this.initialDelay = initialDelay;
         }
 
-        public killPod(String podName) {
+        public DeletePod(String podName) {
             this(podName, 5);
         }
 
@@ -254,8 +260,8 @@ public class Eap64ClusterTest {
         public void run() {
             try {
                 Thread.sleep(initialDelay * 1000);
-                log.info("Now killing " + podName);
-                adapter.killPod(podName);
+                log.info("Now deleting " + podName);
+                adapter.deletePod(podName);
             } catch (Exception e) {
                 e.printStackTrace();
             }
