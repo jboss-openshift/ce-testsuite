@@ -25,9 +25,8 @@ package org.jboss.test.arquillian.ce.amq;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -47,6 +46,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -104,10 +104,10 @@ public class AmqMeshTest extends AmqTestBase {
 			if(!podName.equals("testrunner")) {
                 final String queueSizeQuery = "org.apache.activemq:type=Broker,brokerName=" + podName + ",destinationType=Queue,destinationName=QUEUES.FOO/QueueSize";
                 String path = "jolokia/read/" + queueSizeQuery;
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(adapter.execute(podName, 8778, path)))) {
-                    String jsonString = br.readLine();
-                    log.info(jsonString);
-                    assertEquals(20, new JSONObject(jsonString).get("value"));
+                try (InputStream inputStream = adapter.execute(podName, 8778, path)) {
+                    JSONTokener tokener = new JSONTokener(inputStream);
+                    JSONObject jsonObject = new JSONObject(tokener);
+                    assertEquals(20, jsonObject.get("value"));
                 }
             }
 		}
