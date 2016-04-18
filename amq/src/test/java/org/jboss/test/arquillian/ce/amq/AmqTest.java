@@ -58,7 +58,7 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-    @OpenShiftResource("classpath:testrunner-claim.json") // Because SSL tests requires testrunner pod to be persistent it is required for all tests to create the pvc even if not used
+	@OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqTest extends AmqTestBase {
 

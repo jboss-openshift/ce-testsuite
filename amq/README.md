@@ -1,13 +1,19 @@
-# CE-Testsuite - AMQ
+# CE-Testsuite - A-MQ
 
-This testsuite will test all AMQ S2I application templates which are:
+This testsuite will test all A-MQ S2I application templates which are:
  
   - [amq62-basic.json](https://github.com/jboss-openshift/application-templates/blob/master/amq/amq62-basic.json)
   - [amq62-persistent-ssl.json](https://github.com/jboss-openshift/application-templates/blob/master/amq/amq62-persistent-ssl.json)
   - [amq62-persistent.json](https://github.com/jboss-openshift/application-templates/blob/master/amq/amq62-persistent.json)
   - [amq62-ssl.json](https://github.com/jboss-openshift/application-templates/blob/master/amq/amq62-ssl.json)
+  
+In addition, three other tests will show some of the features that can be used with A-MQ:
 
-The AMQ application templates does not use quickstart applications, it only register Queues and Topics. This tests register the following:
+  - A-MQ Clustering with Mesh
+  - External Non-OpenShift clients accessing A-MQ
+  - Source-to-Image to change default configuration
+
+The A-MQ application templates does not use quickstart applications, it only register Queues and Topics. This tests register the following:
   - **Queues**:
     - QUEUES.FOO
     - QUEUES.BAR
@@ -33,7 +39,7 @@ The Ce-Testsuite uses the [ce-arq](https://github.com/jboss-openshift/ce-arq) wh
   - Java 7 or higher
   - Openshift V3 or higher
  
-The CE-Testsuite is divided by profiles, to enable the **AMQ** profile all you need to do is to use the following maven parameter:
+The CE-Testsuite is divided by profiles, to enable the **amq** profile all you need to do is to use the following maven parameter:
 ```sh
 -Pamq
 ```
@@ -67,7 +73,7 @@ $ mvn clean package test -Pamq -Dkubernetes.master=https://192.168.1.254:8443 -D
 ```
 
 #### What this tests cover?
-The AMQ tests will produces and consume messages using the Openwire, mqtt, amqp and stomp protocols.
+The A-MQ tests will produces and consume messages using the Openwire, mqtt, amqp and stomp protocols.
 
 #### Found an issue?
 Please, feel free to report the issue that you found [here](https://github.com/jboss-openshift/ce-testsuite/issues/new).

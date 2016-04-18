@@ -15,10 +15,10 @@ import org.junit.Before;
 
 public class AmqSslTestBase extends AmqTestBase {
 
-    static {
-        System.setProperty("javax.net.ssl.trustStore", "/opt/eap/certs/broker.ts");
+	static {
+        System.setProperty("javax.net.ssl.trustStore", "/etc/eap-certs/broker.ts");
         System.setProperty("javax.net.ssl.trustStorePassword", "password");
-        System.setProperty("javax.net.ssl.keyStore", "/opt/eap/certs/broker.ks");
+        System.setProperty("javax.net.ssl.keyStore", "/etc/eap-certs/broker.ks");
         System.setProperty("javax.net.ssl.keyStorePassword", "password");
     }
 
@@ -64,6 +64,7 @@ public class AmqSslTestBase extends AmqTestBase {
 
     public TransportSslOptions createTransportSslOptions() {
         TransportSslOptions sslOptions = new TransportSslOptions();
+        sslOptions.setTrustAll(true);
         sslOptions.setVerifyHost(false);
         return sslOptions;
     }

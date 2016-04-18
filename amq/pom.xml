@@ -65,6 +65,12 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20160212</version>
+		</dependency>
 
 		<!-- Test Utils -->
 
@@ -164,6 +170,10 @@
 							<includes>
 								<include>org/jboss/**/*Test.java</include>
 							</includes>
+							<properties>
+								<truststore.location>/opt/eap/certs/broker.ts</truststore.location>
+								<keystore.location>/opt/eap/certs/broker.ks</keystore.location>
+							</properties>
 							<systemPropertyVariables>
 								<!-- Custom DNS resolver for OpenShift routes -->
 								<sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
