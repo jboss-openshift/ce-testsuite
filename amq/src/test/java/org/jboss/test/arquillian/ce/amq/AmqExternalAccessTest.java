@@ -42,7 +42,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.util.logging.Logger;
 
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-ssl.json",
@@ -61,17 +60,12 @@ import java.util.logging.Logger;
 @OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqExternalAccessTest extends AmqSslTestBase {
-	
-	private static final Logger log = Logger.getLogger(AmqExternalAccessTest.class.getName());
-	
-	static final String STOMP_URL = "ssl://stomp-amq.router.default.svc.cluster.local:443";
+
+    static final String STOMP_URL = "ssl://stomp-amq.router.default.svc.cluster.local:443";
 	static final String MQTT_URL = "ssl://mqtt-amq.router.default.svc.cluster.local:443";
 	static final String AMQP_URL = "amqps://amqp-amq.router.default.svc.cluster.local:443";
 	static final String OPENWIRE_URL = "ssl://tcp-amq.router.default.svc.cluster.local:443";
-	
-    static final String USERNAME = System.getProperty("amq.username", "amq-test");
-    static final String PASSWORD = System.getProperty("amq.password", "redhat");
-    
+
     private String openWireMessage = "Arquillian test - OpenWire";
     private String amqpMessage = "Arquillian Test - AMQP";
     private String mqttMessage = "Arquillian test - MQTT";

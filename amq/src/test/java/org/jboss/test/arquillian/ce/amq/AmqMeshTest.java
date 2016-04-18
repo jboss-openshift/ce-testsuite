@@ -28,16 +28,10 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
-
-import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -57,8 +51,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-basic.json", parameters = {
-		@TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-basic.json",
+    parameters = {
+        @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
 		@TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO"),
 		@TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
 		@TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"), })
@@ -67,35 +62,26 @@ import org.junit.runner.RunWith;
 	@OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqMeshTest extends AmqTestBase {
-
 	private static final Logger log = Logger.getLogger(AmqMeshTest.class.getName());
-
-	static final String FILENAME = "amq.properties";
-	static final String USERNAME = System.getProperty("amq.username", "amq-test");
-	static final String PASSWORD = System.getProperty("amq.password", "redhat");
-
-	static final String BASE_REST_URL = "https://ce-os-rhel-master.usersys.redhat.com:8443/api/v1";
 
 	static List<String> pods = new ArrayList<>();
 
 	@ArquillianResource
-	ConfigurationHandle handler;
-	
+    OpenShiftHandle adapter;
+
 	@Deployment
 	public static WebArchive getDeployment() throws IOException {
-		WebArchive war = getDeploymentBase();
-		
-		return war;
-	}
+        return getDeploymentBase();
+    }
 
 	@Test
 	@RunAsClient
 	@InSequence(1)
-	public void scaleUpResources(@ArquillianResource OpenShiftHandle handler) throws Exception {
-		handler.scaleDeployment("amq-test", 2);
-		pods.addAll(handler.getPods());
-		
-		log.info("Pods used for test: " + pods.toString());
+    public void scaleUpResources() throws Exception {
+        adapter.scaleDeployment("amq-test", 2);
+        pods.addAll(adapter.getPods());
+
+        log.info("Pods used for test: " + pods.toString());
 	}
 
 	@Test
@@ -116,29 +102,14 @@ public class AmqMeshTest extends AmqTestBase {
 
 		for (String podName : pods) {
 			if(!podName.equals("testrunner")) {
-				final String queueSizeQuery = "org.apache.activemq:type=Broker,brokerName=" + podName
-						+ ",destinationType=Queue,destinationName=QUEUES.FOO/QueueSize";
-				
-				URL url = new URL(BASE_REST_URL + "/namespaces/rmartinelli/pods/https:" + podName
-						+ ":8778/proxy/jolokia/read/" + queueSizeQuery);
-						
-				HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-	
-				String basicAuth = "Bearer " + handler.getToken();
-				log.info("Header >>" + basicAuth);
-				con.setHostnameVerifier(new HostnameVerifier() {
-					@Override
-		            public boolean verify(String s, SSLSession sslSession) {
-		                return true;
-		            }
-		        });
-				con.setRequestProperty ("Authorization", basicAuth);
-				
-				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-				String jsonString = br.readLine();
-				log.info(jsonString);
-				assertEquals(20, new JSONObject(jsonString).get("value"));
-			}
+                final String queueSizeQuery = "org.apache.activemq:type=Broker,brokerName=" + podName + ",destinationType=Queue,destinationName=QUEUES.FOO/QueueSize";
+                String path = "jolokia/read/" + queueSizeQuery;
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(adapter.execute(podName, 8778, path)))) {
+                    String jsonString = br.readLine();
+                    log.info(jsonString);
+                    assertEquals(20, new JSONObject(jsonString).get("value"));
+                }
+            }
 		}
 	}
 

@@ -48,6 +48,7 @@
 		<version.qpid>0.8.0</version.qpid>
 		<version.mqtt>1.10</version.mqtt>
 		<version.stompjms>1.19</version.stompjms>
+		<version.json>20160212</version.json>
 		<!-- SSO -->
 		<version.json-simple>1.1.1</version.json-simple>
 		<!-- undertow JSR356 implementation -->
@@ -267,6 +268,12 @@
 				<artifactId>arquillian-governor-ignore</artifactId>
 				<version>${version.arquillian.governor}</version>
 				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>${version.json}</version>
 			</dependency>
 
 			<!-- AMQ -->
