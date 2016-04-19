@@ -26,6 +26,7 @@ package org.jboss.test.arquillian.ce.amq;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -65,6 +66,7 @@ import org.junit.runner.RunWith;
 })
 @Replicas(2)
 public class AmqMultiReplicasPVTest extends AmqTestBase {
+    private static final Logger log = Logger.getLogger(AmqMultiReplicasPVTest.class.getName());
 
     private String openWireMessage = "Arquillian test - Persistent OpenWire";
 
@@ -90,7 +92,20 @@ public class AmqMultiReplicasPVTest extends AmqTestBase {
     }
 
     @Test
+    @RunAsClient
     @InSequence(3)
+    public void testDeletePodAndWaitForRecreation(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        for (String podName : adapter.getPods()) {
+            if (podName.startsWith("amq-test-amq")) {
+                adapter.deletePod(podName);
+                log.info(String.format("Deleted pod %s, current pods: %s", podName, adapter.getPods()));
+            }
+        }
+        adapter.resumeDeployment("amq-test-amq", 2);
+    }
+
+    @Test
+    @InSequence(4)
     public void testOpenWireConsumeConnection() throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
 
