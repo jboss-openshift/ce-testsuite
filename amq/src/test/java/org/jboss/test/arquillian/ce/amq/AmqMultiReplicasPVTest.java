@@ -95,13 +95,7 @@ public class AmqMultiReplicasPVTest extends AmqTestBase {
     @RunAsClient
     @InSequence(3)
     public void testDeletePodAndWaitForRecreation(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        for (String podName : adapter.getPods()) {
-            if (podName.startsWith("amq-test-amq")) {
-                adapter.deletePod(podName);
-                log.info(String.format("Deleted pod %s, current pods: %s", podName, adapter.getPods()));
-            }
-        }
-        adapter.resumeDeployment("amq-test-amq", 2);
+        adapter.replacePods("amq-test-amq", 2);
     }
 
     @Test
