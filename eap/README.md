@@ -111,7 +111,7 @@ EAP integration will run all integration tests from EAP project. FOr this tests 
 To be able to run this tests you may have to download the [source coude](https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=40901&product=appplatform&version=6.4&downloadType=patches) and build the needed dependencies. To build the dependencies please follow the steps below:
 
 ##### Enable the test-jar in the testsuite sub-project pom.xml:
-Add the following content on **EAP_SRC/testsuite/pom.xml
+Add the following content on **EAP_SRC/testsuite/pom.xml**
 ```java
         <plugins>
            <plugin>
@@ -130,6 +130,35 @@ Add the following content on **EAP_SRC/testsuite/pom.xml
 ```
 
 ##### Build the testsuite sub-project:
+
+Before build and install the needed jars, it is necessary do some modifications in the EAP testsuite:
+
+To make the JBoss CLI tests work, we need to change the jboss-as-testsuite-shared to configure the CLI username and password which will be used to ran the tests. To do that edit the **org.jboss.as.test.integration.management.util.CLITestUtil.java** like below:
+
+###### Create the variables username and password (after line 46):
+```java
+    private static String username = System.getProperty("jboss.cli.username");
+    private static char[] password = System.getProperty("jboss.cli.password").toCharArray();
+```
+
+###### Edit the method getCommandContext():
+```java
+    public static CommandContext getCommandContext() throws CliInitializationException {
+        setJBossCliConfig();
+        return CommandContextFactory.getInstance().newCommandContext(serverAddr, serverPort, username, password);
+    }
+```
+
+###### Edit the method getCommandContext(OutputStream out):
+```java
+    public static CommandContext getCommandContext(OutputStream out) throws CliInitializationException {
+        SecurityActions.setSystemProperty(JREADLINE_TERMINAL, JREADLINE_TEST_TERMINAL);
+        setJBossCliConfig();
+        return CommandContextFactory.getInstance().newCommandContext(serverAddr, serverPort, username, password, null, out);
+    }
+```
+
+#### Building the testsuite project:
 Example:
 ```sh
 cd $EAP_SRC/testsuite && mvn clean install
@@ -140,7 +169,24 @@ The above command will generate the required jars, which are:
   - $EAP_SRC/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar
   - $EAP_SRC/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.5.5.Final-redhat-SNAPSHOT-tests.jar
  
-Install the jars manually:
+### Install the jars manually:
+
+Before to install the jars, is necessary add a user in the **jboss-ejb-client.properties** in the following file: 
+**$EAP_SRC/testsuite/integration/smoke/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar** 
+and add the following content:
+
+```sh
+remote.connection.default.username=guest
+remote.connection.default.password=guest
+```
+
+After change the sources as explained above, build the **jboss-as-testsuite-shared** sources:
+```sh
+$ cd $JBOSS_SOURCES/testsuite/shared
+$ mvn clean install
+```
+
+After all steps above above, install the needed jars:
 
 ```sh
 mvn install:install-file -Dfile=/dados/sources/jboss-eap-6.4.5-src/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-basic -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
@@ -148,18 +194,21 @@ mvn install:install-file -Dfile=/dados/sources/jboss-eap-6.4.5-src/testsuite/int
 mvn install:install-file -Dfile=/dados/sources/jboss-eap-6.4.5-src/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-smoke -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
 ```
 
-After building the needed dependencies :
+At this moment we are ready to start the tests, to start it use the following command:
 ```sh
-mvn clean package -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:237
+mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:237
 ```
+
+If you want to execute a single integration test you need to add the extra test which will prepare the container to run the tests, example:
+
+```sh
+mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:237 -Dtest=<some test you whish to run>
+```
+
 
 If you are going to use a newer EAP version, remember to change parent pom.xml according EAP version that you are using:
 ```java
 <version.eap>7.5.5.Final-redhat-SNAPSHOT</version.eap>
-```
-
-```sh
-mvn clean package -Peap,integration -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
 ```
 
 ___
