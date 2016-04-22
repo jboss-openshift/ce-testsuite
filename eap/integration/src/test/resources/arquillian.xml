@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   JBoss, Home of Professional Open Source
-  Copyright 2016, Red Hat, Inc. and/or its affiliates, and individual
+  Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
   contributors by the @authors tag. See the copyright.txt in the
   distribution for a full listing of individual contributors.
 
@@ -16,22 +16,20 @@
   limitations under the License.
 -->
 <arquillian xmlns="http://jboss.org/schema/arquillian" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://jboss.org/schema/arquillian
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
           http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
-  
+
     <!-- Uncomment to have test archives exported to the file system for inspection -->
     <!--
     <engine>
 	         <property name="deploymentExportPath">target/arquillian</property>
     </engine>
     -->
-    <!-- Force the use of the Servlet 3.0 protocol with all containers, as it is the most mature -->
-    <defaultProtocol type="jmx-as7" />
-    
+
     <extension qualifier="ce-cube">
-        <property name="kubernetesNamespacePrefix">cearq-eap64</property>
+        <property name="kubernetesNamespacePrefix">cearq-integration</property>
     </extension>
-  
+
     <!-- Example configuration for arquillian openshift extension -->
     <extension qualifier="openshift">
         <!-- Properties describing the location of the OpenShift instance.
@@ -41,16 +39,19 @@
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <!-- Ports to be proxied locally, <container>:<port> -->
-        <property name="proxiedContainerPorts">testrunner:9999,testrunner:9990,testrunner:8080</property>
+        <property name="proxiedContainerPorts">testrunner:9999,testrunner:9990,testrunner:8080,testrunner:4447,testrunner:5445</property>
     </extension>
 
     <!--
       class mode causes the test pod to be recreated for each test class. this
       is required to pickup environment variables specific to the test
-      environment, e.g. service host, port, etc.  testrunner relates to the pod
+      environment, e.g. service host, port, etc. testrunner relates to the pod
       name in testrunner-pod.json.
     -->
-    <container qualifier="testrunner" mode="class" default="true">
+    <container qualifier="testrunner" mode="suite" default="true">
+        <protocol type="jmx-as7">
+            <property name="executionType">REMOTE</property>
+        </protocol>
         <!-- Pod running remote tests. -->
         <configuration>
             <!-- For use with archillian-chameleon -->
@@ -60,4 +61,57 @@
         </configuration>
     </container>
 
+
+    <!-- Configurations needed by the PreparePod class, this class will prepare de pod before top run the tests -->
+    <extension qualifier="prepare-pod">
+        <property name="allowConnectingToRunningServer">true</property>
+        <property name="jbossHome">/opt/eap</property>
+        <property name="username">admin</property>
+        <property name="password">Admin#70365</property>
+        <property name="cubeId">testrunner</property>
+    </extension>
+
+    <!-- igonre some methods which fail in the remote container -->
+    <extension qualifier="governor-ignore">
+        <property name="expression">org\.jboss\.as\.test\.[.]*</property>
+        <!-- Caused by: java.io.FileNotFoundException, this tests looks for files on localhost  -->
+        <property name="methods">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideInEarAtWarLevelExploded</property>
+        <property name="methods_1">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideInEarAtEarLevelExploded</property>
+        <property name="methods_2">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideExploded</property>
+        <property name="methods_3">org.jboss.as.test.integration.logging.misc.LoggingPreferencesPerDeployFalseTestCase#checkDummyLogTest</property>
+
+        <!-- java.lang.AssertionError: null -->
+        <property name="methods_4">org.jboss.as.test.integration.management.api.web.VirtualServerTestCase#testDefaultVirtualServer</property>
+
+        <!-- use a extra port: 8181 -->
+        <property name="methods_5">org.jboss.as.test.integration.management.cli.GlobalOpsTestCase#testAddRemoveOperation</property>
+        <property name="methods_6">org.jboss.as.test.integration.management.http.HttpPostMgmtOpsTestCase#testAddRemoveOperation</property>
+
+        <!-- Connection refused on port 10389 -->
+        <property name="methods_7">org.jboss.as.test.integration.naming.ExternalContextBindingTestCase#testWithActualLDAPContextWithoutCache</property>
+        <property name="methods_8">org.jboss.as.test.integration.naming.ExternalContextBindingTestCase#testWithActualLDAPContextWithCache</property>
+
+        <!-- Assert fail -->
+        <property name="methods_9">org.jboss.as.test.integration.security.loginmodules.UsersRolesLoginModuleTestCase#testExternalFiles</property>
+
+        <!-- java.lang.NullPointerException: null -->
+        <property name="methods_10">org.jboss.as.test.integration.ws.authentication.EJBEndpointAuthenticationTestCase#accessHelloForNoneWithValidRole1</property>
+        <property name="methods_11">org.jboss.as.test.integration.ws.authentication.EJBEndpointAuthenticationTestCase#accessHelloForNoneWithValidRole2</property>
+        <property name="methods_12">org.jboss.as.test.integration.ws.authentication.EJBEndpointAuthenticationTestCase#accessHelloForNoneWithValidRole3</property>
+        <property name="methods_13">org.jboss.as.test.integration.ws.authentication.EJBEndpointAuthenticationTestCase#accessHelloForRoleWithInvalidRole</property>
+        <property name="methods_14">org.jboss.as.test.integration.ws.authentication.EJBEndpointAuthenticationTestCase#accessHelloForRolesWithInvalidRole</property>
+        <property name="methods_15">org.jboss.as.test.integration.ws.authentication.EJBEndpointAuthenticationTestCase#accessHelloWithBadPassword</property>
+        <property name="methods_16">org.jboss.as.test.integration.ws.authentication.EJBEndpointAuthenticationTestCase#accessHelloWithoutUsernameAndPassord</property>
+        <property name="methods_17">org.jboss.as.test.integration.ws.authentication.EJBEndpointAuthenticationTestCase#accessHelloWithUnauthorizedUser</property>
+
+        <!-- the server presented no authentication mechanisms -->
+        <property name="methods_18">org.jboss.as.test.integration.ejb.security.InherritanceAnnSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_19">org.jboss.as.test.integration.ejb.security.InherritanceAnnSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_20">org.jboss.as.test.integration.ejb.security.InjectionAnnSFSBtoSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_21">org.jboss.as.test.integration.ejb.security.InjectionAnnSFSBtoSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_22">org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_23">org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_24">org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_25">org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
+    </extension>
 </arquillian>
