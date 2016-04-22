@@ -114,4 +114,5 @@
         <property name="methods_24">org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
         <property name="methods_25">org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
     </extension>
+
 </arquillian>
