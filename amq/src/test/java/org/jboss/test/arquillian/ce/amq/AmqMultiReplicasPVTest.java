@@ -26,7 +26,6 @@ package org.jboss.test.arquillian.ce.amq;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -66,8 +65,6 @@ import org.junit.runner.RunWith;
 })
 @Replicas(2)
 public class AmqMultiReplicasPVTest extends AmqTestBase {
-    private static final Logger log = Logger.getLogger(AmqMultiReplicasPVTest.class.getName());
-
     private String openWireMessage = "Arquillian test - Persistent OpenWire";
 
     @Deployment
