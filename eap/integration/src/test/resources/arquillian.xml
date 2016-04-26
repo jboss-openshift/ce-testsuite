@@ -48,14 +48,11 @@
       environment, e.g. service host, port, etc. testrunner relates to the pod
       name in testrunner-pod.json.
     -->
-    <container qualifier="testrunner" mode="suite" default="true">
-        <protocol type="jmx-as7">
-            <property name="executionType">REMOTE</property>
-        </protocol>
+    <container qualifier="testrunner" default="true">
         <!-- Pod running remote tests. -->
         <configuration>
             <!-- For use with archillian-chameleon -->
-            <property name="target">jboss eap:6.4.5:remote</property>
+            <property name="chameleonTarget">jboss eap:6.4.5:remote</property>
             <property name="username">admin</property>
             <property name="password">Admin#70365</property>
         </configuration>
@@ -114,4 +111,5 @@
         <property name="methods_24">org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
         <property name="methods_25">org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
     </extension>
+
 </arquillian>
