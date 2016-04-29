@@ -7,6 +7,7 @@
       "name": "testrunner"
     }
   },
+
   "spec": {
     "containers": [
       {
@@ -18,6 +19,17 @@
               "-c",
               "curl -s --digest -L http://localhost:9990/management --header \"Content-Type: application/json\" -d '{\"operation\":\"read-attribute\",\"name\":\"server-state\",\"json.pretty\":1}' | grep -iq running"
             ]
+          }
+        },
+        "lifecycle": {
+          "postStart": {
+            "exec": {
+              "command": [
+                "/bin/bash",
+                "-c",
+                "/bin/echo \"guest=b5d048a237bfd2874b6928e1f37ee15e\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"appuser=a2bd9ae9a89bfecaa3633d4bd49d327a\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"user1=23624d2f74dfcb9688651a066d90b97e\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"user2=ab3f9e12039435236d89de9023a304b7\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"admin=779bbcdbf82f3da3990e94b29bceefe6\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"appuser=appuser\" >> /opt/eap/standalone/configuration/application-roles.properties; /bin/echo \"guest=guest\" >> /opt/eap/standalone/configuration/application-roles.properties; /bin/echo \"user1=Users,Role1\" >> /opt/eap/standalone/configuration/application-roles.properties; /bin/echo \"user2=Users,Role2\" >> /opt/eap/standalone/configuration/application-roles.properties; /bin/echo \"testSuite=29a64f8524f32269aa9b681efc347f96\" >> /opt/eap/standalone/configuration/mgmt-users.properties; /bin/echo \"testSuite=SuperUser\" >> /opt/eap/standalone/configuration/mgmt-groups.properties; /bin/echo \"admin=admin\" >> /opt/eap/standalone/configuration/mgmt-groups.properties"
+              ]
+            }
           }
         },
         "image": "jboss-eap-6/eap64-openshift:1.2",

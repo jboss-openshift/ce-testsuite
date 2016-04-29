@@ -29,7 +29,7 @@
         <version.javax.tx>1.0.1.Final-redhat-3</version.javax.tx>
         <version.org.jboss.security.jbossxacml>2.0.8.Final-redhat-5</version.org.jboss.security.jbossxacml>
         <version.org.hornetq>2.3.25.SP6-redhat-1</version.org.hornetq>
-        <version.org.jboss.xnio>3.3.6.Final</version.org.jboss.xnio>
+        <version.org.jboss.xnio>3.3.1.Final</version.org.jboss.xnio>
         <version.alpn-boot>8.1.7.v20160121</version.alpn-boot>
         <ejb3.version>7.5.0.Final-redhat-21</ejb3.version>
         <commons-lang>2.6</commons-lang>
@@ -48,6 +48,12 @@
         <jaxen.version>1.1.3.redhat-4</jaxen.version>
         <h2.version>1.3.168.redhat-4</h2.version>
         <jbossws-spi.version>2.3.1.Final-redhat-1</jbossws-spi.version>
+        <aether-impl.version>1.0.1.v20141111</aether-impl.version>
+        <!-- the version of eap testsuite and eap final version is different -->
+        <jboss-cli-version>7.5.4.Final-redhat-4</jboss-cli-version>
+        <jboss-security-version>7.5.4.Final-redhat-4</jboss-security-version>
+        <jboss.arquillian.common.version>7.5.5.Final-redhat-3</jboss.arquillian.common.version>
+        <version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
     </properties>
 
     <profiles>
@@ -92,6 +98,7 @@
                             <argLine>
                                 -Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${version.alpn-boot}/alpn-boot-${version.alpn-boot}.jar
                                 -Djboss.node.name=testrunner -Djboss.qualified.host.name=testrunner -Dorg.arquillian.cube.portforwarer.local=true
+                                -Dorg.jboss.remoting-jmx.timeout=120
                             </argLine>
                             <runOrder>alphabetical</runOrder>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -201,6 +208,8 @@
                                 <exclude>**/JACCForEarModulesTestCase.java</exclude>
                                 <exclude>**/JACCTranslateServletDDTestCase.java</exclude>
                                 <exclude>**/TimeoutRedeployTestCase.java</exclude>
+                                <exclude>**/DeployedXmlDataSourceTestCase.java</exclude>
+                                <exclude>**/DuplicateGlobalBindingInjectionTestCase.java</exclude>
                                 <!-- java.lang.RuntimeException: Could not invoke deployment method... -->
                                 <exclude>org/jboss/as/test/integration/security/jaspi/**</exclude>
                                 <exclude>**/ServiceMBeanSupportTestCase.java</exclude>
@@ -217,6 +226,7 @@
                                 <!-- Failed to deploy war due missing dependencies -->
                                 <exclude>**/CertificateRolesLoginModuleTestCase.java</exclude>
                                 <exclude>**/DatabaseCertLoginModuleTestCase.java</exclude>
+                                <exclude>**/MappedNameInjectionTestCase.java</exclude>
                                 <exclude>org/jboss/as/test/integration/security/passwordmasking/**</exclude>
                                 <!-- Uses in memory database -->
                                 <exclude>**/DatabaseLoginModuleTestCase.java</exclude>
@@ -290,7 +300,7 @@
                         <groupId>org.jboss.as</groupId>
                         <artifactId>jboss-as-cli</artifactId>
                         <scope>test</scope>
-                        <version>${version.eap}</version>
+                        <version>${jboss-cli-version}</version>
                         <exclusions>
                             <exclusion>
                                 <groupId>org.jboss.xnio</groupId>
@@ -303,14 +313,14 @@
                         <groupId>org.jboss.as</groupId>
                         <artifactId>jboss-as-security</artifactId>
                         <scope>test</scope>
-                        <version>${version.eap}</version>
+                        <version>${jboss-security-version}</version>
                     </dependency>
 
                     <dependency>
                         <groupId>org.jboss.as</groupId>
                         <artifactId>jboss-as-arquillian-common</artifactId>
+                        <version>${jboss.arquillian.common.version}</version>
                         <scope>test</scope>
-                        <version>${version.eap}</version>
                     </dependency>
 
                     <!-- Test deps -->
@@ -517,6 +527,28 @@
                         <groupId>org.jboss.ws</groupId>
                         <artifactId>jbossws-spi</artifactId>
                         <version>${jbossws-spi.version}</version>
+                    </dependency>
+
+                    <!-- arquillian chamaleon depenencies -->
+                    <!--dependency>
+                        <groupId>org.arquillian.container</groupId>
+                        <artifactId>arquillian-container-chameleon</artifactId>
+                        <version>1.0.0.Alpha6</version>
+                        <scope>test</scope>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.aether</groupId>
+                        <artifactId>aether-impl</artifactId>
+                        <version>${aether-impl.version}</version>
+                    </dependency-->
+
+                    <!-- arquillian governor -->
+                    <dependency>
+                        <groupId>org.arquillian.extension</groupId>
+                        <artifactId>arquillian-governor-ignore</artifactId>
+                        <version>${version.arquillian.governor}</version>
+                        <scope>test</scope>
                     </dependency>
 
                 </dependencies>
@@ -820,6 +852,23 @@
                 <dependency>
                     <groupId>org.apache.directory.server</groupId>
                     <artifactId>apacheds-server-annotations</artifactId>
+                </dependency>
+
+                <!-- arquillian chamaleon depenencies -->
+                <!--dependency>
+                    <groupId>org.arquillian.container</groupId>
+                    <artifactId>arquillian-container-chameleon</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.eclipse.aether</groupId>
+                    <artifactId>aether-impl</artifactId>
+                </dependency-->
+
+                <!-- arquillian governor -->
+                <dependency>
+                    <groupId>org.arquillian.extension</groupId>
+                    <artifactId>arquillian-governor-ignore</artifactId>
                 </dependency>
 
             </dependencies>

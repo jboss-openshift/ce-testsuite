@@ -23,13 +23,6 @@
 
 package org.jboss.as.ce.testsuite;
 
-import com.squareup.okhttp.Response;
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.ConfigBuilder;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.ExecListener;
-import io.fabric8.kubernetes.client.dsl.ExecWatch;
 import org.arquillian.cube.openshift.impl.client.OpenShiftClient;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
@@ -46,29 +39,17 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-
 /**
  * @author spolti
  */
 public class PreparePod {
 
-    private final Logger log = Logger.getLogger(PreparePod.class.getName());
+    private static final Logger log = Logger.getLogger(PreparePod.class.getName());
 
     private final String DEFAULT_USERNAME = "admin";
     private final String DEFAULT_PASSWORD = "Admin#70365";
     private final String DEFAULT_POD_JBOSS_HOME = "/opt/eap";
     private final String DEFAULT_CUBE_ID = "testrunner";
-
-    private final String[] app_users = {"appuser=a2bd9ae9a89bfecaa3633d4bd49d327a","guest=b5d048a237bfd2874b6928e1f37ee15e",
-            "user1=23624d2f74dfcb9688651a066d90b97e", "user2=ab3f9e12039435236d89de9023a304b7", "admin=779bbcdbf82f3da3990e94b29bceefe6"};
-    private final String[] app_roles = {"appuser=appuser", "guest=guest","user1=Users,Role1", "user2=Users,Role2"};
-    private final String[] mgt_user = {"testSuite=29a64f8524f32269aa9b681efc347f96"};
-    private final String[] mgt_role = {"testSuite=SuperUser", "admin=admin"};
-
-    private final String APP_USER_PROPERTIES_LOCATION = "/standalone/configuration/application-users.properties";
-    private final String APP_ROLES_PROPERTIES_LOCATION = "/standalone/configuration/application-roles.properties";
-    private final String MGMT_USER_PROPERTIES_LOCATION = "/standalone/configuration/mgmt-users.properties";
-    private final String MGMT_ROLES_PROPERTIES_LOCATION = "/standalone/configuration/mgmt-groups.properties";
 
     //This is only for the tests running successfully using portforwarder. DO NOT DO IT IN PRODUCTION
     private final String CHANGE_REMOTING_INTERFACE = "/socket-binding-group=standard-sockets/socket-binding=remoting:write-attribute(name=interface,value=management)";
@@ -79,7 +60,7 @@ public class PreparePod {
     private CommandContext ctx;
 
     /*
-    * To run the EAP integrationt tests against a we have to do some changes in the testrunner pod:
+    * To run the EAP integration tests against a EAP instance running on Opensfhift we have to do some changes in the testrunner pod:
     *  -> Change the remoting port bind address.
     *  -> Change the http port bind address.
     *  -> set the jboss.dist property, needed by the CLI tests
@@ -95,6 +76,7 @@ public class PreparePod {
         final String JBOSS_HOME = getProperty(props, "jbossHome", DEFAULT_POD_JBOSS_HOME);
         final String cubeId = getProperty(props, "cubeId", DEFAULT_CUBE_ID);
 
+        // Setting Command Context
         ctx = getCtx(username, password);
 
         log.info("Preparing pod...." + descriptor.extension("prepare-pod") + ", " + aStart.getDeployableContainer());
@@ -107,7 +89,7 @@ public class PreparePod {
         System.setProperty("jboss.cli.username", username);
         System.setProperty("jboss.cli.password", password);
 
-        // Changing the remoting and http port bind address
+        // Changing the remoting, messaging and http port bind address so we can use it through port-forwarder
         if (executeCliCommand(CHANGE_REMOTING_INTERFACE) && executeCliCommand(CHANGE_HTTP_INTERFACE) && executeCliCommand(CHANGE_MESSAGING_INTERFACE)) {
             log.info("Command Successfully executed [ " + CHANGE_REMOTING_INTERFACE + "].");
             log.info("Command Successfully executed [ " + CHANGE_HTTP_INTERFACE + "].");
@@ -118,33 +100,6 @@ public class PreparePod {
         } else {
             log.info("Command execution failed.");
         }
-
-        //Adding the needed users to run the EAP integration tests
-        log.info("Trying to add the needed users...");
-        for( int i = 0; i< app_users.length; i++) {
-            log.info("Executing the command [/bin/echo " + app_users[i] + " >> " + JBOSS_HOME + "/" + APP_USER_PROPERTIES_LOCATION + "] in the NameSpace [" + client.getClient().getNamespace() + "] " +
-                    " against the pod [" + cubeId + "]");
-            executeCommand(client, cubeId, "/bin/echo " + app_users[i] + " >> " + JBOSS_HOME + "/" + APP_USER_PROPERTIES_LOCATION);
-        }
-
-        for( int i = 0; i< app_roles.length; i++) {
-            log.info("Executing the command [/bin/echo " + app_roles[i] + " >> " + JBOSS_HOME + "/" + APP_ROLES_PROPERTIES_LOCATION + "] in the NameSpace [" + client.getClient().getNamespace() + "] " +
-                    " against the pod [" + cubeId + "]");
-            executeCommand(client, cubeId, "/bin/echo " + app_roles[i] + " >> " + JBOSS_HOME + "/" + APP_ROLES_PROPERTIES_LOCATION);
-        }
-
-        for (int i = 0; i < mgt_user.length; i++) {
-            log.info("Executing the command [/bin/echo " + mgt_user[i] + " >> " + JBOSS_HOME + "/" + MGMT_USER_PROPERTIES_LOCATION + "] in the NameSpace [" + client.getClient().getNamespace() + "] " +
-                    " against the pod [" + cubeId + "]");
-            executeCommand(client, cubeId, "/bin/echo " + mgt_user[i] + " >> " + JBOSS_HOME + "/" + MGMT_USER_PROPERTIES_LOCATION);
-        }
-
-        for (int i = 0; i < mgt_role.length; i++) {
-            log.info("Executing the command [/bin/echo " + mgt_role[i] + " >> " + JBOSS_HOME + "/" + MGMT_ROLES_PROPERTIES_LOCATION + "] in the NameSpace [" + client.getClient().getNamespace() + "] " +
-                    " against the pod [" + cubeId + "]");
-            executeCommand(client, cubeId, "/bin/echo " + mgt_role[i] + " >> " + JBOSS_HOME + "/" + MGMT_ROLES_PROPERTIES_LOCATION);
-        }
-
     }
 
     /*
@@ -186,58 +141,5 @@ public class PreparePod {
             return defaultValue;
         }
         return value;
-    }
-
-    /*
-    * Try to create the user in the target container using the kubernetes client to perform the commands
-    * @param OpenshiftClient
-    * @param cubeId
-    * @param command
-    */
-    private void executeCommand(OpenShiftClient client, String cubeId, String command) throws InterruptedException {
-
-        final String bash = "/bin/bash";
-        final String bashC = "-c";
-
-        //build the kubernetes config using the OpenshiftClient to get the required parameters
-        Config config = new ConfigBuilder().withMasterUrl(String.valueOf(client.getClient().getMasterUrl()))
-                .withNamespace(client.getClient().getNamespace())
-                .withOauthToken(client.getClient().getConfiguration().getOauthToken())
-                .build();
-
-        //Execute the desired command
-        try {
-            try (final KubernetesClient kubeClient = new DefaultKubernetesClient(config);
-                 ExecWatch watch = kubeClient.pods().withName(cubeId)
-                         .readingInput(System.in)
-                         .writingOutput(System.out)
-                         .writingError(System.err)
-                         .withTTY()
-                         .usingListener(new SimpleListener())
-                         .exec(bash, bashC, command)) {
-                Thread.sleep(2 * 1000);
-            }
-        } catch (Exception e) {
-            //do nothing
-        }
-
-    }
-
-    private static class SimpleListener implements ExecListener {
-
-        @Override
-        public void onOpen(Response response) {
-            System.out.println("The shell will remain open for 2 seconds.");
-        }
-
-        @Override
-        public void onFailure(IOException e, Response response) {
-            System.err.println("shell barfed");
-        }
-
-        @Override
-        public void onClose(int code, String reason) {
-            System.out.println("The shell will now close.");
-        }
     }
 }
