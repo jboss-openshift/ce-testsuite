@@ -210,7 +210,7 @@ mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.my
 If you want to execute a single integration test you need to add the extra test which will prepare the container to run the tests, example:
 
 ```sh
-mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:237 -Dtest=<some test you whish to run>
+mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375 -Dtest=<some test you whish to run>
 ```
 
 If you are going to use a newer EAP version, remember to change parent pom.xml according EAP version that you are using:
