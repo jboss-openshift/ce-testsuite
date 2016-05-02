@@ -261,7 +261,7 @@ public class Eap64ClusterTest {
             try {
                 Thread.sleep(initialDelay * 1000);
                 log.info("Now deleting " + podName);
-                adapter.deletePod(podName);
+                adapter.deletePod(podName, -1); // use default grace period?
             } catch (Exception e) {
                 e.printStackTrace();
             }
