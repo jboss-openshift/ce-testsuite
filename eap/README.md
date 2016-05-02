@@ -107,7 +107,9 @@ $ mvn clean package test -Peap,eap70 -Dkubernetes.master=https://192.168.1.254:8
 
 ___
 #### Integration
-EAP integration will run all integration tests from EAP project. FOr this tests we are using EAP 6.4.5.
+EAP integration will run all integration tests from EAP project.
+The reason to perform these tests is to make sure all of basic EAP's funcionailities are properly working in a containerized envorironment.
+For this tests we are using EAP 6.4.5.
 To be able to run this tests you may have to download the [source coude](https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=40901&product=appplatform&version=6.4&downloadType=patches) and build the needed dependencies. To build the dependencies please follow the steps below:
 
 ##### Enable the test-jar in the testsuite sub-project pom.xml:
@@ -186,6 +188,12 @@ $ cd $JBOSS_SOURCES/testsuite/shared
 $ mvn clean install
 ```
 
+And the **model-test** sources:
+```sh
+$ cd $JBOSS_SOURCES/model-test
+$ mvn clean install
+```
+
 After all steps above above, install the needed jars:
 
 ```sh
@@ -196,20 +204,20 @@ mvn install:install-file -Dfile=/dados/sources/jboss-eap-6.4.5-src/testsuite/int
 
 At this moment we are ready to start the tests, to start it use the following command:
 ```sh
-mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:237
+mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375
 ```
 
 If you want to execute a single integration test you need to add the extra test which will prepare the container to run the tests, example:
 
 ```sh
-mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:237 -Dtest=<some test you whish to run>
+mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375 -Dtest=<some test you whish to run>
 ```
-
 
 If you are going to use a newer EAP version, remember to change parent pom.xml according EAP version that you are using:
 ```java
 <version.eap>7.5.5.Final-redhat-SNAPSHOT</version.eap>
 ```
+Also remember to change the EAP related stuff versions like CLI.
 
 ___
  
