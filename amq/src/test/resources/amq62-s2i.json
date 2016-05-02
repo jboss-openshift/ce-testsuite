@@ -1,0 +1,303 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "description": "The broker's AMQP port."
+                },
+                "labels": {
+                    "application": "broker",
+                    "template": "amq62-basic",
+                    "xpaas": "1.2.0"
+                },
+                "name": "broker-amq-amqp"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 5672,
+                        "targetPort": 5672
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "broker-amq"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "description": "The broker's MQTT port."
+                },
+                "labels": {
+                    "application": "broker",
+                    "template": "amq62-basic",
+                    "xpaas": "1.2.0"
+                },
+                "name": "broker-amq-mqtt"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 1883,
+                        "targetPort": 1883
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "broker-amq"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "description": "The broker's STOMP port."
+                },
+                "labels": {
+                    "application": "broker",
+                    "template": "amq62-basic",
+                    "xpaas": "1.2.0"
+                },
+                "name": "broker-amq-stomp"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 61613,
+                        "targetPort": 61613
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "broker-amq"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "description": "The broker's OpenWire port."
+                },
+                "labels": {
+                    "application": "broker",
+                    "template": "amq62-basic",
+                    "xpaas": "1.2.0"
+                },
+                "name": "broker-amq-tcp"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 61616,
+                        "targetPort": 61616
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "broker-amq"
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "DeploymentConfig",
+            "metadata": {
+                "labels": {
+                    "application": "broker",
+                    "template": "amq62-basic",
+                    "xpaas": "1.2.0"
+                },
+                "name": "broker-amq"
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "broker-amq"
+                },
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "application": "broker",
+                            "deploymentConfig": "broker-amq"
+                        },
+                        "name": "broker-amq"
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "env": [
+                                    {
+                                        "name": "AMQ_USER",
+                                        "value": "usera7o"
+                                    },
+                                    {
+                                        "name": "AMQ_PASSWORD",
+                                        "value": "OU83Hy4C"
+                                    },
+                                    {
+                                        "name": "AMQ_TRANSPORTS",
+                                        "value": "openwire"
+                                    },
+                                    {
+                                        "name": "AMQ_QUEUES",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "AMQ_TOPICS",
+                                        "value": ""
+                                    },
+                                    {
+                                        "name": "AMQ_MESH_DISCOVERY_TYPE",
+                                        "value": "kube"
+                                    },
+                                    {
+                                        "name": "AMQ_MESH_SERVICE_NAME",
+                                        "value": "broker-amq-tcp"
+                                    },
+                                    {
+                                        "name": "AMQ_MESH_SERVICE_NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "AMQ_STORAGE_USAGE_LIMIT",
+                                        "value": "100 gb"
+                                    }
+                                ],
+                                "image": "amq-test",
+                                "imagePullPolicy": "Always",
+                                "name": "broker-amq",
+                                "ports": [
+                                    {
+                                        "containerPort": 8778,
+                                        "name": "jolokia",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 5672,
+                                        "name": "amqp",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 1883,
+                                        "name": "mqtt",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 61613,
+                                        "name": "stomp",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 61616,
+                                        "name": "tcp",
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/amq/bin/readinessProbe.sh"
+                                        ]
+                                    }
+                                }
+                            }
+                        ],
+                        "terminationGracePeriodSeconds": 60
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "broker-amq"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "amq-test:latest"
+                            }
+						}
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "amq-test",
+                "labels": {
+                    "application": "amq-test"
+                }
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "amq-test",
+                "labels": {
+                    "application": "amq-test"
+                }
+            },
+            "spec": {
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "https://github.com/jboss-openshift/openshift-examples.git",
+                        "ref": "master"
+                    },
+                    "contextDir": "amq/amq-configuration"
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "forcePull": true,
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "namespace": "openshift",
+                            "name": "jboss-amq-62:1.2"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "amq-test:latest"
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        }
+    ]
+}
