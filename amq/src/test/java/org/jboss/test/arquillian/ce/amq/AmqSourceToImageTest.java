@@ -23,11 +23,9 @@
 
 package org.jboss.test.arquillian.ce.amq;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-import org.jboss.arquillian.ce.adapter.OpenShiftAdapter;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -41,28 +39,32 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 @OpenShiftResources({
-@OpenShiftResource("classpath:amq62-s2i.json"),
-@OpenShiftResource("classpath:testrunner-secret.json")
+    @OpenShiftResource("classpath:amq62-s2i.json"),
+    @OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqSourceToImageTest extends AmqTestBase {
-	
-	@Deployment
-	public static WebArchive getDeployment() throws IOException {
-		WebArchive war = getDeploymentBase();
-		
-		return war;
-	}
-	
-	@Test
-	@RunAsClient
-	public void testCustomConfiguration(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-		String amqPod = "";
-		for( String podName : adapter.getPods()) {
-			if(Pattern.matches("(broker-amq-)[0-9]+(-build)", podName)) amqPod = podName;
-		}
-		boolean added = adapter.getLog(amqPod).contains("hello.xml");
-		
-		if(!added) throw new AssertionError("File hello.xml was not added in the A-MQ pod");
-	}
-	
+    private static final Pattern NAME_REGEXP = Pattern.compile("(broker-amq-)[0-9]+(-build)");
+
+    @Deployment
+    public static WebArchive getDeployment() throws IOException {
+        return getDeploymentBase();
+    }
+
+    @Test
+    @RunAsClient
+    public void testCustomConfiguration(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        String amqPod = "";
+        for (String podName : adapter.getPods()) {
+            if (NAME_REGEXP.matcher(podName).matches()) {
+                amqPod = podName;
+                break;
+            }
+        }
+
+        boolean added = adapter.getLog(amqPod).contains("hello.xml");
+        if (!added) {
+            throw new AssertionError("File hello.xml was not added in the A-MQ pod");
+        }
+    }
+
 }
