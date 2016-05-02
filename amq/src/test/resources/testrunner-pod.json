@@ -56,11 +56,6 @@
 					{
 						"name": "ADMIN_PASSWORD",
 						"value": "Admin#70365"
-					},
-
-					{
-						"name": "DEBUG",
-						"value": "true"
 					}
 				]
 			}
