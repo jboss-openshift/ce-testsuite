@@ -35,11 +35,10 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-//@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-sso-s2i.json",
-//		labels = "application=eap-app")
-@Template(url = "https://raw.githubusercontent.com/bdecoste/application-templates/cloud-572/eap/eap64-sso-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/eap/eap64-sso-s2i.json",
 		labels = "application=eap-app",
 		parameters = {
+			@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "master"),
         	@TemplateParameter(name = "SSO_PUBLIC_KEY", value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiLezsNQtZSaJvNZXTmjhlpIJnnwgGL5R1vkPLdt7odMgDzLHQ1h4DlfJPuPI4aI8uo8VkSGYQXWaOGUh3YJXtdO1vcym1SuP8ep6YnDy9vbUibA/o8RW6Wnj3Y4tqShIfuWf3MEsiH+KizoIJm6Av7DTGZSGFQnZWxBEZ2WUyFt297aLWuVM0k9vHMWSraXQo78XuU3pxrYzkI+A4QpeShg8xE7mNrs8g3uTmc53KR45+wW1icclzdix/JcT6YaSgLEVrIR9WkkYfEGj3vSrOzYA46pQe6WQoenLKtIDFmFDPjhcPoi989px9f+1HCIYP0txBS/hnJZaPdn5/lEUKQIDAQAB")
         })
 @OpenShiftResources({

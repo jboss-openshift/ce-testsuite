@@ -57,6 +57,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-ce-httpclient</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -83,24 +84,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- KIE -->
-
-        <dependency>
-            <groupId>org.kie.server</groupId>
-            <artifactId>kie-server-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kie.server</groupId>
-            <artifactId>kie-server-client</artifactId>
-        </dependency>
-
-        <!-- Dependencies needed to use JMS/AMQ -->
-
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-all</artifactId>
-        </dependency>
 
     </dependencies>
 

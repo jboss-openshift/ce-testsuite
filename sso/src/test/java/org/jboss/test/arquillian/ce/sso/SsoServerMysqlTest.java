@@ -35,7 +35,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/sso/sso70-mysql.json",
+@Template(url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/sso/sso70-mysql.json",
 		labels = "application=sso,component=server")
 @OpenShiftResources({
     @OpenShiftResource("classpath:sso-service-account.json"),

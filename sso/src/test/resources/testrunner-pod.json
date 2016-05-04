@@ -8,7 +8,7 @@
 		}
 	},
 	"spec": {
-	    "terminationGracePeriodSeconds": 120,
+	    "terminationGracePeriodSeconds": 300,
 		"containers": [{
 			"name": "testrunner",
 			"readinessProbe" : {
