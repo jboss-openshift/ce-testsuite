@@ -62,7 +62,7 @@ public class AmqSourceToImageTest extends AmqTestBase {
             }
         }
 
-        boolean added = adapter.getLog(amqPod).contains("hello.xml");
+        boolean added = adapter.getLog(amqPod, null).contains("hello.xml");
         Assert.assertTrue("File hello.xml was not added in the A-MQ pod", added);
     }
 
