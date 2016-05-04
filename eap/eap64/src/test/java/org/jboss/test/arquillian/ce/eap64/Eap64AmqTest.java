@@ -24,6 +24,7 @@
 package org.jboss.test.arquillian.ce.eap64;
 
 import java.net.URL;
+import java.util.HashMap;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -84,9 +85,13 @@ public class Eap64AmqTest {
 
     private void testLogContains(String prefix) throws Exception {
         final int TRIES = 5;
+
+        HashMap<String, String> labels = new HashMap<String, String>();
+        labels.put("deploymentConfig", "eap-app");
+
         int i = 0;
         while (i < TRIES) {
-            String podLog = adapter.getLog("eap-app-1");
+            String podLog = adapter.getLog("eap-app-1", labels);
             if (messagesExist(podLog, prefix))
                 break;
             Thread.sleep(5 * 1000);
