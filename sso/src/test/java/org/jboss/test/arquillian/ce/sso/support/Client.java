@@ -16,31 +16,86 @@
  */
 package org.jboss.test.arquillian.ce.sso.support;
 
-import java.util.Map;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.ConfigBuilder;
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.ExecListener;
+import io.fabric8.kubernetes.client.dsl.ExecWatch;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import org.apache.http.client.CookieStore;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 
+import org.jboss.arquillian.ce.api.OpenShiftHandle;
+
+import com.squareup.okhttp.Response;
+
 
 public class Client {
 	
-    String basicUrl;
+	protected final Logger log = Logger.getLogger(getClass().getName());
+	
+	protected Map<String, String> params;
+    protected String basicUrl;
+    protected HttpClient client;
+    protected CookieStore cookieStore = new BasicCookieStore();
 
-    public Client(String basicUrl) {
-        this.basicUrl = basicUrl;
+    public Client(String basicUrl) throws Exception {
+    	this.basicUrl = trimPort(basicUrl);
+        
+        client = createHttpClient_AcceptsUntrustedCerts(cookieStore);
+    }
+    
+    public static String trimPort(String url){
+    	if (url.contains(":443"))
+    		url = url.replace(":443", "");
+    	else if (url.contains(":80"))
+    		url = url.replace(":80", "");
+    	
+        return url;
+    }
+    
+    public void setParams(Map<String, String> params){
+    	this.params = params;
+    }
+    
+    public void setBasicUrl(String basicUrl){
+    	this.basicUrl = basicUrl;
+    }
+    
+    public String get() {
+    	return get(null, null);
     }
     
     public String get(String key) {
     	return get(key, null);
     }
+    
+    public CookieStore getCookieStore(){
+    	return cookieStore;
+    }
 
     public String get(String key, Map<String, String> headers) {
         try {
-        	HttpClient client = createHttpClient_AcceptsUntrustedCerts();
+        	String url = basicUrl;
+        	if (key != null){
+	        	url = basicUrl + "/" + key;
+	        	if (basicUrl.endsWith("/"))
+	        		url = basicUrl + key;
+        	}
         	
-            HttpRequest request = HttpClientBuilder.doGET(basicUrl + "/" + key);
+            HttpRequest request = HttpClientBuilder.doGET(url);
 
         	if (headers != null){
                 for (Map.Entry<String, String> header : headers.entrySet())
@@ -48,27 +103,40 @@ public class Client {
             }
             
             HttpResponse response = client.execute(request);
+            
+            int statusCode = response.getResponseCode();
+            log.warning("Response Code : " + statusCode);
+            
             return response.getResponseBodyAsString();
         } catch (Exception e) {
         	e.printStackTrace();
             throw new RuntimeException(e);
         } 
     }
+    
+    public String post(){
+    	return post(null);
+    }
 
-    public String post(String key, Map<String, String> params) {
+    public String post(String key) {
         try {
-        	
-        	HttpClient client = createHttpClient_AcceptsUntrustedCerts();
+        	String url = basicUrl;
+        	if (key != null){
+        		url = basicUrl + "/" + key;
+        		if (basicUrl.endsWith("/"))
+        			url = basicUrl + key;
+    		}
 
-            HttpRequest request = HttpClientBuilder.doPOST(basicUrl + "/" + key);
-
-            request.setEntity(params);
+            HttpRequest request = HttpClientBuilder.doPOST(url);
+            
+            if (params != null)
+            	request.setEntity(params);
 
             HttpResponse response = client.execute(request);
 
             int statusCode = response.getResponseCode();
             
-            System.out.println("Response Code : " + statusCode);
+            log.warning("Response Code : " + statusCode);
             
             if (statusCode == 302 ) {
                 String location = response.getHeader("Location");
@@ -84,8 +152,8 @@ public class Client {
         } 
     }
     
-    public HttpClient createHttpClient_AcceptsUntrustedCerts() throws Exception {
-        return HttpClientBuilder.untrustedConnectionClient();
+    public HttpClient createHttpClient_AcceptsUntrustedCerts(CookieStore cookieStore) throws Exception {
+        return HttpClientBuilder.create().untrustedConnectionClientBuilder().setCookieStore(cookieStore).build();
     }
     
 }

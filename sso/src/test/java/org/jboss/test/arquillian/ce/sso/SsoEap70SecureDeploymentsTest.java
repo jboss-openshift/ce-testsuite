@@ -23,6 +23,8 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
+import static junit.framework.Assert.assertTrue;
+
 import java.net.URL;
 
 import org.jboss.arquillian.ce.api.ExternalDeployment;
@@ -31,24 +33,30 @@ import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.test.arquillian.ce.sso.support.Client;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template( url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/sso/sso70-basic.json",
-		labels = "application=sso")
+@Template(url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/eap/eap70-sso-s2i.json",
+		labels = "application=eap-app",
+		parameters = {
+				@TemplateParameter(name = "SOURCE_REPOSITORY_URL", value="https://github.com/bdecoste/keycloak-examples"),
+				@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value="securedeployments"),
+                @TemplateParameter(name = "ARTIFACT_DIR", value="app-profile-jee/target,app-profile-jee-saml/target"),
+                @TemplateParameter(name = "SSO_PUBLIC_KEY", value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiLezsNQtZSaJvNZXTmjhlpIJnnwgGL5R1vkPLdt7odMgDzLHQ1h4DlfJPuPI4aI8uo8VkSGYQXWaOGUh3YJXtdO1vcym1SuP8ep6YnDy9vbUibA/o8RW6Wnj3Y4tqShIfuWf3MEsiH+KizoIJm6Av7DTGZSGFQnZWxBEZ2WUyFt297aLWuVM0k9vHMWSraXQo78XuU3pxrYzkI+A4QpeShg8xE7mNrs8g3uTmc53KR45+wW1icclzdix/JcT6YaSgLEVrIR9WkkYfEGj3vSrOzYA46pQe6WQoenLKtIDFmFDPjhcPoi989px9f+1HCIYP0txBS/hnJZaPdn5/lEUKQIDAQAB")
+                })
 @OpenShiftResources({
-        @OpenShiftResource("classpath:sso-service-account.json"),
-        @OpenShiftResource("classpath:sso-app-secret.json"),
         @OpenShiftResource("classpath:eap-app-secret.json")
 })
-public class SsoServerBasicTest extends SsoServerTestBase
+public class SsoEap70SecureDeploymentsTest extends SsoEapTestBase
 {
-	
-	@RouteURL("sso")
+	@RouteURL("eap-app")
     private URL routeURL;
 	
-	@RouteURL("secure-sso")
+	@RouteURL("secure-eap-app")
     private URL secureRouteURL;
 	
 	@Override
@@ -61,7 +69,22 @@ public class SsoServerBasicTest extends SsoServerTestBase
         return secureRouteURL;
     }
 	
-	public SsoServerBasicTest() {
-	}
+	@Test
+    @RunAsClient
+    public void testSamlAppRoute() throws Exception {
+        appRoute(getRouteURL().toString());
+    }
+
+    @Test
+    @RunAsClient
+    public void testSecureSamlAppRoute() throws Exception { 	
+    	appRoute(getSecureRouteURL().toString());
+    }
+        
+    protected void appRoute(String host) throws Exception {
+        Client client = new Client(host);
+        String result = client.get("app-profile-jee-saml");
+        assertTrue(result.contains("profile.jsp"));
+    }
 
 }
