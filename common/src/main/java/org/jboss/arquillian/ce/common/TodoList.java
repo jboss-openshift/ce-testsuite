@@ -71,8 +71,10 @@ public class TodoList {
 
         HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
 
-        Assert.assertEquals(302, response.getResponseCode());
-        Assert.assertTrue(response.getHeader("Location").endsWith("/index.html"));
+        Assert.assertEquals("Got an invalid response code. Body: " + response.getResponseBodyAsString(), 302,
+                response.getResponseCode());
+        Assert.assertTrue("Got an invalid 'Location' header: " + response.getHeader("Location"),
+                response.getHeader("Location").endsWith("/index.html"));
 
         checkItem(url, summary, description);
     }
@@ -91,9 +93,9 @@ public class TodoList {
     public static void checkItem(String url, String summary, String description) throws Exception {
         HttpRequest request = HttpClientBuilder.doGET(url);
         HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
-        Assert.assertEquals(200, response.getResponseCode());
-
         String responseString = response.getResponseBodyAsString();
+
+        Assert.assertEquals("Got an invalid response code. Body: " + responseString, 200, response.getResponseCode());
 
         /* TODO: Improve this check */
         Assert.assertTrue("Response: " + responseString + " - Summary: " + summary, responseString.contains(summary));
