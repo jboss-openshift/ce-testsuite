@@ -29,6 +29,7 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -150,6 +151,7 @@ public class Eap64ClusterTest {
      */
     @Test
     @RunAsClient
+    @Ignore("https://github.com/openshift/origin/issues/8728")
     public void testAppStillWorksWhenScalingDown(@RouteURL("eap-app") URL url) throws Exception {
         // Number of HTTP requests we are going to do
         final int REQUESTS = 100;
