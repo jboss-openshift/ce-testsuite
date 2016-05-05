@@ -35,20 +35,32 @@ public abstract class SsoEapTestBase extends SsoTestBase {
     
     @Test
     @RunAsClient
-    public void testAppRoute() throws Exception {
-        appRoute(getRouteURL().toString());
+    public void testAppProfileJeeRoute() throws Exception {
+        appRoute(getRouteURL().toString(), "app-profile-jee", "profile.jsp");
     }
 
     @Test
     @RunAsClient
-    public void testSecureAppRoute() throws Exception { 	
-    	appRoute(getSecureRouteURL().toString());
+    public void testSecureAppProfileJeeRoute() throws Exception { 	
+    	appRoute(getSecureRouteURL().toString(), "app-profile-jee", "profile.jsp");
+    }
+    
+    @Test
+    @RunAsClient
+    public void testAppProfileJeeSamlRoute() throws Exception {
+        appRoute(getRouteURL().toString(), "app-profile-jee-saml", "profile.jsp");
+    }
+
+    @Test
+    @RunAsClient
+    public void testSecureAppProfileJeeSamlRoute() throws Exception { 	
+    	appRoute(getSecureRouteURL().toString(), "app-profile-jee-saml", "profile.jsp");
     }
         
-    protected void appRoute(String host) {
+    protected void appRoute(String host, String app, String expected) throws Exception {
         Client client = new Client(host);
-        String result = client.get("app-profile-jee");
-        assertTrue(result.contains("profile.jsp"));
+        String result = client.get(app);
+        assertTrue(result.contains(expected));
     }
 
 }

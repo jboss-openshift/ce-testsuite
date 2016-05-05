@@ -47,9 +47,9 @@ public abstract class SsoServerTestBase extends SsoTestBase {
     	consoleRoute(getSecureRouteURL().toString());
     }
         
-    protected void consoleRoute(String host) {
-        Client client = new Client(host + "auth");
-        String result = client.get("admin/master/console/#/realms/master");
+    protected void consoleRoute(String host) throws Exception {
+        Client client = new Client(host);
+        String result = client.get("auth/admin/master/console/#/realms/master");
         assertTrue(result.contains("realm.js"));
     }
     
@@ -65,15 +65,16 @@ public abstract class SsoServerTestBase extends SsoTestBase {
     	restRoute(getSecureRouteURL().toString());
     }
                
-    protected void restRoute(String host) {
+    protected void restRoute(String host) throws Exception {
         Map<String, String> params = new HashMap<>();
         params.put("username", "admin");
         params.put("password", "admin");
         params.put("grant_type", "password");
         params.put("client_id", "admin-cli");
         
-        Client client = new Client(host + "auth");
-        String result = client.post("realms/master/protocol/openid-connect/token", params);
+        Client client = new Client(host);
+        client.setParams(params);
+        String result = client.post("auth/realms/master/protocol/openid-connect/token");
         
         assertFalse(result.contains("error_description"));
         assertTrue(result.contains("access_token"));
@@ -98,8 +99,9 @@ public abstract class SsoServerTestBase extends SsoTestBase {
         params.put("username", "admin");
         params.put("password", "admin");
         params.put("login", "submit");
+        client.setParams(params);
         
-        String result = client.post("auth",params);
+        String result = client.post("auth");
         assertTrue(result.contains("Welcome to Red Hat Single Sign-On"));
     }
 

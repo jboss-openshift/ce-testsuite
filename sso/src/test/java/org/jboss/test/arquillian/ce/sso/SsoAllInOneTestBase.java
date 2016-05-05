@@ -31,43 +31,21 @@ import static org.junit.Assert.fail;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.apache.http.cookie.Cookie;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/sso/demo/sso70-all-in-one-demo.json",
-    labels = "application=helloworld,component=eap",
-    parameters = {
-        @TemplateParameter(name = "HOSTNAME_HTTP", value = "helloworld${openshift.domain}"),
-        @TemplateParameter(name = "HOSTNAME_HTTPS", value = "secure-helloworld${openshift.domain}"),
-        @TemplateParameter(name = "SSO_HOSTNAME_HTTP", value = "sso${openshift.domain}"),
-        @TemplateParameter(name = "SSO_HOSTNAME_HTTPS", value = "secure-sso${openshift.domain}"),
-        @TemplateParameter(name = "SSO_URI", value = "https://secure-sso${openshift.domain}/auth"),
-        @TemplateParameter(name = "APPLICATION_ROUTES", value = "http://helloworld${openshift.domain};https://secure-helloworld${openshift.domain}")
-    }
-)
-@OpenShiftResources({
-    @OpenShiftResource("classpath:sso-service-account.json"),
-    @OpenShiftResource("classpath:sso-app-secret.json"),
-    @OpenShiftResource("classpath:sso-demo-secret.json"),
-    @OpenShiftResource("classpath:eap-app-secret.json")
-})
-public class SsoAllInOneTest extends SsoEapTestBase {
-
-    public SsoAllInOneTest() {
+public class SsoAllInOneTestBase extends SsoEapTestBase {
+			
+    public SsoAllInOneTestBase() {
     }
 
     @RouteURL("helloworld")
@@ -89,16 +67,16 @@ public class SsoAllInOneTest extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testLogin() throws Exception {
-        login(getRouteURL().toString());
+        testLogin(getRouteURL().toString());
     }
 
     @Test
     @RunAsClient
     public void testSecureLogin() throws Exception {
-        login(getRouteURL().toString());
+        testLogin(getSecureRouteURL().toString());
     }
 
-    protected void login(String host) throws Exception {
+    protected void testLogin(String host) throws Exception {
         Client client = new Client(host);
 
         String result = client.get("app-profile-jee/profile.jsp");
@@ -108,25 +86,57 @@ public class SsoAllInOneTest extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testOidcLogin() throws Exception {
-        oidcLogin(getRouteURL().toString(), "redirect_uri=http%3A%2F%2Fhelloworld" + System.getProperty("openshift.domain") + "%2Fapp-profile-jee%2Fprofile.jsp");
+        Client client = login(getRouteURL().toString(), "app-profile-jee/profile.jsp");
+        
+        String result = client.get();
+        
+        assertTrue(result.contains("First name"));
+        assertTrue(result.contains("Last name"));
+        assertTrue(result.contains("Username"));
+        assertTrue(result.contains("demouser"));
     }
 
     @Test
     @RunAsClient
     public void testSecureOidcLogin() throws Exception {
-        oidcLogin(getSecureRouteURL().toString(), "redirect_uri=https%3A%2F%2Fsecure-helloworld" + System.getProperty("openshift.domain") + "%2Fapp-profile-jee%2Fprofile.jsp");
+    	Client client = login(getSecureRouteURL().toString(), "app-profile-jee/profile.jsp");
+    	
+    	String result = client.get();
+    	
+    	assertTrue(result.contains("First name"));
+        assertTrue(result.contains("Last name"));
+        assertTrue(result.contains("Username"));
+        assertTrue(result.contains("demouser"));
     }
 
-    protected void oidcLogin(String host, String expected) throws Exception {
-        Client client = new Client(host);
-
+    protected Client login(String host, String key) throws Exception {
+    	Client client = new Client(host);
+        String result = client.get(key);
+        
+        assertTrue(result.contains("kc-form-login"));
+        
+        int index = result.indexOf("action");
+        String action=result.substring(index + "action=\"".length());
+        index = action.indexOf("\"");
+        action=action.substring(0,index);
+         
+        client.setBasicUrl(action);
+        
         Map<String, String> params = new HashMap<>();
         params.put("username", "demouser");
         params.put("password", "demopass");
         params.put("login", "submit");
-
-        String result = client.post("app-profile-jee/profile.jsp", params);
-        assertTrue(result.contains(expected));
+        client.setParams(params);
+        
+        result = client.post();
+        
+        assertTrue(result.contains(Client.trimPort(host)));
+        
+        client.setBasicUrl(result);
+        params = new HashMap<>();
+        client.setParams(params);
+        
+        return client;
     }
 
     @Test
@@ -141,7 +151,8 @@ public class SsoAllInOneTest extends SsoEapTestBase {
         params.put("client_id", "admin-cli");
 
         Client client = new Client("http://" + host + "/auth");
-        String result = client.post("realms/master/protocol/openid-connect/token", params);
+        client.setParams(params);
+        String result = client.post("realms/master/protocol/openid-connect/token");
 
         assertFalse(result.contains("error_description"));
         assertTrue(result.contains("access_token"));
@@ -166,6 +177,73 @@ public class SsoAllInOneTest extends SsoEapTestBase {
         }
 
         fail("ClientId app-jee not found");
+    }
+    
+    @Test
+    @RunAsClient
+    public void testSecureAppJeeButtonsNoLogin() throws Exception {
+    	Client client = new Client(getSecureRouteURL().toString());
+        String result = client.get("app-jee/index.jsp");
+         
+        assertTrue(result.contains("Public"));
+        assertTrue(result.contains("Secured"));
+        assertTrue(result.contains("Admin"));
+        
+        Map<String, String> params = new HashMap<>();
+        params.put("action", "public");
+        client.setParams(params);
+        
+        result = client.post("app-jee/index.jsp");
+      
+        assertTrue(result.contains("MESSAGE: PUBLIC"));
+        
+        params.put("action", "secured");
+        client.setParams(params);
+        
+        result = client.post("app-jee/index.jsp");
+        
+        assertTrue(result.contains("500 Internal Server Error"));
+    }
+    
+    @Test
+    @RunAsClient
+    public void testSecureAppJeeButtonsLogin() throws Exception {
+    	Client client = login(getSecureRouteURL().toString(), "app-jee/protected.jsp");
+       
+        String result = client.get();
+        
+        assertTrue(result.contains("Public"));
+        assertTrue(result.contains("Secured"));
+        assertTrue(result.contains("Admin"));
+        assertTrue(result.contains("Logout"));
+        assertTrue(result.contains("Account"));
+        
+        Map<String, String> params = new HashMap<>();
+        params.put("action", "public");
+        client.setParams(params);
+        client.setBasicUrl(getSecureRouteURL().toString());
+        
+        result = client.post("app-jee/index.jsp");
+        
+        assertTrue(result.contains("MESSAGE: PUBLIC"));
+        
+        params.put("action", "secured");
+        client.setParams(params);
+        
+        result = client.post("app-jee/index.jsp");
+        
+        assertTrue(result.contains("MESSAGE: SECURED"));
+        
+        printCookieStore(client);
+    }
+    
+    private void printCookieStore(Client client) throws Exception {
+    	List<Cookie> cookies = client.getCookieStore().getCookies();
+    	System.out.println("Cookies " + cookies.size());
+    	for (Cookie cookie : cookies){
+    		System.out.println("      " + cookie);
+    	}
+    	
     }
 
 }

@@ -34,15 +34,16 @@ import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
-@Template( url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/sso/sso70-basic.json",
-		labels = "application=sso")
-@OpenShiftResources({
-        @OpenShiftResource("classpath:sso-service-account.json"),
-        @OpenShiftResource("classpath:sso-app-secret.json"),
-        @OpenShiftResource("classpath:eap-app-secret.json")
-})
-public class SsoServerBasicTest extends SsoServerTestBase
+//Disabled but should pass with available PV
+//@RunWith(Arquillian.class)
+//@Template(url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/sso/sso70-postgresql-persistent.json",
+//		labels = "application=sso,component=server")
+//@OpenShiftResources({
+//    @OpenShiftResource("classpath:sso-service-account.json"),
+//    @OpenShiftResource("classpath:sso-app-secret.json"),
+//    @OpenShiftResource("classpath:eap-app-secret.json")
+//})
+public class SsoServerPostgresqlPersistentTest extends SsoServerTestBase
 {
 	
 	@RouteURL("sso")
@@ -60,8 +61,8 @@ public class SsoServerBasicTest extends SsoServerTestBase
     protected URL getSecureRouteURL() {
         return secureRouteURL;
     }
-	
-	public SsoServerBasicTest() {
-	}
 
+	public SsoServerPostgresqlPersistentTest() {
+	
+	}
 }

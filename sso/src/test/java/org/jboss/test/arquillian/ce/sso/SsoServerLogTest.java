@@ -23,15 +23,20 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
+import static junit.framework.Assert.assertTrue;
+
 import java.net.URL;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
+import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.test.arquillian.ce.sso.support.Client;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -42,7 +47,7 @@ import org.junit.runner.RunWith;
         @OpenShiftResource("classpath:sso-app-secret.json"),
         @OpenShiftResource("classpath:eap-app-secret.json")
 })
-public class SsoServerBasicTest extends SsoServerTestBase
+public class SsoServerLogTest extends SsoTestBase
 {
 	
 	@RouteURL("sso")
@@ -50,6 +55,9 @@ public class SsoServerBasicTest extends SsoServerTestBase
 	
 	@RouteURL("secure-sso")
     private URL secureRouteURL;
+	
+	@ArquillianResource
+	OpenShiftHandle adapter;
 	
 	@Override
     protected URL getRouteURL() {
@@ -61,7 +69,18 @@ public class SsoServerBasicTest extends SsoServerTestBase
         return secureRouteURL;
     }
 	
-	public SsoServerBasicTest() {
+	@Test
+    @RunAsClient
+    public void testLogs() throws Exception {
+		adapter.exec("application", "sso", 10, "curl", "-s", "https://raw.githubusercontent.com/bdecoste/log-access/master/logaccess-jaxrs/logaccess-jaxrs.war", "-o", "/opt/eap/standalone/deployments/logaccess-jaxrs.war");
+		
+		Client client = new Client(getRouteURL().toString());
+        String result = client.get("logging/podlog");
+    
+        assertTrue(result.contains("Deployed \"keycloak-server.war\""));
+        assertTrue(result.contains("Deployed \"logaccess-jaxrs.war\""));
 	}
+	
+	
 
 }
