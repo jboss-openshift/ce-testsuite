@@ -38,6 +38,7 @@ public class AmqSslTestBase extends AmqTestBase {
         TransportSslOptions sslOptions = createTransportSslOptions();
 
         SSLContext ssl = TransportSupport.createSslContext(sslOptions);
+        SSLContext.setDefault(ssl);
 
         final SslContext brokerContext = createBrokerContext(ssl);
         svc.setSslContext(brokerContext);

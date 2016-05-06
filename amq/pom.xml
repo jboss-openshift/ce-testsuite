@@ -171,13 +171,11 @@
 						<configuration>
 							<runOrder>alphabetical</runOrder>
 							<redirectTestOutputToFile>true</redirectTestOutputToFile>
+							<enableAssertions>false</enableAssertions>
+							<org.jboss.remoting-jmx.timeout>1000</org.jboss.remoting-jmx.timeout>
 							<includes>
 								<include>org/jboss/**/*Test.java</include>
 							</includes>
-							<properties>
-								<truststore.location>/opt/eap/certs/broker.ts</truststore.location>
-								<keystore.location>/opt/eap/certs/broker.ks</keystore.location>
-							</properties>
 							<systemPropertyVariables>
 								<!-- Custom DNS resolver for OpenShift routes -->
 								<sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
