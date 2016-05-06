@@ -26,8 +26,9 @@ package org.jboss.test.arquillian.ce.sso;
 import static junit.framework.Assert.assertTrue;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -37,7 +38,6 @@ import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -77,7 +77,8 @@ public class SsoEap70EnvTest extends SsoEapTestBase
 	@Test
     @RunAsClient
     public void testConfiguration() throws Exception {
-		String result = adapter.exec("application", "eap-app", 10, "cat", "/opt/eap/standalone/configuration/standalone-openshift.xml");
+		Map<String, String> labels = Collections.singletonMap("application", "eap-app");
+		String result = adapter.exec(labels, 10, "cat", "/opt/eap/standalone/configuration/standalone-openshift.xml");
 		
 		System.out.println("!!!!! result " + result);
     

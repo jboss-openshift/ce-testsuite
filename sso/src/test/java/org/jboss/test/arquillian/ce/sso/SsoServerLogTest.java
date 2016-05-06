@@ -26,6 +26,8 @@ package org.jboss.test.arquillian.ce.sso;
 import static junit.framework.Assert.assertTrue;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -72,9 +74,10 @@ public class SsoServerLogTest extends SsoTestBase
 	@Test
     @RunAsClient
     public void testLogs() throws Exception {
-		adapter.exec("application", "sso", 10, "curl", "-s", "https://raw.githubusercontent.com/bdecoste/log-access/master/logaccess-jaxrs/logaccess-jaxrs.war", "-o", "/opt/eap/standalone/deployments/logaccess-jaxrs.war");
-		
-		Client client = new Client(getRouteURL().toString());
+        Map<String, String> labels = Collections.singletonMap("application", "sso");
+        adapter.exec(labels, 10, "curl", "-s", "https://raw.githubusercontent.com/bdecoste/log-access/master/logaccess-jaxrs/logaccess-jaxrs.war", "-o", "/opt/eap/standalone/deployments/logaccess-jaxrs.war");
+
+        Client client = new Client(getRouteURL().toString());
         String result = client.get("logging/podlog");
     
         assertTrue(result.contains("Deployed \"keycloak-server.war\""));

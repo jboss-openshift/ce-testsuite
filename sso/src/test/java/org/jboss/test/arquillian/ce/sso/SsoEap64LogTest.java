@@ -27,20 +27,13 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.test.arquillian.ce.sso.support.Client;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 // Tests disabled due to WLFY-2634 not backported to EAP6.4
 //@RunWith(Arquillian.class)
@@ -79,9 +72,10 @@ public class SsoEap64LogTest //extends SsoTestBase
 //	@Test
 //    @RunAsClient
     public void testLogs() throws Exception {
-		adapter.exec("application", "eap-app", 10, "curl", "-s", "https://raw.githubusercontent.com/bdecoste/log-access/master/logaccess-jaxrs/logaccess-jaxrs.war", "-o", "/opt/eap/standalone/deployments/logaccess-jaxrs.war");
-		
-		Client client = new Client(getRouteURL().toString());
+        Map<String, String> labels = Collections.singletonMap("application", "eap-app");
+        adapter.exec(labels, 10, "curl", "-s", "https://raw.githubusercontent.com/bdecoste/log-access/master/logaccess-jaxrs/logaccess-jaxrs.war", "-o", "/opt/eap/standalone/deployments/logaccess-jaxrs.war");
+
+        Client client = new Client(getRouteURL().toString());
         String result = client.get("logging/podlog");
         
         System.out.println("!!!! result " + result);

@@ -16,17 +16,6 @@
  */
 package org.jboss.test.arquillian.ce.sso.support;
 
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.ConfigBuilder;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.ExecListener;
-import io.fabric8.kubernetes.client.dsl.ExecWatch;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -36,10 +25,6 @@ import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
-
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
-
-import com.squareup.okhttp.Response;
 
 
 public class Client {
@@ -53,8 +38,7 @@ public class Client {
 
     public Client(String basicUrl) throws Exception {
     	this.basicUrl = trimPort(basicUrl);
-        
-        client = createHttpClient_AcceptsUntrustedCerts(cookieStore);
+        client = HttpClientBuilder.create().untrustedConnectionClientBuilder().setCookieStore(cookieStore).build();
     }
     
     public static String trimPort(String url){
@@ -151,9 +135,4 @@ public class Client {
             throw new RuntimeException(e);
         } 
     }
-    
-    public HttpClient createHttpClient_AcceptsUntrustedCerts(CookieStore cookieStore) throws Exception {
-        return HttpClientBuilder.create().untrustedConnectionClientBuilder().setCookieStore(cookieStore).build();
-    }
-    
 }

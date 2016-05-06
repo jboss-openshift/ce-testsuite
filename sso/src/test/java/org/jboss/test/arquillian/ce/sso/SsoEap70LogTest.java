@@ -27,8 +27,9 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -79,9 +80,10 @@ public class SsoEap70LogTest extends SsoTestBase
 	@Test
     @RunAsClient
     public void testLogs() throws Exception {
-		adapter.exec("application", "eap-app", 10, "curl", "-s", "https://raw.githubusercontent.com/bdecoste/log-access/master/logaccess-jaxrs/logaccess-jaxrs.war", "-o", "/opt/eap/standalone/deployments/logaccess-jaxrs.war");
-		
-		Client client = new Client(getRouteURL().toString());
+        Map<String, String> labels = Collections.singletonMap("application", "eap-app");
+        adapter.exec(labels, 10, "curl", "-s", "https://raw.githubusercontent.com/bdecoste/log-access/master/logaccess-jaxrs/logaccess-jaxrs.war", "-o", "/opt/eap/standalone/deployments/logaccess-jaxrs.war");
+
+        Client client = new Client(getRouteURL().toString());
         String result = client.get("logging/podlog");
         
         System.out.println("!!!! result " + result);
