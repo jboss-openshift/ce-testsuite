@@ -71,7 +71,6 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
     private String mqttMessage = "Arquillian test - MQTT";
     private String stompMessage = "Arquillian test - STOMP";
     
-    
 	@Test
 	@RunAsClient
     public void testOpenWireConnection() throws Exception {
@@ -87,7 +86,7 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
     @RunAsClient
     public void testAmqpConnection() throws Exception {
     	StringBuilder connectionUrl = new StringBuilder();
-        connectionUrl.append("amqps://stomp-amq.router.default.svc.cluster.local:443");
+        connectionUrl.append(AMQP_URL);
         connectionUrl.append("?transport.trustStoreLocation=");
         connectionUrl.append(System.getProperty("javax.net.ssl.trustStore"));
         connectionUrl.append("&transport.trustStorePassword=");
@@ -98,11 +97,11 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
         client.produceAmqp(amqpMessage);
         String received = client.consumeAmqp();
 
-        assertEquals(amqpMessage, received);
+    assertEquals(amqpMessage, received);
     }
 
-//    @Test
-//    @RunAsClient
+    @Test
+    @RunAsClient
     public void testMqttConnection() throws Exception {
         MQTT mqtt = new MQTT();
         mqtt.setHost(MQTT_URL);
