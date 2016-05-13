@@ -24,6 +24,8 @@
 package org.jboss.test.arquillian.ce.amq.support;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -47,6 +49,7 @@ import org.fusesource.stomp.jms.StompJmsConnectionFactory;
  * @author Ricardo Martinelli
  */
 public class AmqClient {
+    private static final Logger log = Logger.getLogger(AmqClient.class.getName());
 
     private final String connectionUrl;
     private final String username;
@@ -94,6 +97,29 @@ public class AmqClient {
         }
     }
 
+    public void consumeOpenWireJms(Set<String> msgs, int size, boolean isSecured) throws Exception {
+        Connection conn = null;
+        try {
+            ConnectionFactory cf = getAMQConnectionFactory(isSecured);
+            conn = cf.createConnection(username, password);
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Destination qFoo = session.createQueue("QUEUES.FOO");
+
+            MessageConsumer consumer = session.createConsumer(qFoo);
+
+            conn.start();
+
+            while (size > 0) {
+                Message msg = consumer.receive();
+                msgs.add(((TextMessage) msg).getText());
+                size--;
+                log.info(String.format("Current msgs: %s [%s]", msgs, size));
+            }
+        } finally {
+            close(conn);
+        }
+    }
+
     public void produceOpenWireJms(String message, boolean isSecured) throws Exception {
         Connection conn = null;
         try {
@@ -108,6 +134,27 @@ public class AmqClient {
 
             Message msg = session.createTextMessage(message);
             producer.send(msg);
+        } finally {
+            close(conn);
+        }
+    }
+
+    public void produceOpenWireJms(Set<String> msgs, boolean isSecured) throws Exception {
+        Connection conn = null;
+        try {
+            ConnectionFactory cf = getAMQConnectionFactory(isSecured);
+            conn = cf.createConnection(username, password);
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Destination qFoo = session.createQueue("QUEUES.FOO");
+
+            MessageProducer producer = session.createProducer(qFoo);
+
+            conn.start();
+
+            for (String message : msgs) {
+                Message msg = session.createTextMessage(message);
+                producer.send(msg);
+            }
         } finally {
             close(conn);
         }

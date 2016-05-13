@@ -23,9 +23,9 @@
 
 package org.jboss.test.arquillian.ce.amq;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -63,45 +63,68 @@ import org.junit.runner.RunWith;
     @OpenShiftResource("classpath:testrunner-secret.json"),
     @OpenShiftResource("classpath:amq-internal-imagestream.json") // custom dev imagestream; remove when multi repl image is in prod
 })
-@Replicas(2)
+@Replicas(3)
 public class AmqMultiReplicasPVTest extends AmqTestBase {
-    private String openWireMessage = "Arquillian test - Persistent OpenWire";
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
         return getDeploymentBase();
     }
 
+    private void sendNMessages(int from, int to) throws Exception {
+        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
+        Set<String> msgs = new HashSet<>();
+        for (int i = from; i < to; i++) {
+            msgs.add("msg" + i);
+        }
+        client.produceOpenWireJms(msgs, false);
+    }
+
     @Test
     @InSequence(1)
-    public void testOpenWireProduceConnection() throws Exception {
-        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-
-        client.produceOpenWireJms(openWireMessage, false);
+    public void testSend1() throws Exception {
+        sendNMessages(1, 4);
     }
 
     @Test
     @RunAsClient
     @InSequence(2)
     public void testRestartAmq(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.scaleDeployment("amq-test-amq", 1);
         adapter.scaleDeployment("amq-test-amq", 2);
+        adapter.scaleDeployment("amq-test-amq", 3);
+    }
+
+    @Test
+    @InSequence(3)
+    public void testSend2() throws Exception {
+        sendNMessages(4, 7);
     }
 
     @Test
     @RunAsClient
-    @InSequence(3)
-    public void testDeletePodAndWaitForRecreation(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.replacePods("amq-test-amq", 2);
+    @InSequence(4)
+    public void testDeletePodAndWaitForRecreation1(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        adapter.replacePods("amq-test-amq", 1, 3);
     }
 
     @Test
-    @InSequence(4)
+    @InSequence(5)
+    public void testSend3() throws Exception {
+        sendNMessages(7, 10);
+    }
+
+    @Test
+    @RunAsClient
+    @InSequence(6)
+    public void testDeletePodAndWaitForRecreation2(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        adapter.replacePods("amq-test-amq", 1, 3);
+    }
+
+    @Test
+    @InSequence(7)
     public void testOpenWireConsumeConnection() throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-
-        String received = client.consumeOpenWireJms(false);
-
-        assertEquals(openWireMessage, received);
+        Set<String> msgs = new HashSet<>();
+        client.consumeOpenWireJms(msgs, 9, false);
     }
 }
