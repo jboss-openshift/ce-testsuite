@@ -28,7 +28,7 @@
 
     <extension qualifier="ce-cube">
         <property name="kubernetesNamespacePrefix">cearq-integration</property>
-    </extension>
+    </extension>x
 
     <!-- Example configuration for arquillian openshift extension -->
     <extension qualifier="openshift">
@@ -38,8 +38,8 @@
         -->
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
-        <!-- Ports to be proxied locally, <container>:<port> -->
-        <property name="proxiedContainerPorts">testrunner:9999,testrunner:9990,testrunner:8080,testrunner:4447,testrunner:5445</property>
+        <!-- Ports to be proxied locally, <container>:<port> or <container>:0:<port>, to map the same port than container use <container>::<port> or <container>:<port>:<port> -->
+        <property name="proxiedContainerPorts">testrunner::9999,testrunner::9990,testrunner::8080,testrunner::4447,testrunner::5445</property>
     </extension>
 
     <!--
