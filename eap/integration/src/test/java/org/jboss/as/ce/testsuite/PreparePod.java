@@ -37,6 +37,7 @@ import org.jboss.dmr.ModelNode;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 /**
@@ -55,6 +56,11 @@ public class PreparePod {
     private final String CHANGE_REMOTING_INTERFACE = "/socket-binding-group=standard-sockets/socket-binding=remoting:write-attribute(name=interface,value=management)";
     private final String CHANGE_HTTP_INTERFACE = "/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=interface,value=management)";
     private final String CHANGE_MESSAGING_INTERFACE = "/socket-binding-group=standard-sockets/socket-binding=messaging:write-attribute(name=interface,value=management)";
+    private final String INCREASE_WORKER_READ_THREADS = "/subsystem=remoting:write-attribute(name=worker-read-threads, value=4)";
+    private final String INCREASE_WORKER_TASK_CORE_THREADS = "/subsystem=remoting:write-attribute(name=worker-task-core-threads, value=4)";
+    private final String INCREASE_WORKER_MAX_THREADS = "/subsystem=remoting:write-attribute(name=worker-task-max-threads, value=32)";
+    private final String INCREASE_WORKER_WRITE_THREADS = "/subsystem=remoting:write-attribute(name=worker-write-threads, value=4)";
+    private final String INCREASE_WORKER_TASK_LIMIT = "/subsystem=remoting:write-attribute(name=worker-task-limit, value=32000)";
     private final String RELOAD_COMMAND = "reload";
 
     private CommandContext ctx;
@@ -67,14 +73,13 @@ public class PreparePod {
     *  -> set the CLI credentials, needed by CLI tests
     *  -> add the additional users and groups needed by the integration tests.
     */
-    public void preparePod(@Observes AfterStart aStart, ArquillianDescriptor descriptor, OpenShiftClient client) throws InterruptedException, CommandLineException, IOException {
+    public void preparePod(@Observes AfterStart aStart, ArquillianDescriptor descriptor) throws InterruptedException, CommandLineException, IOException {
 
         // Loading properties from arquillian.xml and setting the CommandContext
         final Map<String, String> props = descriptor.extension("prepare-pod").getExtensionProperties();
         final String username = getProperty(props, "username", DEFAULT_USERNAME);
         final String password = getProperty(props, "password", DEFAULT_PASSWORD);
         final String JBOSS_HOME = getProperty(props, "jbossHome", DEFAULT_POD_JBOSS_HOME);
-        final String cubeId = getProperty(props, "cubeId", DEFAULT_CUBE_ID);
 
         // Setting Command Context
         ctx = getCtx(username, password);
@@ -90,28 +95,31 @@ public class PreparePod {
         System.setProperty("jboss.cli.password", password);
 
         // Changing the remoting, messaging and http port bind address so we can use it through port-forwarder
-        if (executeCliCommand(CHANGE_REMOTING_INTERFACE) && executeCliCommand(CHANGE_HTTP_INTERFACE) && executeCliCommand(CHANGE_MESSAGING_INTERFACE)) {
-            log.info("Command Successfully executed [ " + CHANGE_REMOTING_INTERFACE + "].");
-            log.info("Command Successfully executed [ " + CHANGE_HTTP_INTERFACE + "].");
-            log.info("Command Successfully executed [ " + CHANGE_MESSAGING_INTERFACE + "]. Reloading.");
+        if (executeCliCommand(CHANGE_REMOTING_INTERFACE) && executeCliCommand(CHANGE_HTTP_INTERFACE) &&
+                executeCliCommand(CHANGE_MESSAGING_INTERFACE) && executeCliCommand(INCREASE_WORKER_READ_THREADS) &&
+                executeCliCommand(INCREASE_WORKER_TASK_CORE_THREADS) && executeCliCommand(INCREASE_WORKER_MAX_THREADS) &&
+                executeCliCommand(INCREASE_WORKER_WRITE_THREADS) && executeCliCommand(INCREASE_WORKER_TASK_LIMIT)) {
+            log.info("Commands Successfully executed. Reloading...");
             executeCliCommand(RELOAD_COMMAND);
-            //wait 15 seconds before continue to make sure EAP is fully app and serving requests.
-            Thread.sleep(15000);
+            //wait server gets ready
+            Thread.sleep(20000);
+
         } else {
             log.info("Command execution failed.");
         }
     }
 
+
     /*
     * Execute CLI commands
-    * @return true for success and false for fail
+    * @returns true for success
+    * @returns false for fail
     * @throws CommandFormatException for malformed commands
     * @throws IOExeption for all other exceptions
     */
-    private boolean executeCliCommand(String command) throws CommandFormatException, IOException {
+    private boolean executeCliCommand(String command) throws CommandFormatException, IOException, InterruptedException {
         ModelControllerClient client = ctx.getModelControllerClient();
         ModelNode request = ctx.buildRequest(command);
-        request.get("blocking").set(true);
         String commandOutcome = client.execute(request).get("outcome").toString();
         return true ? commandOutcome.contains("success") : false;
     }
