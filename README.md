@@ -1,11 +1,8 @@
-# ce-testsuite
-Cloud Enablement Testsuite
+# Cloud Enablement Testsuite - ce-testsuite
 
-e.g. to run EAP tests this is an example command
+For more details about each test, please verify its README.md file.
 
-mvn clean install -Pwildfly -Dkubernetes.master=[KUBERNETES_MASTER] -Ddocker.url=[DOCKER_DEAMON_URL] 
+#### Found an issue?
+Please, feel free to report the issue that you found [here](https://github.com/jboss-openshift/ce-testsuite/issues/new).
 
-Or JDG
-
-mvn clean install -Pjdg -Dkubernetes.master=[KUBERNETES_MASTER]
- 
+__For feedbacks please send us an email (cloud-enablement-feedback@redhat.com) and let us know what you are thinking.__
