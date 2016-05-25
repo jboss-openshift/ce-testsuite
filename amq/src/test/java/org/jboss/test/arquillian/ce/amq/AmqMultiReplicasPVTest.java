@@ -24,7 +24,7 @@
 package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
@@ -73,7 +73,7 @@ public class AmqMultiReplicasPVTest extends AmqTestBase {
 
     private void sendNMessages(int from, int to) throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-        Set<String> msgs = new HashSet<>();
+        Set<String> msgs = new LinkedHashSet<>();
         for (int i = from; i < to; i++) {
             msgs.add("msg" + i);
         }
@@ -124,7 +124,8 @@ public class AmqMultiReplicasPVTest extends AmqTestBase {
     @InSequence(7)
     public void testOpenWireConsumeConnection() throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-        Set<String> msgs = new HashSet<>();
+        Set<String> msgs = new LinkedHashSet<>();
         client.consumeOpenWireJms(msgs, 9, false);
+        while (client.consumeOpenWireJms(2000, false) != null) ;
     }
 }

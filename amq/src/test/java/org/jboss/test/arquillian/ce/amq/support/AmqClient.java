@@ -79,6 +79,10 @@ public class AmqClient {
     }
 
     public String consumeOpenWireJms(boolean isSecured) throws Exception {
+        return consumeOpenWireJms(0, isSecured);
+    }
+
+    public String consumeOpenWireJms(long timeout, boolean isSecured) throws Exception {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(isSecured);
@@ -90,8 +94,15 @@ public class AmqClient {
 
             conn.start();
 
-            Message msg = consumer.receive();
-            return ((TextMessage) msg).getText();
+            Message msg = consumer.receive(timeout);
+            if (msg != null) {
+                String text = ((TextMessage) msg).getText();
+                log.warning("Msg: " + text);
+                return text;
+            } else {
+                log.warning("No msgs ...");
+                return null;
+            }
         } finally {
             close(conn);
         }
@@ -109,11 +120,12 @@ public class AmqClient {
 
             conn.start();
 
+            log.warning("Starting open-wire-consume ...");
             while (size > 0) {
                 Message msg = consumer.receive();
                 msgs.add(((TextMessage) msg).getText());
                 size--;
-                log.info(String.format("Current msgs: %s [%s]", msgs, size));
+                log.warning(String.format("Current msgs: %s [%s]", msgs, size));
             }
         } finally {
             close(conn);
