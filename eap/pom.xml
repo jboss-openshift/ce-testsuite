@@ -21,6 +21,10 @@
     <name>CE Testsuite -- EAP testsuite</name>
     <description>Cloud Enablement Testsuite -- EAP testsuite</description>
 
+	<modules>
+		<module>common</module>
+	</modules>
+
 	<profiles>
 
 		<profile>
@@ -38,6 +42,7 @@
 
 			<modules>
 				<module>eap64</module>
+				<module>eap70</module>
 			</modules>
 		</profile>
 
@@ -68,6 +73,19 @@
 
 			<modules>
 				<module>eap64</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>eap70</id>
+			<activation>
+				<property>
+					<name>eap70</name>
+				</property>
+			</activation>
+
+			<modules>
+				<module>eap70</module>
 			</modules>
 		</profile>
 

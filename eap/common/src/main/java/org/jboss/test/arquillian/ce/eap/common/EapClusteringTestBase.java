@@ -1,8 +1,4 @@
-package org.jboss.test.arquillian.ce.eap64;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+package org.jboss.test.arquillian.ce.eap.common;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -15,38 +11,26 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.RoleBinding;
-import org.jboss.arquillian.ce.api.RoleBindings;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Jonh Wendell
  */
-
-@RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-basic-s2i.json", parameters = {
-        @TemplateParameter(name = "SOURCE_REPOSITORY_URL", value = "https://github.com/jboss-openshift/openshift-examples"),
-        @TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "master"),
-        @TemplateParameter(name = "CONTEXT_DIR", value = "eap-tests/cluster1") })
-@OpenShiftResource("classpath:eap-app-secret.json")
-@RoleBindings({ @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default"),
-        @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:eap-service-account") })
-public class Eap64ClusterTest {
-    private static final Logger log = Logger.getLogger(Eap64ClusterTest.class.getName());
+public class EapClusteringTestBase {
+    protected final Logger log = Logger.getLogger(getClass().getName());
 
     @ArquillianResource
     OpenShiftHandle adapter;
@@ -59,7 +43,7 @@ public class Eap64ClusterTest {
     private HttpClient client;
 
     @Before
-    public void Setup() throws Exception {
+    public void setup() throws Exception {
         token = config.getToken();
         assertFalse("Auth token must be provided", token == null || token.isEmpty());
 
@@ -69,10 +53,10 @@ public class Eap64ClusterTest {
     /**
      * This test starts two pods; insert a value into the first pod's session.
      * Then it retrieves this value from the second pod.
-     * 
+     *
      * After that it starts a third pod and try to get the value from it, to see
      * if session replication is working at pod's startup as well.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -103,7 +87,7 @@ public class Eap64ClusterTest {
         assertEquals(valueToCheck, retrieveKey(2, cookie));
     }
 
-    private void scale(int replicas) throws Exception {
+    protected void scale(int replicas) throws Exception {
         adapter.scaleDeployment("eap-app", replicas);
         pods = getPods();
     }
@@ -138,11 +122,11 @@ public class Eap64ClusterTest {
     /**
      * This test starts with a high number of pods. We do lots of HTTP requests
      * sequentially, with a delay of 1 second between them.
-     * 
+     *
      * In paralel, after every N requests we scale down the cluster by 1 pod.
      * This happens in another thread and continues until we reach only one pod
      * in activity.
-     * 
+     *
      * The HTTP requests must continue to work correctly, as the openshift
      * router should redirect them to any working pod.
      *
@@ -184,38 +168,7 @@ public class Eap64ClusterTest {
         }
     }
 
-    /**
-     * This one tests the behavior when a client is doing a long HTTP request
-     * and the pod which is serving it dies (or, in this case it's killed).
-     * 
-     * We have two expected results:
-     * 
-     * (1) - If the request is shorter than 60 seconds it should be OK, because
-     * openshift has a graceful timeout of 60 seconds by default.
-     * 
-     * (2) - If the request is longer than 60 seconds we should expect a
-     * disconnect in our HTTP connection.
-     *
-     * @param url route url
-     * @throws Exception
-     */
-    @Test
-    @RunAsClient
-    public void testLongRequest(@RouteURL("eap-app") URL url) throws Exception {
-        final int DELAY_BETWEEN_REQUESTS = 5;
-        final String serviceUrl = url.toString();
-
-        scale(2);
-
-        doDelayRequest(serviceUrl, 20, true);
-
-        log.info(String.format("Waiting %d seconds before doing the second long request", DELAY_BETWEEN_REQUESTS));
-        Thread.sleep(DELAY_BETWEEN_REQUESTS * 1000);
-
-        doDelayRequest(serviceUrl, 200, false);
-    }
-
-    private void doDelayRequest(String url, int seconds, boolean shouldSucceed) throws Exception {
+    protected int doDelayRequest(String url, int seconds) throws Exception {
         HttpRequest request = HttpClientBuilder.doGET(url + "/cluster1/Hi");
         HttpResponse response = client.execute(request);
         String body = response.getResponseBodyAsString();
@@ -230,12 +183,7 @@ public class Eap64ClusterTest {
         body = response.getResponseBodyAsString();
         int stars = StringUtils.countMatches(body, "*");
         log.info(String.format("DELAY - BODY = %s", body));
-        if (shouldSucceed)
-            assertEquals(String.format("Number of stars (%d) should match number of seconds (%d)", stars, seconds),
-                    seconds, stars);
-        else
-            assertFalse(String.format("Number of stars (%d) should not match number of seconds (%d)", stars, seconds),
-                    seconds == stars);
+        return stars;
     }
 
     private String getHostName(String body) {
@@ -287,4 +235,5 @@ public class Eap64ClusterTest {
             }
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package org.jboss.test.arquillian.ce.eap64;
+package org.jboss.test.arquillian.ce.eap70;
 
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.Template;
@@ -8,15 +8,14 @@ import org.jboss.test.arquillian.ce.eap.common.EapPersistentTestBase;
 import org.junit.runner.RunWith;
 
 /**
- * @author Jonh Wendell
+ * @author Marko Luksa
  */
-
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-mysql-persistent-s2i.json", parameters = {
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap70-mysql-persistent-s2i.json", parameters = {
         @TemplateParameter(name = "HTTPS_NAME", value = "jboss"),
-        @TemplateParameter(name = "HTTPS_PASSWORD", value = "mykeystorepass") })
-@OpenShiftResource("classpath:eap-app-secret.json")
-public class Eap64MysqlPersistentTest extends EapPersistentTestBase {
+        @TemplateParameter(name = "HTTPS_PASSWORD", value = "mykeystorepass")})
+@OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/eap7-app-secret.json")
+public class Eap70MysqlPersistentTest extends EapPersistentTestBase {
 
     @Override
     protected String[] getRCNames() {
