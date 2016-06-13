@@ -10,6 +10,7 @@ import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.test.arquillian.ce.eap.common.EapClusteringTestBase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +50,7 @@ public class Eap64ClusteringTest extends EapClusteringTestBase {
      */
     @Test
     @RunAsClient
+    @InSequence(2)
     public void testLongRequest(@RouteURL("eap-app") URL url) throws Exception {
         final int DELAY_BETWEEN_REQUESTS = 5;
         final String serviceUrl = url.toString();

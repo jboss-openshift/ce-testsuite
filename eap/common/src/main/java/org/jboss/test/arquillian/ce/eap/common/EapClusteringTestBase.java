@@ -17,6 +17,7 @@ import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -61,6 +62,7 @@ public class EapClusteringTestBase {
      */
     @Test
     @RunAsClient
+    @InSequence(1)
     public void testSession() throws Exception {
         // Start with 2 pods
         scale(2);
