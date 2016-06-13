@@ -1,4 +1,4 @@
-# CE-Testsuite - Decision Server
+# CE-Testsuite - Kie Server (Decision Server and Intelligent Process Server)
 
 This testsuite will test all KIE Server 6.3 S2I application templates which are:
  
@@ -26,19 +26,19 @@ The Ce-Testsuite uses the [ce-arq](https://github.com/jboss-openshift/ce-arq) wh
   - Java 7 or higher
   - Openshift V3 or higher
  
-The CE-Testsuite is divided by profiles, to enable the Decision Server profile all you need to do is to use the following maven parameter:
+The CE-Testsuite is divided by profiles, to enable the Kie Server profile all you need to do is to use the following maven parameter:
 ```sh
--Pdecisionserver
+-Pkieserver63
 ```
 ###### Required ce-arq parameteres
   - -P**profile_name**
-    - -Pdecisionserver
+    - -Pkieserver63
   - -Dkubernetes.master=**address of your running OSE instance (master note)**
     - -Dkubernetes.master=https://openshift-master.mydomain.com:8443
   - -Dkubernetes.registry.url=**the registry address running in your ose instance**
     - -Dkubernetes.registry.url=openshift-master.mydomain.com:5001
   - -Ddocker.url=**Docker url address**
-    - -Ddocker.url=https://openshift-master.mydomain.com2375
+    - -Ddocker.url=https://openshift-master.mydomain.com:2375
   - -Drouter.hostIP=**The OSE router IP**
     - -Drouter.hostIP=192.168.1.254
       - You can change this parameter name in the pom.xml
@@ -54,12 +54,12 @@ ___
 ###### Running all tests
 For this example we'll consider the IP address 192.168.1.254 for required parameters, Example:
 ```sh
-$ mvn clean package test -Pdecisionserver -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
+$ mvn clean package test -Pkieserver63 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
 ```
 ###### Running a specific test and ignoring the cleanup after the tests gets finished
 Example:
 ```sh
-$ mvn clean package test -Pdecisionserver -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254 -Dtest=DecisionServerAmqTest -Dkubernetes.ignore.cleanup=true
+$ mvn clean package test -Pkieserver63 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254 -Dtest=DecisionServerAmqTest -Dkubernetes.ignore.cleanup=true
 ```
 
 #### What this tests cover?

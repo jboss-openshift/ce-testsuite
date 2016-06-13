@@ -424,7 +424,8 @@
 
 			<modules>
 				<module>amq</module>
-				<module>decisionserver</module>
+				<module>kieserver/62</module>
+				<module>kieserver/63</module>
 				<module>eap</module>
 				<module>jdg</module>
 				<module>sso</module>
@@ -446,15 +447,28 @@
 		</profile>
 
 		<profile>
-			<id>decisionserver</id>
+			<id>kieserver62</id>
 			<activation>
 				<property>
-					<name>decisionserver</name>
+					<name>kieserver62</name>
 				</property>
 			</activation>
 
 			<modules>
-				<module>decisionserver</module>
+				<module>kieserver/62</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>kieserver63</id>
+			<activation>
+				<property>
+					<name>kieserver63</name>
+				</property>
+			</activation>
+
+			<modules>
+				<module>kieserver/63</module>
 			</modules>
 		</profile>
 

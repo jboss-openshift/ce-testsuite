@@ -121,11 +121,11 @@
 
         <!-- Run tests against wildfly -->
         <profile>
-            <id>decisionserver</id>
+            <id>kieserver63</id>
 
             <activation>
                 <property>
-                    <name>decisionserver</name>
+                    <name>kieserver63</name>
                 </property>
             </activation>
 
