@@ -101,7 +101,52 @@
 		</plugins>
 	</build>
 
-	<dependencyManagement>
+ 	<!--	Some artifacts, like
+		infinispan-remote-query-client/6.3.1.Final-redhat-1/infinispan-remote-query-client-6.3.1.Final-redhat-1.pom
+		and so on, will need these. -->
+		<repositories>
+			<repository>
+				<id>jboss-public-repository-group</id>
+				<name>JBoss Public Maven Repository Group</name>
+				<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+				<layout>default</layout>
+				<releases>
+					<enabled>true</enabled>
+					<updatePolicy>never</updatePolicy>
+				</releases>
+				<snapshots>
+					<enabled>true</enabled>
+					<updatePolicy>always</updatePolicy>
+				</snapshots>
+			</repository>
+		<!-- <repository> <id>1rhat</id> <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url> </repository> -->
+		<repository>
+			<id>2rhat</id>
+			<url>https://maven.repository.redhat.com/techpreview/all/</url>
+		</repository>
+
+		<repository>
+			<id>3rhat</id>
+			<url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+		</repository>
+		<!-- <repository> <id>4rhat</id> <url>https://repository.jboss.org/</url> </repository> -->
+		<repository>
+			<id>5rhat</id>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>6rhat</id>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>7rhat</id>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads/</url>
+		</repository>
+		<!-- <repository> <id>8rhat</id> <url>http://repository.jboss.org/nexus/content/groups/developer/</url> </repository> -->
+	</repositories>
+
+ 	<dependencyManagement>
+
 		<dependencies>
 
 			<dependency>
