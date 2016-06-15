@@ -34,6 +34,7 @@ import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.test.arquillian.ce.common.KieServerCommon;
 import org.junit.Assert;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
@@ -72,14 +73,12 @@ import java.util.logging.Logger;
  * @author Filippe Spolti
  * @author Ales justin
  */
-public abstract class DecisionServerTestBase {
+public abstract class DecisionServerTestBase extends KieServerCommon {
     protected final Logger log = Logger.getLogger(getClass().getName());
 
     protected static final String FILENAME = "kie.properties";
 
-    //kie-server credentials
-    protected static final String KIE_USERNAME = System.getProperty("kie.username", "kieserver");
-    protected static final String KIE_PASSWORD = System.getProperty("kie.password", "Redhat@123");
+
     // AMQ credentials
     public static final String MQ_USERNAME = System.getProperty("mq.username", "kieserver");
     public static final String MQ_PASSWORD = System.getProperty("mq.password", "Redhat@123");
@@ -105,31 +104,6 @@ public abstract class DecisionServerTestBase {
         handle.store(war);
 
         return war;
-    }
-
-    protected abstract URL getRouteURL();
-
-    /*
-    * Sort the kieContainers list in alphabetical order
-    * To sort the list just add the following in the desired method:
-    * Collections.sort(KieContainersList, ALPHABETICAL_ORDER);
-    */
-    static final Comparator<KieContainerResource> ALPHABETICAL_ORDER =
-            new Comparator<KieContainerResource>() {
-                @Override
-                public int compare(KieContainerResource o1, KieContainerResource o2) {
-                    return o1.getContainerId().compareTo(o2.getContainerId());
-                }
-            };
-
-    /*
-    * Returns the kieService client
-    */
-    protected KieServicesClient getKieRestServiceClient(URL baseURL) throws Exception {
-        KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newRestConfiguration(new URL(baseURL,
-                "/kie-server/services/rest/server").toString(), KIE_USERNAME, KIE_PASSWORD);
-        kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
-        return KieServicesFactory.newKieServicesClient(kieServicesConfiguration);
     }
 
     /*
@@ -177,36 +151,6 @@ public abstract class DecisionServerTestBase {
         commands.add((Command<?>) CommandFactory.newFireAllRules());
         commands.add((Command<?>) CommandFactory.newQuery("greetings", "get greeting"));
         return CommandFactory.newBatchExecution(commands, "HelloRulesSession");
-    }
-
-    protected void prepareClientInvocation() throws Exception {
-        // do nothing in basic
-    }
-
-    /*
-     * Verifies the server capabilities, for decisionserver-openshift:6.2 it
-     * should be KieServer BRM
-     */
-    public void checkDecisionServerCapabilities(URL url) throws Exception {
-        log.info("Running test checkDecisionServerCapabilities");
-        // for untrusted connections
-        prepareClientInvocation();
-
-        // Where the result will be stored
-        String serverCapabilitiesResult = "";
-
-        // Getting the KieServiceClient
-        KieServicesClient kieServicesClient = getKieRestServiceClient(url);
-        KieServerInfo serverInfo = kieServicesClient.getServerInfo().getResult();
-
-        // Reading Server capabilities
-        for (String capability : serverInfo.getCapabilities()) {
-            serverCapabilitiesResult += capability;
-        }
-
-        // Sometimes the getCapabilities returns "KieServer BRM" and another time "BRM KieServer"
-        // We have to make sure the result will be the same always
-        Assert.assertTrue(serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer"));
     }
 
     /*
@@ -337,6 +281,7 @@ public abstract class DecisionServerTestBase {
         // verify the KieContainer Status
         Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(pos).getStatus());
     }
+
 
     //Multiple Container Tests
 

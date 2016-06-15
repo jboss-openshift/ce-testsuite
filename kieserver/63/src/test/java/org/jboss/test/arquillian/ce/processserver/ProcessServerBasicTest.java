@@ -21,9 +21,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.test.arquillian.ce.decisionserver;
-
-import java.net.URL;
+package org.jboss.test.arquillian.ce.processserver;
 
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -35,21 +33,23 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
+
 /**
  * @author Filippe Spolti
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/decisionserver/decisionserver63-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/processserver/processserver63-basic-s2i.json",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/secrets/decisionserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/secrets/processserver-app-secret.json")
 })
-public class DecisionServerBasicTest extends DecisionServerTestBase {
+public class ProcessServerBasicTest extends ProcessServerTestBase {
 
     @RouteURL("kie-app")
     private URL routeURL;
@@ -61,19 +61,14 @@ public class DecisionServerBasicTest extends DecisionServerTestBase {
 
     @Test
     @RunAsClient
-    public void testDecisionServerCapabilities() throws Exception {
-        checkKieServerCapabilities(getRouteURL(), "BRM");
+    public void testProcessServerCapabilities() throws Exception {
+        checkKieServerCapabilities(getRouteURL(), "BPM");
     }
 
     @Test
     @RunAsClient
-    public void testDecisionServerContainer() throws Exception {
-        checkDecisionServerContainer();
+    public void testProcessServerContainer() throws Exception {
+        checkKieServerContainer("processserver-library");
     }
 
-    @Test
-    @RunAsClient
-    public void testFireAllRules() throws Exception {
-        checkFireAllRules();
-    }
 }

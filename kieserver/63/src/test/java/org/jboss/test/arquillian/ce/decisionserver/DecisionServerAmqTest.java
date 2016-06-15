@@ -78,7 +78,8 @@ public class DecisionServerAmqTest extends DecisionServerTestBase {
     @Test
     @RunAsClient
     public void testDecisionServerCapabilities() throws Exception {
-        checkDecisionServerCapabilities(getRouteURL());
+        //checkDecisionServerCapabilities(getRouteURL());
+        checkKieServerCapabilities(getRouteURL(), "BRM");
     }
 
     @Test
