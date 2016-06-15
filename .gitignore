@@ -3,6 +3,7 @@
 *.iml
 *.ipr
 *.iws
+*.log
 target/
 .project
 .settings/
