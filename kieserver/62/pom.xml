@@ -155,6 +155,13 @@
                         <configuration>
                             <runOrder>alphabetical</runOrder>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <forkMode>once</forkMode>
+                            <properties>
+                                <property>
+                                    <name>listener</name>
+                                    <value>org.jboss.arquillian.ce.common.FailListener</value>
+                                </property>
+                            </properties>
                             <includes>
                                 <include>org/jboss/**/*Test.java</include>
                             </includes>

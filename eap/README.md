@@ -29,6 +29,7 @@ The Ce-Testsuite uses the [ce-arq](https://github.com/jboss-openshift/ce-arq) wh
 ###### Optional ce-arq parameteres
   - -Dtest=**The test class name, if you want to run only one test, otherwise all tests will be executed**
   - -Dkubernetes.ignore.cleanup=true **(default is false), It will ignore the resources cleanup, so you can take a look in the used pods for troubleshooting**
+  - -DAbortOnFirstFailure=true **Abort the execution of the test upon the first failure.** This is useful for debugging/troubleshooting purposes. It will leave behind all created artifacts, like logs and the whole namespace/project. It's up to you do the cleaning.
 
 > **All those are java parameters, so use -D.**
 ___
