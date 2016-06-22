@@ -23,6 +23,12 @@
 
 package org.jboss.test.arquillian.ce.common;
 
+import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.junit.Assert;
 import org.kie.server.api.marshalling.MarshallingFormat;
 import org.kie.server.api.model.KieContainerResource;
@@ -31,18 +37,12 @@ import org.kie.server.client.KieServicesClient;
 import org.kie.server.client.KieServicesConfiguration;
 import org.kie.server.client.KieServicesFactory;
 
-import java.net.URL;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.logging.Logger;
-
 /**
  * @author Filippe Spolti
  *         <p>
  *         Place here all code/methods in common for process and decision server
  */
-public abstract class KieServerCommon {
+public abstract class KieServerTestBase {
 
     /*
     * Sort the kieContainers list in alphabetical order
@@ -59,7 +59,7 @@ public abstract class KieServerCommon {
     //kie-server credentials
     protected static final String KIE_USERNAME = System.getProperty("kie.username", "kieserver");
     protected static final String KIE_PASSWORD = System.getProperty("kie.password", "Redhat@123");
-    protected final Logger log = Logger.getLogger(KieServerCommon.class.getName());
+    protected final Logger log = Logger.getLogger(KieServerTestBase.class.getName());
 
     protected abstract URL getRouteURL();
 

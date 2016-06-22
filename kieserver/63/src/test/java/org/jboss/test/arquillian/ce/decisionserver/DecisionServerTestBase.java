@@ -23,6 +23,22 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.jms.ConnectionFactory;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+
 import io.fabric8.utils.Base64Encoder;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
@@ -34,7 +50,7 @@ import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.test.arquillian.ce.common.KieServerCommon;
+import org.jboss.test.arquillian.ce.common.KieServerTestBase;
 import org.junit.Assert;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
@@ -57,23 +73,12 @@ import org.kie.server.client.RuleServicesClient;
 import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
-import javax.jms.ConnectionFactory;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.Logger;
-
 
 /**
  * @author Filippe Spolti
  * @author Ales justin
  */
-public abstract class DecisionServerTestBase extends KieServerCommon {
+public abstract class DecisionServerTestBase extends KieServerTestBase {
     protected final Logger log = Logger.getLogger(getClass().getName());
 
     protected static final String FILENAME = "kie.properties";
@@ -92,6 +97,7 @@ public abstract class DecisionServerTestBase extends KieServerCommon {
     protected static WebArchive getDeploymentInternal() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML("web.xml");
+        war.addClass(KieServerTestBase.class);
         war.addClass(DecisionServerTestBase.class);
         war.addPackage(Person.class.getPackage());
         war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));

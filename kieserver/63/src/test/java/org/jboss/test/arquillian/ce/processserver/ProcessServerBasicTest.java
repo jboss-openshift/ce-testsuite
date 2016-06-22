@@ -23,6 +23,8 @@
 
 package org.jboss.test.arquillian.ce.processserver;
 
+import java.net.URL;
+
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
@@ -30,10 +32,9 @@ import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.test.arquillian.ce.common.KieServerTestBase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.net.URL;
 
 /**
  * @author Filippe Spolti
@@ -49,7 +50,7 @@ import java.net.URL;
 @OpenShiftResources({
         @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/secrets/processserver-app-secret.json")
 })
-public class ProcessServerBasicTest extends ProcessServerTestBase {
+public class ProcessServerBasicTest extends KieServerTestBase {
 
     @RouteURL("kie-app")
     private URL routeURL;
