@@ -23,6 +23,8 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
+import io.fabric8.utils.Base64Encoder;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,17 +41,12 @@ import javax.naming.NamingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import io.fabric8.utils.Base64Encoder;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
-import org.jboss.arquillian.ce.shrinkwrap.Files;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.common.KieServerTestBase;
 import org.junit.Assert;
 import org.kie.api.command.BatchExecutionCommand;
@@ -81,36 +78,10 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
 public abstract class DecisionServerTestBase extends KieServerTestBase {
     protected final Logger log = Logger.getLogger(getClass().getName());
 
-    protected static final String FILENAME = "kie.properties";
-
-
-    // AMQ credentials
-    public static final String MQ_USERNAME = System.getProperty("mq.username", "kieserver");
-    public static final String MQ_PASSWORD = System.getProperty("mq.password", "Redhat@123");
-
-    public String AMQ_HOST = "tcp://kie-app-amq-tcp:61616";
     public Person person = new Person();
 
     @ArquillianResource
     protected ConfigurationHandle configuration;
-
-    protected static WebArchive getDeploymentInternal() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
-        war.setWebXML("web.xml");
-        war.addClass(KieServerTestBase.class);
-        war.addClass(DecisionServerTestBase.class);
-        war.addPackage(Person.class.getPackage());
-        war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
-        war.addAsLibraries(Libraries.transitive("org.jboss.arquillian.container", "arquillian-ce-httpclient"));
-        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
-        handle.addProperty("kie.username", KIE_USERNAME);
-        handle.addProperty("kie.password", KIE_PASSWORD);
-        handle.addProperty("mq.username", MQ_USERNAME);
-        handle.addProperty("mq.password", MQ_PASSWORD);
-        handle.store(war);
-
-        return war;
-    }
 
     /*
     * Returns the JMS kieService client

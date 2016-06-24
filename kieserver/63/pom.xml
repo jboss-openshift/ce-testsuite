@@ -103,7 +103,13 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-all</artifactId>
         </dependency>
-    </dependencies>
+
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+     </dependencies>
 
     <profiles>
         <!-- Default, compile tests, but not run -->
@@ -177,6 +183,8 @@
                                 <kubernetes.master>${kubernetes.master}</kubernetes.master>
                                 <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
                                 <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
+                                <template.repository>jboss-openshift</template.repository>
+                                <template.branch>kieserver-wip</template.branch>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

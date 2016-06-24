@@ -27,8 +27,19 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
+import org.jboss.arquillian.ce.shrinkwrap.Files;
+import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.test.arquillian.ce.decisionserver.DecisionServerTestBase;
 import org.junit.Assert;
 import org.kie.server.api.marshalling.MarshallingFormat;
 import org.kie.server.api.model.KieContainerResource;
@@ -36,6 +47,7 @@ import org.kie.server.api.model.KieServerInfo;
 import org.kie.server.client.KieServicesClient;
 import org.kie.server.client.KieServicesConfiguration;
 import org.kie.server.client.KieServicesFactory;
+import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
 /**
  * @author Filippe Spolti
@@ -43,6 +55,10 @@ import org.kie.server.client.KieServicesFactory;
  *         Place here all code/methods in common for process and decision server
  */
 public abstract class KieServerTestBase {
+
+    protected static final String FILENAME = "kie.properties";
+
+    public String AMQ_HOST = "tcp://kie-app-amq-tcp:61616";
 
     /*
     * Sort the kieContainers list in alphabetical order
@@ -59,6 +75,28 @@ public abstract class KieServerTestBase {
     //kie-server credentials
     protected static final String KIE_USERNAME = System.getProperty("kie.username", "kieserver");
     protected static final String KIE_PASSWORD = System.getProperty("kie.password", "Redhat@123");
+    // AMQ credentials
+    public static final String MQ_USERNAME = System.getProperty("mq.username", "kieserver");
+    public static final String MQ_PASSWORD = System.getProperty("mq.password", "Redhat@123");
+
+    protected static WebArchive getDeploymentInternal() throws Exception {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
+        war.setWebXML("web.xml");
+        war.addClass(KieServerTestBase.class);
+        war.addClass(DecisionServerTestBase.class);
+        war.addPackage(Person.class.getPackage());
+        war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
+        war.addAsLibraries(Libraries.transitive("org.jboss.arquillian.container", "arquillian-ce-httpclient"));
+        Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
+        handle.addProperty("kie.username", KIE_USERNAME);
+        handle.addProperty("kie.password", KIE_PASSWORD);
+        handle.addProperty("mq.username", MQ_USERNAME);
+        handle.addProperty("mq.password", MQ_PASSWORD);
+        handle.store(war);
+
+        return war;
+    }
+
     protected final Logger log = Logger.getLogger(KieServerTestBase.class.getName());
 
     protected abstract URL getRouteURL();
@@ -67,16 +105,36 @@ public abstract class KieServerTestBase {
         // do nothing in basic
     }
 
+    protected KieServicesConfiguration configureRestClient(URL baseURL) throws Exception {
+        KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newRestConfiguration(new URL(baseURL,
+                "/kie-server/services/rest/server").toString(), KIE_USERNAME, KIE_PASSWORD);
+        kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
+        return kieServicesConfiguration;
+    }
+
+    protected KieServicesConfiguration configureAmqClient() throws Exception {
+        Properties props = new Properties();
+        props.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+        props.setProperty(Context.PROVIDER_URL, AMQ_HOST);
+        props.setProperty(Context.SECURITY_PRINCIPAL, KIE_USERNAME);
+        props.setProperty(Context.SECURITY_CREDENTIALS, KIE_PASSWORD);
+        InitialContext context = new InitialContext(props);
+        ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("ConnectionFactory");
+        Queue requestQueue = (Queue) context.lookup("dynamicQueues/queue/KIE.SERVER.REQUEST");
+        Queue responseQueue = (Queue) context.lookup("dynamicQueues/queue/KIE.SERVER.RESPONSE");
+        KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newJMSConfiguration(connectionFactory, requestQueue,
+                responseQueue, MQ_USERNAME, MQ_PASSWORD);
+        kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
+        return kieServicesConfiguration;
+    }
+
     /*
     * @returns the kieService client
     * @param URL url - KieServer address
     * @throwns Exception for any issue
     */
     protected KieServicesClient getKieRestServiceClient(URL baseURL) throws Exception {
-        KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newRestConfiguration(new URL(baseURL,
-                "/kie-server/services/rest/server").toString(), KIE_USERNAME, KIE_PASSWORD);
-        kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
-        return KieServicesFactory.newKieServicesClient(kieServicesConfiguration);
+        return KieServicesFactory.newKieServicesClient(configureRestClient(baseURL));
     }
 
     /*
