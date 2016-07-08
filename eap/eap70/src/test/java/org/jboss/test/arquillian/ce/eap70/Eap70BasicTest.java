@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
  * @author Marko Luksa
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap70-basic-s2i.json")
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/eap/eap70-basic-s2i.json")
 public class Eap70BasicTest extends EapBasicTestBase {
 
 }

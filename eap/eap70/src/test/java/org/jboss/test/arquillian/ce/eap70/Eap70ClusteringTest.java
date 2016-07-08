@@ -13,11 +13,11 @@ import org.junit.runner.RunWith;
  * @author Jonh Wendell
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap70-basic-s2i.json", parameters = {
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/eap/eap70-basic-s2i.json", parameters = {
         @TemplateParameter(name = "SOURCE_REPOSITORY_URL", value = "https://github.com/jboss-openshift/openshift-examples"),
         @TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "master"),
         @TemplateParameter(name = "CONTEXT_DIR", value = "eap-tests/cluster1") })
-@OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/eap7-app-secret.json")
+@OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap7-app-secret.json")
 @RoleBindings({
         @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default"),
         @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:eap7-service-account") })
