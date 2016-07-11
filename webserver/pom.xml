@@ -87,6 +87,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.ce.testsuite</groupId>
+            <artifactId>common-ce-testsuite</artifactId>
+        </dependency>
+
     </dependencies>
 
     <profiles>
