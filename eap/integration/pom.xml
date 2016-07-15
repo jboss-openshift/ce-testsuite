@@ -103,6 +103,7 @@
                             </argLine>
                             <runOrder>alphabetical</runOrder>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <trimStackTrace>false</trimStackTrace>
                             <includes>
                                 <include>org/jboss/**/*Test.java</include>
                                 <include>org/jboss/**/*TestCase.java</include>
