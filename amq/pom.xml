@@ -176,6 +176,7 @@
 						<configuration>
 							<runOrder>alphabetical</runOrder>
 							<redirectTestOutputToFile>true</redirectTestOutputToFile>
+							<trimStackTrace>false</trimStackTrace>
 							<enableAssertions>false</enableAssertions>
 							<org.jboss.remoting-jmx.timeout>1000</org.jboss.remoting-jmx.timeout>
                             <forkMode>once</forkMode>

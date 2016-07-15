@@ -187,6 +187,7 @@
                         <configuration>
                             <runOrder>alphabetical</runOrder>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <trimStackTrace>false</trimStackTrace>
                             <forkMode>once</forkMode>
                             <properties>
                                 <property>

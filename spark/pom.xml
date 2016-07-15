@@ -168,6 +168,7 @@
                         <configuration>
                             <runOrder>alphabetical</runOrder>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <trimStackTrace>false</trimStackTrace>
                             <includes>
                                 <include>org/jboss/**/*Test.java</include>
                             </includes>
