@@ -13,7 +13,6 @@ import org.jboss.arquillian.junit.InSequence;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -45,13 +44,6 @@ public class EapBasicTestBase {
             this.email = email;
             this.phoneNumber = phoneNumber;
         }
-    }
-
-    @Before
-    public void delayBetweenTests() throws InterruptedException {
-        final int DELAY = 5;
-        log.info(String.format("Delaying %d seconds between tests", DELAY));
-        Thread.sleep(DELAY * 1000);
     }
 
     @Test
