@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
+import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -24,6 +25,8 @@ import static org.junit.Assert.assertEquals;
 public class EapBasicTestBase {
 
     private Logger log = Logger.getLogger(getClass().getName());
+    private final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
+            .desiredStatusCode(200).delay(10).build();
 
     @RouteURL("eap-app")
     private URL url;
@@ -53,7 +56,7 @@ public class EapBasicTestBase {
         log.info("Trying URL " + getUrl());
         HttpClient client = HttpClientBuilder.untrustedConnectionClient();
         HttpRequest request = HttpClientBuilder.doGET(getUrl() + "/rest/members");
-        HttpResponse response = client.execute(request);
+        HttpResponse response = client.execute(request, execOptions);
 
         JSONParser jsonParser = new JSONParser();
         JSONArray array = (JSONArray) jsonParser.parse(response.getResponseBodyAsString());
@@ -81,7 +84,7 @@ public class EapBasicTestBase {
         HttpRequest request = HttpClientBuilder.doPOST(getUrl() + "/rest/members");
         request.setHeader("Content-Type", "application/json");
         request.setEntity(p.toString());
-        HttpResponse response = client.execute(request);
+        HttpResponse response = client.execute(request, execOptions);
         assertEquals(200, response.getResponseCode());
 
         JSONObject remotePerson = getPerson(1);
@@ -92,7 +95,7 @@ public class EapBasicTestBase {
     private JSONObject getPerson(int id) throws Exception {
         HttpClient client = HttpClientBuilder.untrustedConnectionClient();
         HttpRequest request = HttpClientBuilder.doGET(getUrl() + "/rest/members/" + id);
-        HttpResponse response = client.execute(request);
+        HttpResponse response = client.execute(request, execOptions);
 
         JSONParser jsonParser = new JSONParser();
         return (JSONObject) jsonParser.parse(response.getResponseBodyAsString());

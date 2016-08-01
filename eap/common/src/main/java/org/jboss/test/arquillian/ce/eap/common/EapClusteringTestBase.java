@@ -14,6 +14,7 @@ import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
+import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -32,6 +33,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class EapClusteringTestBase {
     protected final Logger log = Logger.getLogger(getClass().getName());
+    private final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
+            .desiredStatusCode(200).delay(10).build();
 
     @ArquillianResource
     OpenShiftHandle adapter;
@@ -76,7 +79,7 @@ public class EapClusteringTestBase {
         Map<String, String> params = new HashMap<>();
         params.put("key", valueToCheck);
         request.setEntity(params);
-        HttpResponse response = client.execute(request);
+        HttpResponse response = client.execute(request, execOptions);
         assertEquals("OK", response.getResponseBodyAsString());
 
         String cookie = response.getHeader("Set-Cookie");
@@ -99,7 +102,7 @@ public class EapClusteringTestBase {
         HttpRequest request = HttpClientBuilder.doGET(servletUrl);
         request.setHeader("Authorization", "Bearer " + token);
         request.setHeader("Cookie", cookie);
-        return client.execute(request).getResponseBodyAsString();
+        return client.execute(request, execOptions).getResponseBodyAsString();
     }
 
     private List<String> getPods() throws Exception {
@@ -154,7 +157,7 @@ public class EapClusteringTestBase {
 
         // Do the requests
         for (int i = 1; i <= REQUESTS; i++) {
-            HttpResponse response = client.execute(request);
+            HttpResponse response = client.execute(request, execOptions);
             assertEquals(200, response.getResponseCode());
 
             String body = response.getResponseBodyAsString();
@@ -172,7 +175,7 @@ public class EapClusteringTestBase {
 
     protected int doDelayRequest(String url, int seconds) throws Exception {
         HttpRequest request = HttpClientBuilder.doGET(url + "/cluster1/Hi");
-        HttpResponse response = client.execute(request);
+        HttpResponse response = client.execute(request, execOptions);
         String body = response.getResponseBodyAsString();
         assertTrue("Got an invalid response: " + body, body.startsWith("Served from node: "));
         log.info(String.format("HI - BODY = %s", body));
@@ -181,7 +184,7 @@ public class EapClusteringTestBase {
         request = HttpClientBuilder.doGET(String.format("%s/cluster1/Delay?d=%d", url, seconds));
         (new DeletePod(podName)).start();
         log.info(String.format("About to request DELAY with %d seconds", seconds));
-        response = client.execute(request);
+        response = client.execute(request, execOptions);
         body = response.getResponseBodyAsString();
         int stars = StringUtils.countMatches(body, "*");
         log.info(String.format("DELAY - BODY = %s", body));

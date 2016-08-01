@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
+import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -19,6 +20,8 @@ import org.junit.Test;
  * @author Marko Luksa
  */
 public class EapAmqTestBase {
+    private final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
+            .desiredStatusCode(200).delay(10).build();
 
     @RouteURL("eap-app")
     private URL url;
@@ -85,7 +88,7 @@ public class EapAmqTestBase {
 
     private void testPageContains(String url, String text) throws Exception {
         HttpRequest request = HttpClientBuilder.doGET(url);
-        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
+        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request, execOptions);
 
         Assert.assertEquals(200, response.getResponseCode());
 

@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
+import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.junit.Assert;
@@ -69,7 +70,9 @@ public class TodoList {
         params.put("description", description);
         request.setEntity(params);
 
-        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
+        final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
+                .desiredStatusCode(302).build();
+        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request, execOptions);
 
         Assert.assertEquals("Got an invalid response code. Body: " + response.getResponseBodyAsString(), 302,
                 response.getResponseCode());
@@ -92,7 +95,9 @@ public class TodoList {
      */
     public static void checkItem(String url, String summary, String description) throws Exception {
         HttpRequest request = HttpClientBuilder.doGET(url);
-        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
+        final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
+                .desiredStatusCode(200).build();
+        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request, execOptions);
         String responseString = response.getResponseBodyAsString();
 
         Assert.assertEquals("Got an invalid response code. Body: " + responseString, 200, response.getResponseCode());
