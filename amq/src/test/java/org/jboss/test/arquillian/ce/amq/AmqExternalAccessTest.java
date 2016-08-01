@@ -27,11 +27,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLContext;
+
 import org.fusesource.mqtt.client.BlockingConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Message;
 import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
+import org.fusesource.mqtt.client.Tracer;
+import org.fusesource.mqtt.codec.MQTTFrame;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
@@ -44,7 +48,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-ssl.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/1.3.0/amq/amq62-ssl.json",
 	parameters = {
 		@TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
 		@TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
@@ -62,7 +66,7 @@ import org.junit.runner.RunWith;
 public class AmqExternalAccessTest extends AmqSslTestBase {
 
     static final String STOMP_URL = "ssl://stomp-amq.router.default.svc.cluster.local:443";
-	static final String MQTT_URL = "ssl://mqtt-amq.router.default.svc.cluster.local:443";
+	static final String MQTT_URL = "tlsv1.2://mqtt-amq.router.default.svc.cluster.local:443";
 	static final String AMQP_URL = "amqps://amqp-amq.router.default.svc.cluster.local:443";
 	static final String OPENWIRE_URL = "ssl://tcp-amq.router.default.svc.cluster.local:443";
 
@@ -107,6 +111,20 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
         mqtt.setHost(MQTT_URL);
         mqtt.setUserName(USERNAME);
         mqtt.setPassword(PASSWORD);
+        mqtt.setSslContext(SSLContext.getDefault());
+        mqtt.setTracer(new Tracer() {
+        	public void debug(String message, Object...args) {
+        		LOG.info(String.format(message, args));
+            }
+
+            public void onSend(MQTTFrame frame) {
+            	LOG.info(frame.toString());
+            }
+
+            public void onReceive(MQTTFrame frame) {
+            	LOG.info(frame.toString());
+            }
+        });
 
         BlockingConnection connection = mqtt.blockingConnection();
         connection.connect();

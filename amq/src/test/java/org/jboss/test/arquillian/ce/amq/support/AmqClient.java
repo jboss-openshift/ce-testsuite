@@ -173,10 +173,6 @@ public class AmqClient {
     }
 
     public String consumeAmqp() throws JMSException, NamingException {
-        TransportSslOptions options = new TransportSslOptions();
-        options.setTrustStoreLocation(System.getProperty("javax.net.ssl.trustStore"));
-        options.setTrustStorePassword("password");
-        options.setVerifyHost(false);
         ConnectionFactory factory = new JmsConnectionFactory(connectionUrl);
 
         Connection connection = factory.createConnection(username, password);
