@@ -109,12 +109,13 @@
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <scope>provided</scope>
         </dependency>
-     </dependencies>
-
+        
         <dependency>
             <groupId>org.jboss.ce.testsuite</groupId>
             <artifactId>common-ce-testsuite</artifactId>
         </dependency>
+
+     </dependencies>
 
     <profiles>
         <!-- Default, compile tests, but not run -->
