@@ -26,7 +26,7 @@ import static org.junit.Assert.assertFalse;
         @TemplateParameter(name = "SOURCE_REPOSITORY_URL", value = "https://github.com/jboss-openshift/openshift-examples"),
         @TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "master"),
         @TemplateParameter(name = "CONTEXT_DIR", value = "eap-tests/cluster1")})
-@OpenShiftResource("classpath:eap-app-secret.json")
+@OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
 @RoleBindings({
         @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default"),
         @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:eap-service-account")})

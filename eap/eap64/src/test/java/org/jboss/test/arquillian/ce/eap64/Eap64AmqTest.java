@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-amq-s2i.json", parameters = {
         @TemplateParameter(name = "HTTPS_NAME", value = "jboss"),
         @TemplateParameter(name = "HTTPS_PASSWORD", value = "mykeystorepass") })
-@OpenShiftResource("classpath:eap-app-secret.json")
+@OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
 public class Eap64AmqTest extends org.jboss.test.arquillian.ce.eap.common.EapAmqTestBase {
 
 }
