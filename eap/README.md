@@ -205,13 +205,15 @@ mvn install:install-file -Dfile=/dados/sources/jboss-eap-6.4.5-src/testsuite/int
 
 At this moment we are ready to start the tests, to start it use the following command:
 ```sh
-mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375
+cd ce-testsuite/eap/integration/eap6
+mvn clean test -Peap6 -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375
 ```
 
 If you want to execute a single integration test you need to add the extra test which will prepare the container to run the tests, example:
 
 ```sh
-mvn clean test -Peap,integration -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375 -Dtest=<some test you whish to run>
+cd ce-testsuite/eap/integration/eap6
+mvn clean test -Peap6 -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375 -Dtest=<some test you whish to run>
 ```
 
 If you are going to use a newer EAP version, remember to change parent pom.xml according EAP version that you are using:

@@ -23,7 +23,6 @@
 
 package org.jboss.as.ce.testsuite;
 
-import org.arquillian.cube.openshift.impl.client.OpenShiftClient;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.core.api.annotation.Observes;
