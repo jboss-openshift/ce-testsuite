@@ -23,53 +23,70 @@
 
 package org.jboss.test.arquillian.ce.processserver;
 
-import java.net.URL;
-
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.test.arquillian.ce.common.KieServerTestBase;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.URL;
 
 /**
  * @author Filippe Spolti
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/processserver/processserver63-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository}/application-templates/${template.branch}p/processserver/processserver63-mysql-s2i.json",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/secrets/processserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository}/application-templates/${template.branch}/secrets/processserver-app-secret.json")
 })
-public class ProcessServerBasicTest extends LibraryProcessTestBase {
+public class ProcessServerMySqlTest extends LibraryProcessTestBase {
 
-    @RouteURL("kie-app")
-    private URL routeURL;
 
-    @Override
-    protected URL getRouteURL() {
-        return routeURL;
-    }
+        @Deployment
+        public static WebArchive getDeployment() throws Exception {
+                WebArchive war = getDeploymentInternal();
+                war.addPackage("org.openshift.quickstarts.processserver.library.types");
+                war.addClass(LibraryClient.class);
+                war.addClass(LibraryProcessTestBase.class);
+                return war;
+        }
 
-    @Test
-    @RunAsClient
-    public void testProcessServerCapabilities() throws Exception {
-        checkKieServerCapabilities(getRouteURL(), "BPM");
-    }
+        @RouteURL("kie-app")
+        private URL routeURL;
 
-    @Test
-    @RunAsClient
-    public void testProcessServerContainer() throws Exception {
-        checkKieServerContainer("processserver-library");
-    }
+        @Override
+        protected URL getRouteURL() {
+                return routeURL;
+        }
+
+        @Override
+        public void testLibraryAMQ() throws Exception {
+                // do nothing on non amq templates
+        }
+
+        @Test
+        @RunAsClient
+        public void testProcessServerCapabilities() throws Exception {
+                checkKieServerCapabilities(getRouteURL(), "BPM");
+        }
+
+        @Test
+        @RunAsClient
+        public void testProcessServerContainer() throws Exception {
+                checkKieServerContainer("processserver-library=org.openshift.quickstarts:processserver-library:1.3.0.Final");
+        }
 
 }
