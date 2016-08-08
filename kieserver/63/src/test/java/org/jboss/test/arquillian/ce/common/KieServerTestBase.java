@@ -23,17 +23,23 @@
 
 package org.jboss.test.arquillian.ce.common;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.InvalidParameterException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.xml.bind.DatatypeConverter;
 
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
@@ -199,10 +205,36 @@ public abstract class KieServerTestBase {
         log.info("Container ID: " + kieContainers.get(pos).getContainerId());
         log.info("Container Status: " + kieContainers.get(pos).getStatus());
 
-        Assert.assertTrue(kieContainers.get(pos).getContainerId().startsWith(containerId));
+        Assert.assertTrue(kieContainers.get(pos).getContainerId().equals(convertKyeContainerId(containerId)));
         // verify the KieContainer Status
         Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(pos).getStatus());
 
     }
 
+    /*
+    * Convert the deployed container in a md5 hash
+    * @param String KeyContainer in the following pattern:
+    *       ContainerName=G:A:V
+    *       Ex: processserver-library=org.openshift.quickstarts:processserver-library:1.3.0.Final
+    * @returns the MD5 hash of the given container.
+    * @throws Exception for any kind of error.
+    */
+    private String convertKyeContainerId(String kyeContainer) throws Exception {
+
+        //validate the container name received:
+        final Pattern PATTERN = Pattern.compile("(^\\w*=*)(\\w:*)(\\w*:*)");
+
+        if (!PATTERN.matcher(kyeContainer).find()) {
+            throw new InvalidParameterException("Please use the following format: ContainerName=G:A:V");
+        }
+
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            byte[] digest = md5.digest(kyeContainer.getBytes("UTF-8"));
+            return DatatypeConverter.printHexBinary(digest).toLowerCase();
+
+        } catch (Exception e) {
+            throw new Exception("Failed to generate the MD5 hash of " + kyeContainer);
+        }
+    }
 }
