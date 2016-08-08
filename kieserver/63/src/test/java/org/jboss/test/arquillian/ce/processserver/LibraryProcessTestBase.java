@@ -67,7 +67,7 @@ public abstract class LibraryProcessTestBase extends KieServerTestBase {
 
     @Test
     public void testLibraryREST() throws Exception {
-        runLibraryTest(configureRestClient(new URL("http://kie-app:8080/")));
+        runLibraryTest(configureRestClient(new URL("http://" + System.getenv("KIE_APP_SERVICE_HOST") + ":" + System.getenv("KIE_APP_SERVICE_PORT") + "/")));
     }
 
     @Test
