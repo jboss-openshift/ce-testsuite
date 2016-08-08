@@ -17,104 +17,134 @@
     <artifactId>ce-eap-testsuite</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-	<packaging>pom</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-spi</artifactId>
+            <version>${version.arquillian}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.config</groupId>
+            <artifactId>arquillian-config-api</artifactId>
+            <version>${version.arquillian}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-spi</artifactId>
+            <version>${version.arquillian}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-cli</artifactId>
+            <version>${version.eap}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+        <groupId>org.jboss.as</groupId>
+        <artifactId>jboss-as-testsuite-shared</artifactId>
+        <version>${version.eap}</version>
+        <scope>test</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>*</groupId>
+                <artifactId>*</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+
+    </dependencies>
+
+
+    <packaging>pom</packaging>
     <name>CE Testsuite -- EAP testsuite</name>
     <description>Cloud Enablement Testsuite -- EAP testsuite</description>
 
-	<modules>
-		<module>common</module>
-	</modules>
 
-	<profiles>
+    <modules>
+        <module>common</module>
+    </modules>
 
-		<profile>
-			<id>all</id>
+    <profiles>
 
-			<activation>
-				<property>
-					<name>all</name>
-				</property>
-			</activation>
+        <profile>
+            <id>all</id>
 
-			<properties>
-				<skipTests>true</skipTests>
-			</properties>
+            <activation>
+                <property>
+                    <name>all</name>
+                </property>
+            </activation>
 
-			<modules>
-				<module>eap64</module>
-				<module>eap70</module>
-			</modules>
-		</profile>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
 
-		<profile>
-			<!-- Existing EAP tests - from testsuite (requires custom mvn build) -->
+            <modules>
+                <module>eap64</module>
+                <module>eap70</module>
+            </modules>
+        </profile>
 
-			<id>testsuite</id>
+        <profile>
+            <!-- Existing EAP tests - from testsuite (requires custom mvn build) -->
 
-			<activation>
-				<property>
-					<name>testsuite</name>
-				</property>
-			</activation>
+            <id>testsuite</id>
 
-			<modules>
-				<module>compat</module>
-				<module>integration</module>
-			</modules>
-		</profile>
+            <activation>
+                <property>
+                    <name>testsuite</name>
+                </property>
+            </activation>
 
-		<profile>
-			<id>eap64</id>
-			<activation>
-				<property>
-					<name>eap64</name>
-				</property>
-			</activation>
+            <modules>
+                <module>compat</module>
+                <module>integration/eap6</module>
+                <!--module>integration/eap7</module-->
+            </modules>
+        </profile>
 
-			<modules>
-				<module>eap64</module>
-			</modules>
-		</profile>
+        <profile>
+            <id>eap64</id>
+            <activation>
+                <property>
+                    <name>eap64</name>
+                </property>
+            </activation>
 
-		<profile>
-			<id>eap70</id>
-			<activation>
-				<property>
-					<name>eap70</name>
-				</property>
-			</activation>
+            <modules>
+                <module>eap64</module>
+            </modules>
+        </profile>
 
-			<modules>
-				<module>eap70</module>
-			</modules>
-		</profile>
+        <profile>
+            <id>eap70</id>
+            <activation>
+                <property>
+                    <name>eap70</name>
+                </property>
+            </activation>
 
-		<profile>
-			<id>compat</id>
-			<activation>
-				<property>
-					<name>compat</name>
-				</property>
-			</activation>
+            <modules>
+                <module>eap70</module>
+            </modules>
+        </profile>
 
-			<modules>
-				<module>compat</module>
-			</modules>
-		</profile>
+        <profile>
+            <id>compat</id>
+            <activation>
+                <property>
+                    <name>compat</name>
+                </property>
+            </activation>
 
-		<profile>
-			<id>integration</id>
-			<activation>
-				<property>
-					<name>integration</name>
-				</property>
-			</activation>
+            <modules>
+                <module>compat</module>
+            </modules>
+        </profile>
 
-			<modules>
-				<module>integration</module>
-			</modules>
-		</profile>
-
-	</profiles>
+    </profiles>
 
 </project>
