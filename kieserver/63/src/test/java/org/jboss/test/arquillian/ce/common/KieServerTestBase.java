@@ -23,11 +23,9 @@
 
 package org.jboss.test.arquillian.ce.common;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -165,10 +163,9 @@ public abstract class KieServerTestBase {
 
         // Reading Server capabilities
         for (String capability : serverInfo.getCapabilities()) {
-            if (capability.toUpperCase().equals("KIESERVER")) {
-                //do nothing
+            if (!capability.toUpperCase().equals("KIESERVER")) {
+                serverCapabilitiesResult += capability; // TODO -- we used to have empty 'if' here ... ??!!?
             }
-            serverCapabilitiesResult += capability;
         }
 
         // Sometimes the getCapabilities returns "KieServer BRM" and another time "BRM KieServer"
@@ -205,7 +202,7 @@ public abstract class KieServerTestBase {
         log.info("Container ID: " + kieContainers.get(pos).getContainerId());
         log.info("Container Status: " + kieContainers.get(pos).getStatus());
 
-        Assert.assertTrue(kieContainers.get(pos).getContainerId().equals(convertKyeContainerId(containerId)));
+        Assert.assertTrue(kieContainers.get(pos).getContainerId().equals(convertKieContainerId(containerId)));
         // verify the KieContainer Status
         Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(pos).getStatus());
 
@@ -213,28 +210,28 @@ public abstract class KieServerTestBase {
 
     /*
     * Convert the deployed container in a md5 hash
-    * @param String KeyContainer in the following pattern:
+    * @param String KieContainer in the following pattern:
     *       ContainerName=G:A:V
     *       Ex: processserver-library=org.openshift.quickstarts:processserver-library:1.3.0.Final
     * @returns the MD5 hash of the given container.
     * @throws Exception for any kind of error.
     */
-    private String convertKyeContainerId(String kyeContainer) throws Exception {
+    private String convertKieContainerId(String kieContainer) throws Exception {
 
         //validate the container name received:
         final Pattern PATTERN = Pattern.compile("(^\\w*=*)(\\w:*)(\\w*:*)");
 
-        if (!PATTERN.matcher(kyeContainer).find()) {
+        if (!PATTERN.matcher(kieContainer).find()) {
             throw new InvalidParameterException("Please use the following format: ContainerName=G:A:V");
         }
 
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
-            byte[] digest = md5.digest(kyeContainer.getBytes("UTF-8"));
+            byte[] digest = md5.digest(kieContainer.getBytes("UTF-8"));
             return DatatypeConverter.printHexBinary(digest).toLowerCase();
 
         } catch (Exception e) {
-            throw new Exception("Failed to generate the MD5 hash of " + kyeContainer);
+            throw new Exception("Failed to generate the MD5 hash of " + kieContainer);
         }
     }
 }
