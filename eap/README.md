@@ -29,7 +29,6 @@ The Ce-Testsuite uses the [ce-arq](https://github.com/jboss-openshift/ce-arq) wh
 ###### Optional ce-arq parameteres
   - -Dtest=**The test class name, if you want to run only one test, otherwise all tests will be executed**
   - -Dkubernetes.ignore.cleanup=true **(default is false), It will ignore the resources cleanup, so you can take a look in the used pods for troubleshooting**
-  - -DAbortOnFirstFailure=true **Abort the execution of the test upon the first failure.** This is useful for debugging/troubleshooting purposes. It will leave behind all created artifacts, like logs and the whole namespace/project. It's up to you do the cleaning.
 
 > **All those are java parameters, so use -D.**
 ___
@@ -107,14 +106,16 @@ $ mvn clean package test -Peap,eap70 -Dkubernetes.master=https://192.168.1.254:8
 ```
 
 ___
-#### Integration
+#### Integration (EAP6 & EAP7)
 EAP integration will run all integration tests from EAP project.
-The reason to perform these tests is to make sure all of basic EAP's funcionailities are properly working in a containerized envorironment.
-For this tests we are using EAP 6.4.5.
+The reason to perform these tests is to make sure all of basic EAP's functionality are properly working in a containerized envorironment.
+For this tests we are using EAP 6.4.5 and EAP 7.0.0.GA
 To be able to run this tests you may have to download the [source coude](https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=40901&product=appplatform&version=6.4&downloadType=patches) and build the needed dependencies. To build the dependencies please follow the steps below:
 
-##### Enable the test-jar in the testsuite sub-project pom.xml:
-Add the following content on **EAP_SRC/testsuite/pom.xml**
+**Note**, remember to choose the correct version of EAP 6 or 7.
+
+##### Enable the test-jar in the testsuite sub-projects:
+Add the following content on **EAP_SRC/testsuite/integration/pom.xml**
 ```java
         <plugins>
            <plugin>
@@ -164,7 +165,11 @@ To make the JBoss CLI tests work, we need to change the jboss-as-testsuite-share
 #### Building the testsuite project:
 Example:
 ```sh
-cd $EAP_SRC/testsuite && mvn clean install
+cd $EAP_SRC/testsuite && mvn clean install -DskipTests
+```
+After to execute tue command above, do it:
+```sh
+cd $EAP_SRC/testsuite/integration/basic && mvn clean install -DskipTests
 ```
 
 The above command will generate the required jars, which are:
@@ -172,9 +177,12 @@ The above command will generate the required jars, which are:
   - $EAP_SRC/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar
   - $EAP_SRC/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.5.5.Final-redhat-SNAPSHOT-tests.jar
  
+ **Note** for EAP7 the file name will start with **wildfly-**, example: **wildfly-ts-integ-basic-7.0.0.GA-redhat-2-tests.jar**. If you are building EAP7 remember to change the file name in the steps below.
+
+ 
 ### Install the jars manually:
 
-Before to install the jars, is necessary add a user in the **jboss-ejb-client.properties** in the following file: 
+Before installing the jars, is necessary add a user in the **jboss-ejb-client.properties** in the following file: 
 **$EAP_SRC/testsuite/integration/smoke/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar** 
 and add the following content:
 
@@ -183,42 +191,51 @@ remote.connection.default.username=guest
 remote.connection.default.password=guest
 ```
 
+For eap 7 so the same as described above in the **wildfly-ts-integ-ws-7.0.0.GA-redhat-2-tests.jar** file.
+
 After change the sources as explained above, build the **jboss-as-testsuite-shared** sources:
 ```sh
-$ cd $JBOSS_SOURCES/testsuite/shared
-$ mvn clean install
+$ cd $EAP_SRC/testsuite/shared
+$ mvn clean install -DskipTests
 ```
 
-And the **model-test** sources:
+And the **model-test** sources (Not needed on EAP6):
+Note, on EAP7 this sub-project is located under **jboss-eap-7-core-src**
 ```sh
-$ cd $JBOSS_SOURCES/model-test
-$ mvn clean install
+$ cd $EAP_SRC/model-test
+$ mvn clean install -DskipTests
 ```
 
-After all steps above above, install the needed jars:
+After all steps above install the needed jars:
 
 ```sh
-mvn install:install-file -Dfile=/dados/sources/jboss-eap-6.4.5-src/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-basic -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
+mvn install:install-file -Dfile=/sources/jboss-eap-6.4.5-src/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-basic -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
+mvn install:install-file -Dfile=/sources/jboss-eap-6.4.5-src/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-smoke -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
+```
 
-mvn install:install-file -Dfile=/dados/sources/jboss-eap-6.4.5-src/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-smoke -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
+For EAP 7, we also need to install the dependencies below:
+```sh
+mvn install:install-file -Dfile=/sources/jboss-eap-7.0-src/testsuite/integration/web/target/wildfly-ts-integ-web-7.0.0.GA-redhat-2-tests.jar -DgroupId=org.jboss.eap -DartifactId=wildfly-ts-integ-web -Dversion=7.0.0.GA-redhat-2 -Dpackaging=test-jar
+mvn install:install-file -Dfile=/sources/jboss-eap-7.0-src/testsuite/integration/ws/target/wildfly-ts-integ-ws-7.0.0.GA-redhat-2-tests.jar -DgroupId=org.jboss.eap -DartifactId=wildfly-ts-integ-ws -Dversion=7.0.0.GA-redhat-2 -Dpackaging=test-jar
 ```
 
 At this moment we are ready to start the tests, to start it use the following command:
 ```sh
-cd ce-testsuite/eap/integration/eap6
-mvn clean test -Peap6 -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375
+cd ce-testsuite/eap/integration/eap6|eap7
+mvn clean test -Peap6|eap7 -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375
 ```
 
 If you want to execute a single integration test you need to add the extra test which will prepare the container to run the tests, example:
 
 ```sh
-cd ce-testsuite/eap/integration/eap6
-mvn clean test -Peap6 -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375 -Dtest=<some test you whish to run>
+cd ce-testsuite/eap/integration/eap6|eap7
+mvn clean test -Peap6|eap7 -Dkubernetes.master=https://openshift-master.mydomain.com:8443 -Ddocker.url=http://openshift-docker.mydomain.com:2375 -Dtest=<some test you whish to run>
 ```
 
 If you are going to use a newer EAP version, remember to change parent pom.xml according EAP version that you are using:
 ```java
 <version.eap>7.5.5.Final-redhat-SNAPSHOT</version.eap>
+<version.eap7>7.0.0.GA-redhat-2</version.eap7>
 ```
 Also remember to change the EAP related stuff versions like CLI.
 

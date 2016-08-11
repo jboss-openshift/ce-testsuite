@@ -14,11 +14,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
-    <artifactId>ce-testsuite-eap-integration</artifactId>
+    <artifactId>ce-testsuite-eap6-integration</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>CE Testsuite -- EAP testsuite Integration tests</name>
-    <description>Cloud Enablement Testsuite -- EAP testsuite Integration tests</description>
+    <name>CE Testsuite -- EAP 6 testsuite Integration tests</name>
+    <description>Cloud Enablement Testsuite -- EAP 6 testsuite Integration tests</description>
 
     <properties>
         <version.javax.ejb>1.0.2.Final-redhat-3</version.javax.ejb>
@@ -35,13 +35,10 @@
         <commons-lang>2.6</commons-lang>
         <apache.lucene.version>3.6.2</apache.lucene.version>
         <commons.io.version>2.4</commons.io.version>
-        <hamcrest.library.version>1.3</hamcrest.library.version>
         <resteasy-jaxrs.version>2.3.12.Final-redhat-1</resteasy-jaxrs.version>
         <jboss.as.ee.deployment.version>7.5.4.Final-redhat-4</jboss.as.ee.deployment.version>
         <cxf-bundle-jaxrs.version>2.7.18</cxf-bundle-jaxrs.version>
         <bouncyclastle.version>1.45</bouncyclastle.version>
-        <api-ldap-client-all.version>1.0.0-M33</api-ldap-client-all.version>
-        <apacheds-server-annotations.version>2.0.0-M21</apacheds-server-annotations.version>
         <hornetq-jms-client.version>2.4.7.Final</hornetq-jms-client.version>
         <hornetq-core.version>2.2.21.Final</hornetq-core.version>
         <jboss-as-messaging.version>7.5.4.Final-redhat-4</jboss-as-messaging.version>
@@ -55,6 +52,639 @@
         <jboss.arquillian.common.version>7.5.5.Final-redhat-3</jboss.arquillian.common.version>
         <version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-ts-integ-basic</artifactId>
+                <type>test-jar</type>
+                <version>${version.eap}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-ts-integ-smoke</artifactId>
+                <type>test-jar</type>
+                <version>${version.eap}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-testsuite-shared</artifactId>
+                <version>${version.eap}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.xnio</groupId>
+                <artifactId>xnio-nio</artifactId>
+                <version>${version.org.jboss.xnio}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-cli</artifactId>
+                <scope>test</scope>
+                <version>${jboss-cli-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.xnio</groupId>
+                        <artifactId>xnio-nio</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-security</artifactId>
+                <version>${jboss-security-version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-arquillian-common</artifactId>
+                <version>${jboss.arquillian.common.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Test deps -->
+            <dependency>
+                <groupId>org.jboss.spec.javax.transaction</groupId>
+                <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+                <version>${version.javax.tx}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate.javax.persistence</groupId>
+                <artifactId>hibernate-jpa-2.0-api</artifactId>
+                <version>${version.javax.jpa}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax</groupId>
+                <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+                <version>${version.javax.ejb}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax.ejb</groupId>
+                <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+                <version>${version.javax.ejb}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.ironjacamar</groupId>
+                <artifactId>ironjacamar-spec-api</artifactId>
+                <version>${version.javax.jca}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax.enterprise.deploy</groupId>
+                <artifactId>jboss-jad-api_1.2_spec</artifactId>
+                <version>${version.javax.jad}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax.jms</groupId>
+                <artifactId>jboss-jms-api_1.1_spec</artifactId>
+                <version>${version.javax.jms}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.security</groupId>
+                <artifactId>jbossxacml</artifactId>
+                <version>${version.org.jboss.security.jbossxacml}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mortbay.jetty.alpn</groupId>
+                <artifactId>alpn-boot</artifactId>
+                <version>${version.alpn-boot}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-ejb3</artifactId>
+                <version>${ejb3.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-analyzers</artifactId>
+                <version>${apache.lucene.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxrs</artifactId>
+                <version>${resteasy-jaxrs.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-ee-deployment</artifactId>
+                <version>${jboss.as.ee.deployment.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-model-test</artifactId>
+                <version>${version.eap}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-messaging</artifactId>
+                <version>${jboss-as-messaging.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-bundle-jaxrs</artifactId>
+                <version>${cxf-bundle-jaxrs.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>${hamcrest.library.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk16</artifactId>
+                <version>${bouncyclastle.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.directory.api</groupId>
+                <artifactId>api-ldap-client-all</artifactId>
+                <version>${api-ldap-client-all.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-server-annotations</artifactId>
+                <version>${apacheds-server-annotations.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- hornetq dependencies -->
+            <dependency>
+                <groupId>org.hornetq</groupId>
+                <artifactId>hornetq-core-client</artifactId>
+                <version>${version.org.hornetq}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.logging</groupId>
+                        <artifactId>jboss-logging-processor</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.jdeparser</groupId>
+                        <artifactId>jdeparser</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hornetq</groupId>
+                <artifactId>hornetq-jms-client</artifactId>
+                <version>${version.org.hornetq}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hornetq</groupId>
+                <artifactId>hornetq-commons</artifactId>
+                <version>${version.org.hornetq}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hornetq</groupId>
+                <artifactId>hornetq-core</artifactId>
+                <version>${hornetq-core.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>jaxen</groupId>
+                <artifactId>jaxen</artifactId>
+                <version>${jaxen.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.ws</groupId>
+                <artifactId>jbossws-spi</artifactId>
+                <version>${jbossws-spi.version}</version>
+            </dependency>
+
+            <!-- arquillian chamaleon depenencies -->
+            <!--dependency>
+                <groupId>org.arquillian.container</groupId>
+                <artifactId>arquillian-container-chameleon</artifactId>
+                <version>1.0.0.Alpha6</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.aether</groupId>
+                <artifactId>aether-impl</artifactId>
+                <version>${aether-impl.version}</version>
+            </dependency-->
+
+            <!-- arquillian governor -->
+            <dependency>
+                <groupId>org.arquillian.extension</groupId>
+                <artifactId>arquillian-governor-ignore</artifactId>
+                <version>${version.arquillian.governor}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-6.0</artifactId>
+            <version>1.0.0.Final</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.mortbay.jetty.alpn</groupId>
+            <artifactId>alpn-boot</artifactId>
+        </dependency>
+
+        <!-- Tests - add any external existing tests here -->
+
+        <dependency>
+            <groupId>org.jboss.ce.testsuite</groupId>
+            <artifactId>tests-ce-testsuite</artifactId>
+            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-ts-integ-basic</artifactId>
+            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-ts-integ-smoke</artifactId>
+            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-testsuite-shared</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-cli</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-arquillian-common</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- EAP testunit deps -->
+
+        <dependency>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-nio</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.syslog4j</groupId>
+            <artifactId>syslog4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.transaction</groupId>
+            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.enterprise.deploy</groupId>
+            <artifactId>jboss-jad-api_1.2_spec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.ironjacamar</groupId>
+            <artifactId>ironjacamar-spec-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.jms</groupId>
+            <artifactId>jboss-jms-api_1.1_spec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.security</groupId>
+            <artifactId>jbossxacml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-model-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-ee-deployment</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-ejb3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-messaging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>${hamcrest.library.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
+        <!-- hornetq dependencies -->
+        <dependency>
+            <groupId>org.hornetq</groupId>
+            <artifactId>hornetq-core-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hornetq</groupId>
+            <artifactId>hornetq-jms-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hornetq</groupId>
+            <artifactId>hornetq-commons</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hornetq</groupId>
+            <artifactId>hornetq-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.ws</groupId>
+            <artifactId>jbossws-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-bundle-jaxrs</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-ldap-client-all</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-server-annotations</artifactId>
+        </dependency>
+
+        <!-- Arquillian dependencies -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-jmx</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-shrinkwrap</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-cube</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-arquillian-container-remote</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.config</groupId>
+            <artifactId>arquillian-config-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-spi</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-spi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Enrichers -->
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-cdi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-ejb</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-resource</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-initialcontext</artifactId>
+        </dependency>
+
+
+        <!-- arquillian chamaleon depenencies -->
+        <!--dependency>
+            <groupId>org.arquillian.container</groupId>
+            <artifactId>arquillian-container-chameleon</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-impl</artifactId>
+        </dependency-->
+
+        <!-- arquillian governor -->
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-governor-ignore</artifactId>
+        </dependency>
+
+    </dependencies>
+
 
     <profiles>
         <profile>
@@ -254,631 +884,6 @@
                     </plugin>
                 </plugins>
             </build>
-
-            <dependencyManagement>
-                <dependencies>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-ts-integ-basic</artifactId>
-                        <type>test-jar</type>
-                        <version>${version.eap}</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>*</groupId>
-                                <artifactId>*</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-ts-integ-smoke</artifactId>
-                        <type>test-jar</type>
-                        <version>${version.eap}</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>*</groupId>
-                                <artifactId>*</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-testsuite-shared</artifactId>
-                        <version>${version.eap}</version>
-                        <scope>test</scope>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>*</groupId>
-                                <artifactId>*</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.xnio</groupId>
-                        <artifactId>xnio-nio</artifactId>
-                        <version>${version.org.jboss.xnio}</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-cli</artifactId>
-                        <scope>test</scope>
-                        <version>${jboss-cli-version}</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>org.jboss.xnio</groupId>
-                                <artifactId>xnio-nio</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-security</artifactId>
-                        <version>${jboss-security-version}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-arquillian-common</artifactId>
-                        <version>${jboss.arquillian.common.version}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <!-- Test deps -->
-                    <dependency>
-                        <groupId>org.jboss.spec.javax.transaction</groupId>
-                        <artifactId>jboss-transaction-api_1.1_spec</artifactId>
-                        <version>${version.javax.tx}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.hibernate.javax.persistence</groupId>
-                        <artifactId>hibernate-jpa-2.0-api</artifactId>
-                        <version>${version.javax.jpa}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.spec.javax</groupId>
-                        <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-                        <version>${version.javax.ejb}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.spec.javax.ejb</groupId>
-                        <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-                        <version>${version.javax.ejb}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.ironjacamar</groupId>
-                        <artifactId>ironjacamar-spec-api</artifactId>
-                        <version>${version.javax.jca}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.spec.javax.enterprise.deploy</groupId>
-                        <artifactId>jboss-jad-api_1.2_spec</artifactId>
-                        <version>${version.javax.jad}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.spec.javax.jms</groupId>
-                        <artifactId>jboss-jms-api_1.1_spec</artifactId>
-                        <version>${version.javax.jms}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.security</groupId>
-                        <artifactId>jbossxacml</artifactId>
-                        <version>${version.org.jboss.security.jbossxacml}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.mortbay.jetty.alpn</groupId>
-                        <artifactId>alpn-boot</artifactId>
-                        <version>${version.alpn-boot}</version>
-                        <scope>runtime</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-ejb3</artifactId>
-                        <version>${ejb3.version}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>commons-lang</groupId>
-                        <artifactId>commons-lang</artifactId>
-                        <version>${commons-lang}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.lucene</groupId>
-                        <artifactId>lucene-analyzers</artifactId>
-                        <version>${apache.lucene.version}</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>commons-io</groupId>
-                        <artifactId>commons-io</artifactId>
-                        <version>${commons.io.version}</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.resteasy</groupId>
-                        <artifactId>resteasy-jaxrs</artifactId>
-                        <version>${resteasy-jaxrs.version}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-ee-deployment</artifactId>
-                        <version>${jboss.as.ee.deployment.version}</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-model-test</artifactId>
-                        <version>${version.eap}</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-messaging</artifactId>
-                        <version>${jboss-as-messaging.version}</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-bundle-jaxrs</artifactId>
-                        <version>${cxf-bundle-jaxrs.version}</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest-library</artifactId>
-                        <version>${hamcrest.library.version}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcprov-jdk16</artifactId>
-                        <version>${bouncyclastle.version}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.directory.api</groupId>
-                        <artifactId>api-ldap-client-all</artifactId>
-                        <version>${api-ldap-client-all.version}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.directory.server</groupId>
-                        <artifactId>apacheds-server-annotations</artifactId>
-                        <version>${apacheds-server-annotations.version}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <!-- hornetq dependencies -->
-                    <dependency>
-                        <groupId>org.hornetq</groupId>
-                        <artifactId>hornetq-core-client</artifactId>
-                        <version>${version.org.hornetq}</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>org.jboss.logging</groupId>
-                                <artifactId>jboss-logging-processor</artifactId>
-                            </exclusion>
-                            <exclusion>
-                                <groupId>org.jboss.jdeparser</groupId>
-                                <artifactId>jdeparser</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.hornetq</groupId>
-                        <artifactId>hornetq-jms-client</artifactId>
-                        <version>${version.org.hornetq}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.hornetq</groupId>
-                        <artifactId>hornetq-commons</artifactId>
-                        <version>${version.org.hornetq}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.hornetq</groupId>
-                        <artifactId>hornetq-core</artifactId>
-                        <version>${hornetq-core.version}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>jaxen</groupId>
-                        <artifactId>jaxen</artifactId>
-                        <version>${jaxen.version}</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>com.h2database</groupId>
-                        <artifactId>h2</artifactId>
-                        <version>${h2.version}</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.jboss.ws</groupId>
-                        <artifactId>jbossws-spi</artifactId>
-                        <version>${jbossws-spi.version}</version>
-                    </dependency>
-
-                    <!-- arquillian chamaleon depenencies -->
-                    <!--dependency>
-                        <groupId>org.arquillian.container</groupId>
-                        <artifactId>arquillian-container-chameleon</artifactId>
-                        <version>1.0.0.Alpha6</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.eclipse.aether</groupId>
-                        <artifactId>aether-impl</artifactId>
-                        <version>${aether-impl.version}</version>
-                    </dependency-->
-
-                    <!-- arquillian governor -->
-                    <dependency>
-                        <groupId>org.arquillian.extension</groupId>
-                        <artifactId>arquillian-governor-ignore</artifactId>
-                        <version>${version.arquillian.governor}</version>
-                        <scope>test</scope>
-                    </dependency>
-
-                </dependencies>
-            </dependencyManagement>
-
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.jboss.spec</groupId>
-                    <artifactId>jboss-javaee-6.0</artifactId>
-                    <version>1.0.0.Final</version>
-                    <type>pom</type>
-                    <scope>provided</scope>
-                </dependency>
-
-
-                <dependency>
-                    <groupId>org.mortbay.jetty.alpn</groupId>
-                    <artifactId>alpn-boot</artifactId>
-                </dependency>
-
-                <!-- Tests - add any external existing tests here -->
-
-                <dependency>
-                    <groupId>org.jboss.ce.testsuite</groupId>
-                    <artifactId>tests-ce-testsuite</artifactId>
-                    <type>test-jar</type>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-ts-integ-basic</artifactId>
-                    <type>test-jar</type>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-ts-integ-smoke</artifactId>
-                    <type>test-jar</type>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-testsuite-shared</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-cli</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-security</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-common</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <!-- EAP testunit deps -->
-
-                <dependency>
-                    <groupId>org.jboss.xnio</groupId>
-                    <artifactId>xnio-nio</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.logging</groupId>
-                    <artifactId>jboss-logging</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpmime</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.syslog4j</groupId>
-                    <artifactId>syslog4j</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.spec.javax.transaction</groupId>
-                    <artifactId>jboss-transaction-api_1.1_spec</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.hibernate.javax.persistence</groupId>
-                    <artifactId>hibernate-jpa-2.0-api</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.spec.javax.ejb</groupId>
-                    <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.spec.javax.enterprise.deploy</groupId>
-                    <artifactId>jboss-jad-api_1.2_spec</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.ironjacamar</groupId>
-                    <artifactId>ironjacamar-spec-api</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.spec.javax.jms</groupId>
-                    <artifactId>jboss-jms-api_1.1_spec</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.security</groupId>
-                    <artifactId>jbossxacml</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-model-test</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-ee-deployment</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jaxrs</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-ejb3</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-messaging</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-library</artifactId>
-                    <version>${hamcrest.library.version}</version>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <version>4.12</version>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.hamcrest</groupId>
-                            <artifactId>hamcrest-core</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-
-
-                <dependency>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
-                </dependency>
-
-                <!-- Test Utils -->
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.junit</groupId>
-                    <artifactId>arquillian-junit-container</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.protocol</groupId>
-                    <artifactId>arquillian-protocol-jmx</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-ce-httpclient</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-ce-shrinkwrap</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-ce-cube</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <!-- Enrichers -->
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.testenricher</groupId>
-                    <artifactId>arquillian-testenricher-cdi</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.testenricher</groupId>
-                    <artifactId>arquillian-testenricher-ejb</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.testenricher</groupId>
-                    <artifactId>arquillian-testenricher-resource</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.testenricher</groupId>
-                    <artifactId>arquillian-testenricher-initialcontext</artifactId>
-                </dependency>
-
-                <!-- hornetq dependencies -->
-                <dependency>
-                    <groupId>org.hornetq</groupId>
-                    <artifactId>hornetq-core-client</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.hornetq</groupId>
-                    <artifactId>hornetq-jms-client</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.hornetq</groupId>
-                    <artifactId>hornetq-commons</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.hornetq</groupId>
-                    <artifactId>hornetq-core</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>jaxen</groupId>
-                    <artifactId>jaxen</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.ws</groupId>
-                    <artifactId>jbossws-spi</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>cxf-bundle-jaxrs</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-analyzers</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.bouncycastle</groupId>
-                    <artifactId>bcprov-jdk16</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.directory.api</groupId>
-                    <artifactId>api-ldap-client-all</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.directory.server</groupId>
-                    <artifactId>apacheds-server-annotations</artifactId>
-                </dependency>
-
-                <!-- arquillian chamaleon depenencies -->
-                <!--dependency>
-                    <groupId>org.arquillian.container</groupId>
-                    <artifactId>arquillian-container-chameleon</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.eclipse.aether</groupId>
-                    <artifactId>aether-impl</artifactId>
-                </dependency-->
-
-                <!-- arquillian governor -->
-                <dependency>
-                    <groupId>org.arquillian.extension</groupId>
-                    <artifactId>arquillian-governor-ignore</artifactId>
-                </dependency>
-
-            </dependencies>
-
         </profile>
     </profiles>
 </project>

@@ -1,0 +1,72 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "testrunner",
+    "labels": {
+      "name": "testrunner"
+    }
+  },
+
+  "spec": {
+    "terminationGracePeriodSeconds": 0,
+    "containers": [
+      {
+        "name": "testrunner",
+        "readinessProbe": {
+          "exec": {
+            "command": [
+              "/bin/bash",
+              "-c",
+              "/opt/eap/bin/readinessProbe.sh"
+            ]
+          }
+        },
+        "lifecycle": {
+          "postStart": {
+            "exec": {
+              "command": [
+                "/bin/bash",
+                "-c",
+                "/bin/echo \"guest=b5d048a237bfd2874b6928e1f37ee15e\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"appuser=a2bd9ae9a89bfecaa3633d4bd49d327a\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"user1=23624d2f74dfcb9688651a066d90b97e\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"user2=ab3f9e12039435236d89de9023a304b7\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"admin=779bbcdbf82f3da3990e94b29bceefe6\" >> /opt/eap/standalone/configuration/application-users.properties; /bin/echo \"appuser=appuser\" >> /opt/eap/standalone/configuration/application-roles.properties; /bin/echo \"guest=guest\" >> /opt/eap/standalone/configuration/application-roles.properties; /bin/echo \"user1=Users,Role1\" >> /opt/eap/standalone/configuration/application-roles.properties; /bin/echo \"user2=Users,Role2\" >> /opt/eap/standalone/configuration/application-roles.properties; /bin/echo \"testSuite=29a64f8524f32269aa9b681efc347f96\" >> /opt/eap/standalone/configuration/mgmt-users.properties; /bin/echo \"testSuite=SuperUser\" >> /opt/eap/standalone/configuration/mgmt-groups.properties; /bin/echo \"admin=admin\" >> /opt/eap/standalone/configuration/mgmt-groups.properties"
+              ]
+            }
+          }
+        },
+        "image": "jboss-eap-7/eap70-openshift:1.4",
+        "ports": [
+          {
+            "containerPort": 8080,
+            "protocol": "TCP"
+          },
+          {
+            "containerPort": 9990,
+            "protocol": "TCP"
+          },
+          {
+            "containerPort": 9999,
+            "protocol": "TCP"
+          },
+          {
+            "containerPort": 4447,
+            "protocol": "TCP"
+          },
+          {
+            "containerPort": 5445,
+            "protocol": "TCP"
+          }
+        ],
+        "env": [
+          {
+            "name": "ADMIN_USERNAME",
+            "value": "admin"
+          },
+          {
+            "name": "ADMIN_PASSWORD",
+            "value": "Admin#70365"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,932 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.ce.testsuite</groupId>
+        <artifactId>ce-eap-testsuite</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>ce-testsuite-eap7-integration</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>CE Testsuite -- EAP 7 testsuite Integration tests</name>
+    <description>Cloud Enablement Testsuite -- EAP 7 testsuite Integration tests</description>
+
+    <!-- All versions used here are based on EAP 7.0.0.GA -->
+    <properties>
+        <resteasy.multipart.provider.version>3.0.16.Final-redhat-1</resteasy.multipart.provider.version>
+        <hibernate.jpa.version>1.0.0.Final-redhat-1</hibernate.jpa.version>
+        <lucene.core.version>5.3.1.redhat-1</lucene.core.version>
+        <hibernate.core.version>5.0.9.Final-redhat-1</hibernate.core.version>
+        <hibernate.validaitor.version>5.2.4.Final-redhat-1</hibernate.validaitor.version>
+        <artemis.core.version>1.1.0.SP16-redhat-1</artemis.core.version>
+        <bouncycastle.version>1.52.0.redhat-3</bouncycastle.version>
+        <log4j.jboss.logmanage.version>1.1.2.Final-redhat-2</log4j.jboss.logmanage.version>
+        <syslog4j.version>0.9.30</syslog4j.version>
+        <xom.version>1.2.10.redhat-1</xom.version>
+        <jbossxacml.version>2.0.8.Final-redhat-6</jbossxacml.version>
+        <javax.json.version>1.0.3.redhat-1</javax.json.version>
+
+        <version.org.wildfly.core>2.1.2.Final-redhat-1</version.org.wildfly.core>
+        <version.org.apache.ds>2.0.0-M15</version.org.apache.ds>
+        <version.org.apache.jbdm>2.0.0-M3</version.org.apache.jbdm>
+        <version.org.apache.httpcomponents>4.5.0.redhat-1</version.org.apache.httpcomponents>
+        <version.io.undertow>1.3.21.Final-redhat-1</version.io.undertow>
+        <version.jboss.ws.api.version>1.0.3.Final-redhat-1</version.jboss.ws.api.version>
+        <version.jboss.ws.cfx.version>5.1.3.SP1-redhat-1</version.jboss.ws.cfx.version>
+        <version.org.picketlink.federation>2.5.5.SP1-redhat-1</version.org.picketlink.federation>
+        <version.org.apache.cxf.services.version>3.1.4.redhat-1</version.org.apache.cxf.services.version>
+        <version.com.fasterxml.jackson>2.6.3</version.com.fasterxml.jackson>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- EAP7 BOM -->
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>eap-runtime-artifacts</artifactId>
+                <version>${org.jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- EAP 7 integration tests dependencies -->
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>wildfly-ts-integ-basic</artifactId>
+                <type>test-jar</type>
+                <version>${version.eap7}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>wildfly-ts-integ-smoke</artifactId>
+                <type>test-jar</type>
+                <version>${version.eap7}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>wildfly-ts-integ-web</artifactId>
+                <type>test-jar</type>
+                <version>${version.eap7}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>wildfly-ts-integ-ws</artifactId>
+                <type>test-jar</type>
+                <version>${version.eap7}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>wildfly-testsuite-shared</artifactId>
+                <version>${version.eap7}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-core-testsuite-shared</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-model-test</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-core-model-test-framework</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-core-test-runner</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- wfly cli -->
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>wildfly-client-all</artifactId>
+                <version>${version.eap7}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org..wildfly.core</groupId>
+                <artifactId>wildfly-cli</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- WildFly connector -->
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>wildfly-connector</artifactId>
+                <version>${version.eap7}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.remoting</groupId>
+                        <artifactId>jboss-remoting</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- resteasy -->
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-multipart-provider</artifactId>
+                <version>${resteasy.multipart.provider.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.logging</groupId>
+                        <artifactId>jboss-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- hibernate dependencies -->
+            <dependency>
+                <groupId>org.hibernate.javax.persistence</groupId>
+                <artifactId>hibernate-jpa-2.1-api</artifactId>
+                <version>${hibernate.jpa.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.core.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.logging</groupId>
+                        <artifactId>jboss-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.validaitor.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.logging</groupId>
+                        <artifactId>jboss-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- JMS dependencies -->
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-core-client</artifactId>
+                <version>${artemis.core.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- EJB -->
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>wildfly-ejb3</artifactId>
+                <version>${version.eap7}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.remoting</groupId>
+                        <artifactId>jboss-remoting</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.logging</groupId>
+                        <artifactId>jboss-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+
+            </dependency>
+
+            <!-- WildFly system jmx -->
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>wildfly-system-jmx</artifactId>
+                <version>${version.eap7}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.logging</groupId>
+                        <artifactId>jboss-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- lucene -->
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-core</artifactId>
+                <version>${lucene.core.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- hamcrest -->
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>${hamcrest.library.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- bouncycastle -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bouncycastle.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- logging dependencies -->
+            <dependency>
+                <groupId>org.jboss.logmanager</groupId>
+                <artifactId>log4j-jboss-logmanager</artifactId>
+                <version>${log4j.jboss.logmanage.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- apache directory dependencies -->
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-parent</artifactId>
+                <version>${version.org.apache.ds}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.jdbm</groupId>
+                <artifactId>apacheds-jdbm1</artifactId>
+                <version>${version.org.apache.jbdm}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- JBoss security dependencies -->
+            <dependency>
+                <groupId>org.jboss.security</groupId>
+                <artifactId>jbossxacml</artifactId>
+                <version>${jbossxacml.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.picketlink</groupId>
+                <artifactId>picketlink-federation</artifactId>
+                <version>${version.org.picketlink.federation}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- JSON dependencies -->
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.json</artifactId>
+                <version>${javax.json.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- apache http -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${version.org.apache.httpcomponents}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${version.org.apache.httpcomponents}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- WildFly launcher -->
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-launcher</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- jipi dependencies -->
+            <dependency>
+                <groupId>org.jboss.eap</groupId>
+                <artifactId>jipijapa-spi</artifactId>
+                <version>${version.eap7}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.logging</groupId>
+                        <artifactId>jboss-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- syslog4j -->
+            <dependency>
+                <groupId>org.syslog4j</groupId>
+                <artifactId>syslog4j</artifactId>
+                <version>${syslog4j.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- io7m -->
+            <dependency>
+                <groupId>com.io7m.xom</groupId>
+                <artifactId>xom</artifactId>
+                <version>${xom.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- undertow dependencies -->
+            <dependency>
+                <groupId>io.undertow</groupId>
+                <artifactId>undertow-servlet</artifactId>
+                <version>${version.io.undertow}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- jbossws dependencies -->
+            <dependency>
+                <groupId>org.jboss.ws</groupId>
+                <artifactId>jbossws-api</artifactId>
+                <version>${version.jboss.ws.api.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.ws.cxf</groupId>
+                <artifactId>jbossws-cxf-client</artifactId>
+                <version>${version.jboss.ws.cfx.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.logging</groupId>
+                        <artifactId>jboss-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpcore</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpcore-nio</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- apache cxf -->
+            <dependency>
+                <groupId>org.apache.cxf.services.sts</groupId>
+                <artifactId>cxf-services-sts-core</artifactId>
+                <version>${version.org.apache.cxf.services.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${version.com.fasterxml.jackson}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${version.com.fasterxml.jackson}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${version.com.fasterxml.jackson}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                <artifactId>jackson-jaxrs-json-provider</artifactId>
+                <version>${version.com.fasterxml.jackson}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- WildFly arquillian -->
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-container-remote</artifactId>
+                <version>${version.org.wildfly.arquillian}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.remoting</groupId>
+                        <artifactId>jboss-remoting</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
+                <version>${version.org.wildfly.arquillian}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <!-- EAP 7 integration tests dependencies -->
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>wildfly-ts-integ-basic</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>wildfly-ts-integ-smoke</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>wildfly-ts-integ-web</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>wildfly-ts-integ-ws</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>wildfly-testsuite-shared</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-core-testsuite-shared</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-model-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-core-model-test-framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-core-test-runner</artifactId>
+        </dependency>
+
+        <!-- specs -->
+        <!-- jboss resources spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.resource</groupId>
+            <artifactId>jboss-connector-api_1.7_spec</artifactId>
+        </dependency>
+        <!-- Servlet spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+        </dependency>
+        <!-- JaxRS spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+        </dependency>
+        <!-- interceptor spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.interceptor</groupId>
+            <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+        </dependency>
+        <!-- transaction spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.transaction</groupId>
+            <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+        </dependency>
+        <!-- jms spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.jms</groupId>
+            <artifactId>jboss-jms-api_2.0_spec</artifactId>
+        </dependency>
+        <!--EJB spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+        </dependency>
+        <!--EJB spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.websocket</groupId>
+            <artifactId>jboss-websocket-api_1.1_spec</artifactId>
+        </dependency>
+        <!-- jboss batch spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.batch</groupId>
+            <artifactId>jboss-batch-api_1.0_spec</artifactId>
+        </dependency>
+        <!-- servlet jsp spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
+            <artifactId>jboss-jsp-api_2.3_spec</artifactId>
+        </dependency>
+        <!-- jaspi api spec -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.security.auth.message</groupId>
+            <artifactId>jboss-jaspi-api_1.1_spec</artifactId>
+        </dependency>
+
+        <!-- hibernate dependencies -->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
+        <!-- JMS dependencies -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-core-client</artifactId>
+        </dependency>
+
+        <!-- EJB -->
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>wildfly-ejb3</artifactId>
+        </dependency>
+
+        <!-- lucene -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+        </dependency>
+
+        <!-- WildFly system jmx -->
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>wildfly-system-jmx</artifactId>
+        </dependency>
+
+        <!-- javax validation -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+
+        <!-- CDI -->
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
+
+        <!-- wfly-core cli -->
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>wildfly-client-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org..wildfly.core</groupId>
+            <artifactId>wildfly-cli</artifactId>
+        </dependency>
+
+        <!-- WildFly connector -->
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>wildfly-connector</artifactId>
+        </dependency>
+
+        <!-- resteasy -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+        </dependency>
+
+        <!-- hamcrest -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+        </dependency>
+
+        <!-- bouncycastle -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>${bouncycastle.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- logging dependencies -->
+        <dependency>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>log4j-jboss-logmanager</artifactId>
+        </dependency>
+
+        <!-- apache directory deps -->
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-server-annotations</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.directory.jdbm</groupId>
+                    <artifactId>apacheds-jdbm1</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.jdbm</groupId>
+            <artifactId>apacheds-jdbm1</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-interceptor-kerberos</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- JBoss security dependencies -->
+        <dependency>
+            <groupId>org.jboss.security</groupId>
+            <artifactId>jbossxacml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.picketlink</groupId>
+            <artifactId>picketlink-federation</artifactId>
+        </dependency>
+
+        <!-- JSON dependencies -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+        </dependency>
+
+        <!-- apache http -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
+
+        <!-- WildFly launcher -->
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-launcher</artifactId>
+        </dependency>
+
+        <!-- jipi dependencies -->
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
+            <artifactId>jipijapa-spi</artifactId>
+        </dependency>
+
+        <!-- syslog4j -->
+        <dependency>
+            <groupId>org.syslog4j</groupId>
+            <artifactId>syslog4j</artifactId>
+        </dependency>
+
+        <!-- io7m -->
+        <dependency>
+            <groupId>com.io7m.xom</groupId>
+            <artifactId>xom</artifactId>
+        </dependency>
+
+        <!-- undertow dependencies -->
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-servlet</artifactId>
+        </dependency>
+
+        <!-- jbossws api -->
+        <dependency>
+            <groupId>org.jboss.ws</groupId>
+            <artifactId>jbossws-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.ws.cxf</groupId>
+            <artifactId>jbossws-cxf-client</artifactId>
+        </dependency>
+
+        <!-- apache cxf -->
+        <dependency>
+            <groupId>org.apache.cxf.services.sts</groupId>
+            <artifactId>cxf-services-sts-core</artifactId>
+        </dependency>
+
+        <!-- jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency>
+
+        <!-- arquillian dependencies -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-remote</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-cube</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- arquillian enrichers -->
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-initialcontext</artifactId>
+        </dependency>
+
+        <!-- arquillian governor -->
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-governor-ignore</artifactId>
+        </dependency>
+
+        <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>eap7</id>
+
+            <activation>
+                <property>
+                    <name>eap7</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-dependencies</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <includeGroupIds>org.jboss,org.wildfly.core</includeGroupIds>
+                                    <includeTypes>test-jar</includeTypes>
+                                    <includeScope>test</includeScope>
+                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${version.surefire.plugin}</version>
+                        <configuration>
+                            <argLine>
+                                -Dorg.jboss.arquillian.portforwarder.timeout=2400000
+                            </argLine>
+                            <systemPropertyVariables combine.children="override">
+                                <jboss.server.config.file.name>standalone.xml</jboss.server.config.file.name>
+                                <!-- EJB client library hack, see WFLY-4973-->
+                                <org.jboss.ejb.client.wildfly-testsuite-hack>true
+                                </org.jboss.ejb.client.wildfly-testsuite-hack>
+                            </systemPropertyVariables>
+
+                            <runOrder>alphabetical</runOrder>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <trimStackTrace>false</trimStackTrace>
+                            <includes>
+                                <include>**</include>
+
+                            </includes>
+                            <excludes>
+
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
