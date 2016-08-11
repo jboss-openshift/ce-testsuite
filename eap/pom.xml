@@ -17,47 +17,6 @@
     <artifactId>ce-eap-testsuite</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.jboss.arquillian.core</groupId>
-            <artifactId>arquillian-core-spi</artifactId>
-            <version>${version.arquillian}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.config</groupId>
-            <artifactId>arquillian-config-api</artifactId>
-            <version>${version.arquillian}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-spi</artifactId>
-            <version>${version.arquillian}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-cli</artifactId>
-            <version>${version.eap}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-testsuite-shared</artifactId>
-        <version>${version.eap}</version>
-        <scope>test</scope>
-        <exclusions>
-            <exclusion>
-                <groupId>*</groupId>
-                <artifactId>*</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
-
-    </dependencies>
-
-
     <packaging>pom</packaging>
     <name>CE Testsuite -- EAP testsuite</name>
     <description>Cloud Enablement Testsuite -- EAP testsuite</description>

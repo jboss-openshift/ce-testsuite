@@ -27,7 +27,7 @@
     -->
 
     <extension qualifier="ce-cube">
-        <property name="kubernetesNamespacePrefix">cearq-integration</property>
+        <property name="kubernetesNamespacePrefix">cearq-integration-eap6</property>
     </extension>x
 
     <!-- Example configuration for arquillian openshift extension -->
