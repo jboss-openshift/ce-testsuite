@@ -40,8 +40,7 @@ import org.junit.runner.RunWith;
               @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
-        @OpenShiftResource("classpath:datagrid-service-account.json"),
-        @OpenShiftResource("classpath:datagrid-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json")
 })
 public class JdgHttpsTest extends JdgTestSecureBase {
     @Deployment

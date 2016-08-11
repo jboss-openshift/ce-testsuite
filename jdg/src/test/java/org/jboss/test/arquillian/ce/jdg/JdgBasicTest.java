@@ -36,8 +36,7 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-basic.json")
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
-        @OpenShiftResource("classpath:datagrid-service-account.json"),
-        @OpenShiftResource("classpath:datagrid-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json")
 })
 public class JdgBasicTest extends JdgTestBase {
     @Deployment

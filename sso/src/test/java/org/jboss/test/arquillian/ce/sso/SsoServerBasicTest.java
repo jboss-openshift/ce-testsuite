@@ -38,9 +38,8 @@ import org.junit.runner.RunWith;
 @Template( url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/sso/sso70-basic.json",
 		labels = "application=sso")
 @OpenShiftResources({
-        @OpenShiftResource("classpath:sso-service-account.json"),
-        @OpenShiftResource("classpath:sso-app-secret.json"),
-        @OpenShiftResource("classpath:eap-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
 })
 public class SsoServerBasicTest extends SsoServerTestBase
 {

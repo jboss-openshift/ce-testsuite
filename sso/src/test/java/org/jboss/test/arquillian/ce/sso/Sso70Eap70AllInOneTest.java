@@ -38,10 +38,9 @@ import org.junit.runner.RunWith;
     }	
 )
 @OpenShiftResources({
-    @OpenShiftResource("classpath:sso-service-account.json"),
-    @OpenShiftResource("classpath:sso-app-secret.json"),
+    @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
     @OpenShiftResource("classpath:sso-demo-secret.json"),
-    @OpenShiftResource("classpath:eap-app-secret.json")
+    @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
 })
 public class Sso70Eap70AllInOneTest extends SsoAllInOneTestBase {
 			

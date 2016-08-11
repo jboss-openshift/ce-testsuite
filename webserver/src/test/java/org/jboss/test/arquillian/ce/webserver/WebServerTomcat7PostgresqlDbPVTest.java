@@ -50,8 +50,7 @@ import java.util.List;
         labels = "application=jws-app"
 )
 @OpenShiftResources({
-        @OpenShiftResource("classpath:webserver-service-account.json"),
-        @OpenShiftResource("classpath:webserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/jws-app-secret.json")
 })
 public class WebServerTomcat7PostgresqlDbPVTest extends WebserverTestBase {
 

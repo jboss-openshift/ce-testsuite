@@ -52,8 +52,7 @@ import java.net.URL;
         }
 )
 @OpenShiftResources({
-        @OpenShiftResource("classpath:decisionserver-service-account.json"),
-        @OpenShiftResource("classpath:decisionserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
 })
 public class DecisionServerHttpClientSecureAllInOneTest extends DecisionServerTestBase {
 
