@@ -65,7 +65,7 @@ public class AmqClient {
         if (secured) {
             ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(this.connectionUrl);
             cf.setTrustStore(System.getProperty("javax.net.ssl.trustStore"));
-            cf.setTrustStorePassword("password");
+            cf.setTrustStorePassword(System.getProperty("javax.net.ssl.trustStorePassword"));
 
             return cf;
         }

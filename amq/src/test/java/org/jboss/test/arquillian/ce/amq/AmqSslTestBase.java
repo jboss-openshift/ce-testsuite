@@ -18,16 +18,7 @@ public class AmqSslTestBase extends AmqTestBase {
 	
 	static Logger LOG = Logger.getLogger(AmqSslTestBase.class.getName());
 
-	static {
-        String path = AmqExternalAccessTest.class.getClassLoader().getResource("").getPath();
-        LOG.info("Using " + path + " to get the broker certificates");
-		System.setProperty("javax.net.ssl.trustStore", path + "broker.ts");
-        System.setProperty("javax.net.ssl.trustStorePassword", "password");
-        System.setProperty("javax.net.ssl.keyStore", path + "broker.ks");
-        System.setProperty("javax.net.ssl.keyStorePassword", "password");
-    }
-
-    private BrokerService svc;
+	private BrokerService svc;
 
     private SslContext brokerContext;
 
