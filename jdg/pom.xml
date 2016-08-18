@@ -14,186 +14,22 @@
 
     <!-- Artifact Configuration -->
     <artifactId>jdg-ce-testsuite</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>JDG CE Testsuite</name>
     <description>JDG Cloud Enablement Testsuite</description>
 
-    <dependencies>
-
-        <!-- Tests - add any external existing tests here -->
-
-
-        <!-- TODO -->
-
-        <!-- EAP testunit deps -->
-
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-
-        <!-- Test Utils -->
-
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-jmx</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-shrinkwrap</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-fabric8</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-cube</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-arquillian-container-remote</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- JDG -->
-
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-client-hotrod</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-query-dsl</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-remote-query-client</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.simple-spring-memcached</groupId>
-            <artifactId>spymemcached</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.ce.testsuite</groupId>
-            <artifactId>common-ce-testsuite</artifactId>
-        </dependency>
-
-    </dependencies>
-
     <profiles>
-        <!-- Default, compile tests, but not run -->
         <profile>
-            <id>default</id>
-
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
+            <id>jdg65</id>
+            <modules>
+                <module>jdg65</module>
+            </modules>
         </profile>
-
-        <!-- Run tests against wildfly -->
         <profile>
-            <id>jdg</id>
-
-            <activation>
-                <property>
-                    <name>jdg</name>
-                </property>
-            </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${version.dependency.plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>unpack-dependencies</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>org.jboss</includeGroupIds>
-                                    <includeTypes>test-jar</includeTypes>
-                                    <includeScope>test</includeScope>
-                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                                    <overWriteReleases>false</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
-                        <configuration>
-                            <runOrder>alphabetical</runOrder>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <trimStackTrace>false</trimStackTrace>
-                            <forkMode>once</forkMode>
-                            <properties>
-                                <property>
-                                    <name>listener</name>
-                                    <value>org.jboss.arquillian.ce.common.FailListener</value>
-                                </property>
-                            </properties>
-                            <includes>
-                                <include>org/jboss/**/*Test.java</include>
-                            </includes>
-                            <excludes>
-                                <exclude>**/JdgQueryTest.java</exclude>
-                            </excludes>
-                            <systemPropertyVariables>
-                                <!-- Custom DNS resolver for OpenShift routes -->
-                                <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
-                                <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
-                                <kubernetes.master>${kubernetes.master}</kubernetes.master>
-                                <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
-                                <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+            <id>integration</id>
+            <modules>
+                <module>integration</module>
+            </modules>
         </profile>
     </profiles>
 </project>
