@@ -1,0 +1,315 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "suite-client-repl"
+    },
+    "items": [
+{
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+        "name": "container1",
+        "labels": {
+            "name": "container1",
+            "application": "jdg-integration"
+        }
+    },
+    "spec": {
+        "terminationGracePeriodSeconds": 60,
+        "containers": [
+            {
+                "name": "container1",
+                "readinessProbe": {
+                    "exec": {
+                        "command": [
+                            "/bin/bash",
+                            "-c",
+                            "curl -s --digest -L http://localhost:9990/management --header \"Content-Type: application/json\" -d '{\"operation\":\"read-attribute\",\"name\":\"server-state\",\"json.pretty\":1}' | grep -iq running"
+                        ]
+                    }
+                },
+                "image": "jboss-datagrid-6/datagrid65-openshift:1.2",
+                "ports": [
+                    {
+                        "containerPort": 8080,
+                        "name": "http",
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 8888,
+                        "name": "ping",
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 9999,
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 11211,
+                        "name": "memcached",
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 11222,
+                        "name": "hotrod",
+                        "protocol": "TCP"
+                    }
+                ],                
+                "env": [
+                    {
+                        "name": "ADMIN_USERNAME",
+                        "value": "admin"
+                    },
+                    {
+                        "name": "ADMIN_PASSWORD",
+                        "value": "Admin#70365"
+                    },
+                    {
+                        "name": "INFINISPAN_CONNECTORS",
+                        "value": "hotrod,memcached,rest"
+                    },
+                    {
+                        "name": "TRANSPORT_LOCK_TIMEOUT",
+                        "value": "240000"
+                    },
+                    {
+                        "name": "CACHE_NAMES",
+                        "value": "testcache,memcachedCache,namedCache"
+                    },
+                    {
+                        "name": "DEFAULT_CACHE",
+                        "value": "testcache"
+                    },
+                    {
+                        "name": "MEMCACHED_CACHE",
+                        "value": "memcachedCache"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_TYPE",
+                        "value": "replicated"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_START",
+                        "value": "EAGER"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_MODE",
+                        "value": "SYNC"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_BATCHING",
+                        "value": "false"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_REMOTE_TIMEOUT",
+                        "value": "60000"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_TYPE",
+                        "value": "replicated"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_START",
+                        "value": "EAGER"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_MODE",
+                        "value": "SYNC"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_BATCHING",
+                        "value": "false"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_REMOTE_TIMEOUT",
+                        "value": "60000"
+                    },
+                    {
+                        "name": "NAMEDCACHE_CACHE_TYPE",
+                        "value": "replicated"
+                    },
+                    {
+                        "name": "NAMEDCACHE_CACHE_START",
+                        "value": "EAGER"
+                    },
+                    {
+                        "name": "NAMEDCACHE_CACHE_MODE",
+                        "value": "SYNC"
+                    },
+                    {
+                        "name": "JGROUPS_CLUSTER_PASSWORD",
+                        "value": "AP082jlQ"
+                    },
+                    {
+                        "name": "OPENSHIFT_KUBE_PING_NAMESPACE",
+                        "valueFrom": {
+                            "fieldRef": {
+                                "fieldPath": "metadata.namespace"
+                            }
+                        }
+                    },
+                    {
+                        "name": "OPENSHIFT_KUBE_PING_LABELS",
+                        "value": "application=jdg-integration"
+                    }
+                ]
+            }
+        ]
+    }
+},
+{
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+        "name": "container2",
+        "labels": {
+            "name": "container2",
+            "application": "jdg-integration"
+        }
+    },
+    "spec": {
+        "terminationGracePeriodSeconds": 60,
+        "containers": [
+            {
+                "name": "container2",
+                "readinessProbe": {
+                    "exec": {
+                        "command": [
+                            "/bin/bash",
+                            "-c",
+                            "curl -s --digest -L http://localhost:9990/management --header \"Content-Type: application/json\" -d '{\"operation\":\"read-attribute\",\"name\":\"server-state\",\"json.pretty\":1}' | grep -iq running"
+                        ]
+                    }
+                },
+                "image": "jboss-datagrid-6/datagrid65-openshift:1.2",
+                "ports": [
+                    {
+                        "containerPort": 8080,
+                        "name": "http",
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 8888,
+                        "name": "ping",
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 9999,
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 11211,
+                        "name": "memcached",
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 11322,
+                        "name": "hotrod",
+                        "protocol": "TCP"
+                    }
+                ],                
+                "env": [
+                    {
+                        "name": "ADMIN_USERNAME",
+                        "value": "admin"
+                    },
+                    {
+                        "name": "ADMIN_PASSWORD",
+                        "value": "Admin#70365"
+                    },
+                    {
+                        "name": "INFINISPAN_CONNECTORS",
+                        "value": "hotrod,memcached,rest"
+                    },
+                    {
+                        "name": "TRANSPORT_LOCK_TIMEOUT",
+                        "value": "240000"
+                    },
+                    {
+                        "name": "CACHE_NAMES",
+                        "value": "testcache,memcachedCache,namedCache"
+                    },
+                    {
+                        "name": "DEFAULT_CACHE",
+                        "value": "testcache"
+                    },
+                    {
+                        "name": "MEMCACHED_CACHE",
+                        "value": "memcachedCache"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_TYPE",
+                        "value": "replicated"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_START",
+                        "value": "EAGER"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_MODE",
+                        "value": "SYNC"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_BATCHING",
+                        "value": "false"
+                    },
+                    {
+                        "name": "TESTCACHE_CACHE_REMOTE_TIMEOUT",
+                        "value": "60000"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_TYPE",
+                        "value": "replicated"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_START",
+                        "value": "EAGER"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_MODE",
+                        "value": "SYNC"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_BATCHING",
+                        "value": "false"
+                    },
+                    {
+                        "name": "MEMCACHEDCACHE_CACHE_REMOTE_TIMEOUT",
+                        "value": "60000"
+                    },
+                    {
+                        "name": "NAMEDCACHE_CACHE_TYPE",
+                        "value": "replicated"
+                    },
+                    {
+                        "name": "NAMEDCACHE_CACHE_START",
+                        "value": "EAGER"
+                    },
+                    {
+                        "name": "NAMEDCACHE_CACHE_MODE",
+                        "value": "SYNC"
+                    },
+                    {
+                        "name": "JGROUPS_CLUSTER_PASSWORD",
+                        "value": "AP082jlQ"
+                    },
+                    {
+                        "name": "OPENSHIFT_KUBE_PING_NAMESPACE",
+                        "valueFrom": {
+                            "fieldRef": {
+                                "fieldPath": "metadata.namespace"
+                            }
+                        }
+                    },
+                    {
+                        "name": "OPENSHIFT_KUBE_PING_LABELS",
+                        "value": "application=jdg-integration"
+                    }
+                ]
+            }
+        ]
+    }
+}
+    ]
+}
