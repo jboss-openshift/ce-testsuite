@@ -66,9 +66,6 @@ public class AmqMeshTest extends AmqTestBase {
 
 	static List<String> pods = new ArrayList<>();
 
-	@ArquillianResource
-    OpenShiftHandle adapter;
-
 	@Deployment
 	public static WebArchive getDeployment() throws IOException {
         return getDeploymentBase();
@@ -77,7 +74,7 @@ public class AmqMeshTest extends AmqTestBase {
 	@Test
 	@RunAsClient
 	@InSequence(1)
-    public void scaleUpResources() throws Exception {
+    public void scaleUpResources(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         adapter.scaleDeployment("amq-test", 2);
         pods.addAll(adapter.getPods());
 
@@ -97,13 +94,13 @@ public class AmqMeshTest extends AmqTestBase {
 	@Test
 	@RunAsClient
 	@InSequence(3)
-	public void checkMessages() throws Exception {
+	public void checkMessages(@ArquillianResource OpenShiftHandle adapter) throws Exception {
 		Tools.trustAllCertificates();
 
 		for (String podName : pods) {
 			if(!podName.equals("testrunner")) {
                 final String queueSizeQuery = "org.apache.activemq:type=Broker,brokerName=" + podName + ",destinationType=Queue,destinationName=QUEUES.FOO/QueueSize";
-                String path = "jolokia/read/" + queueSizeQuery;
+                String path = "proxy/jolokia/read/" + queueSizeQuery;
                 try (InputStream inputStream = adapter.execute(podName, 8778, path)) {
                     JSONTokener tokener = new JSONTokener(inputStream);
                     JSONObject jsonObject = new JSONObject(tokener);

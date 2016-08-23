@@ -65,10 +65,15 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-    @OpenShiftResource("classpath:amq-app-secret.json"),
+    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/amq-app-secret.json"),
     @OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqPersistentSecuredTest extends AmqSslTestBase {
+	
+	static {
+		System.setProperty("javax.net.ssl.trustStore", "/opt/eap/certs/broker.ts");
+		System.setProperty("javax.net.ssl.trustStorePassword", "password");
+	}
 
     private String openWireMessage = "Arquillian test - Persistent Secured OpenWire";
     private String amqpMessage = "Arquillian Test - Persistent Secured AMQP";

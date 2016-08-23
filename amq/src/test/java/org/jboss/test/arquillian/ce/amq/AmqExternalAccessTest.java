@@ -37,6 +37,7 @@ import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
@@ -44,15 +45,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-ssl.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/1.3.0/amq/amq62-ssl.json",
 	parameters = {
 		@TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
 		@TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
 		@TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
 		@TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
 		@TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
-		@TemplateParameter(name = "AMQ_TRUSTSTORE_PASSWORD", value = "password"),
-		@TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
+		@TemplateParameter(name = "AMQ_TRUSTSTORE", value = "amq-test.ts"),
+		@TemplateParameter(name = "AMQ_TRUSTSTORE_PASSWORD", value = "amq-test"),
+		@TemplateParameter(name = "AMQ_KEYSTORE", value = "amq-test.ks"),
+		@TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "amq-test")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
 @OpenShiftResource("classpath:amq-routes.json"),
@@ -60,9 +63,14 @@ import org.junit.runner.RunWith;
 @OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqExternalAccessTest extends AmqSslTestBase {
+	
+	static {
+		System.setProperty("javax.net.ssl.trustStore", AmqSslTestBase.class.getClassLoader().getResource("").getPath() + "/amq-test.ts");
+		System.setProperty("javax.net.ssl.trustStorePassword", "amq-test");
+	}
 
     static final String STOMP_URL = "ssl://stomp-amq.router.default.svc.cluster.local:443";
-	static final String MQTT_URL = "ssl://mqtt-amq.router.default.svc.cluster.local:443";
+	static final String MQTT_URL = "tlsv1.2://mqtt-amq.router.default.svc.cluster.local:443";
 	static final String AMQP_URL = "amqps://amqp-amq.router.default.svc.cluster.local:443";
 	static final String OPENWIRE_URL = "ssl://tcp-amq.router.default.svc.cluster.local:443";
 
@@ -74,6 +82,7 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
 	@Test
 	@RunAsClient
     public void testOpenWireConnection() throws Exception {
+		Tools.trustAllCertificates();
         AmqClient client = new AmqClient(OPENWIRE_URL, USERNAME, PASSWORD);
 
         client.produceOpenWireJms(openWireMessage, true);
