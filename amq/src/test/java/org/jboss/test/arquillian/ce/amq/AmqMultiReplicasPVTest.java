@@ -99,6 +99,19 @@ public class AmqMultiReplicasPVTest extends AmqTestBase {
         adapter.scaleDeployment("amq-test-amq", 2); // scale up
 
         adapter.deletePod(firstPod, -1); // kill first, msgs should be drained
+
+        int count = 10;
+        while (count > 0) {
+            String drainLog = adapter.getLog("amq-test-amq-drainer", null);
+            if (drainLog.contains("A-MQ draining finished")) {
+                break;
+            }
+            count--;
+            Thread.sleep(6000);
+        }
+        if (count == 0) {
+            throw new IllegalStateException("Drain not finished?!");
+        }
     }
 
     @Test
