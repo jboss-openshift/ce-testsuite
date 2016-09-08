@@ -28,6 +28,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.management.ObjectName;
+
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -42,6 +44,7 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
+import org.jolokia.client.request.J4pReadRequest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,6 +70,8 @@ import org.junit.runner.RunWith;
 })
 @Replicas(1)
 public class AmqMultiReplicasPVTest extends AmqTestBase {
+
+    private static final String QUEUE_OBJECT_NAME = "org.apache.activemq:brokerName=%s,destinationName=QUEUES.FOO,destinationType=Queue,type=Broker";
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
@@ -95,6 +100,11 @@ public class AmqMultiReplicasPVTest extends AmqTestBase {
         List<String> pods = adapter.getPods("amq-test-amq");
         Assert.assertEquals(1, pods.size()); // there should be only one
         String firstPod = pods.get(0); // we put the msgs here
+
+        ObjectName objectName = new ObjectName(String.format(QUEUE_OBJECT_NAME, firstPod));
+        J4pReadRequest queueSizeRequest = new J4pReadRequest(objectName, "QueueSize");
+        Number queueSize = adapter.jolokia(Number.class, firstPod, queueSizeRequest);
+        Assert.assertEquals(3, queueSize.intValue()); // smoke test for 3 msgs
 
         adapter.scaleDeployment("amq-test-amq", 2); // scale up
 
