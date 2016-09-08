@@ -37,6 +37,8 @@ import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.jms.Topic;
+import javax.jms.TopicSubscriber;
 import javax.naming.NamingException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -249,6 +251,59 @@ public class AmqClient {
             MessageProducer producer = session.createProducer(q);
 
             producer.send(session.createTextMessage(message));
+        } finally {
+            close(conn);
+        }
+    }
+
+    public void createTopicSubscriber() throws Exception {
+        Connection conn = null;
+        try {
+            ConnectionFactory cf = getAMQConnectionFactory(false);
+            conn = cf.createConnection(username, password);
+            conn.setClientID("tmp123");
+
+            conn.start();
+
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Topic tFoo = session.createTopic("TOPICS.FOO");
+            TopicSubscriber subscriber = session.createDurableSubscriber(tFoo, "SUB.NAME");
+            subscriber.close();
+        } finally {
+            close(conn);
+        }
+    }
+
+    public void produceTopic(String message) throws Exception {
+        Connection conn = null;
+        try {
+            ConnectionFactory cf = getAMQConnectionFactory(false);
+            conn = cf.createConnection(username, password);
+
+            conn.start();
+
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Topic tFoo = session.createTopic("TOPICS.FOO");
+            MessageProducer producer = session.createProducer(tFoo);
+            producer.send(session.createTextMessage(message));
+        } finally {
+            close(conn);
+        }
+    }
+
+    public String consumeTopic() throws Exception {
+        Connection conn = null;
+        try {
+            ConnectionFactory cf = getAMQConnectionFactory(false);
+            conn = cf.createConnection(username, password);
+            conn.setClientID("tmp123");
+
+            conn.start();
+
+            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Topic tFoo = session.createTopic("TOPICS.FOO");
+            MessageConsumer subscriber = session.createDurableSubscriber(tFoo, "SUB.NAME");
+            return ((TextMessage) subscriber.receive()).getText();
         } finally {
             close(conn);
         }
