@@ -139,6 +139,15 @@ Before build and install the needed jars, it is necessary do some modifications 
 
 To make the JBoss CLI tests work, we need to change the jboss-as-testsuite-shared to configure the CLI username and password which will be used to ran the tests. To do that edit the **org.jboss.as.test.integration.management.util.CLITestUtil.java** like below:
 
+## EAP6 needed changes:
+
+In the files **"$EAP6_SOURCES/testsuite/integration/basic/src/test/resources/jboss-ejb-client.properties** add the following content in the end of the file:
+
+```sh
+remote.connection.default.username=guest
+remote.connection.default.password=guest
+```
+
 ###### Create the variables username and password (after line 46):
 ```java
     private static String username = System.getProperty("jboss.cli.username");
@@ -162,6 +171,99 @@ To make the JBoss CLI tests work, we need to change the jboss-as-testsuite-share
     }
 ```
 
+## EAP7 needed changes:
+In the files **"$EAP7_SOURCES/testsuite/integration/basic/src/test/resources/jboss-ejb-client.properties** and **$EAP7_SOURCES/dados/ce/sources/jboss-eap-7.0-src/testsuite/integration/ws/src/test/resources/jboss-ejb-client.properties**, add the following content in the end of the file:
+```sh
+remote.connection.default.username=guest
+remote.connection.default.password=guest
+```
+
+Edit following lines the **Authentication** class in the **wilfly-core** sources under the **org.wildfly.test.api** package:
+```java
+    public static String username = "";
+    public static String password = "";
+```
+To:
+```java
+    public static String username = System.getProperty("jboss.management.user", "");
+    public static String password = System.getProperty("jboss.management.password", "");
+```
+
+Under the **eap sources** edit the class **JMXPropertyEditorsTestCase** in the **org.jboss.as.test.integration.ee.jmx.property** package, change:
+```java
+    private MBeanServerConnection getMBeanServerConnection() throws IOException {
+        final String address = managementClient.getMgmtAddress()+":"+managementClient.getMgmtPort();
+        connector = JMXConnectorFactory.connect(new JMXServiceURL("service:jmx:http-remoting-jmx://"+address));
+        return connector.getMBeanServerConnection();
+
+    }
+
+```
+To:
+```java
+    private MBeanServerConnection getMBeanServerConnection() throws IOException {
+        HashMap<String, String[]> propEnv = new HashMap<String, String[]>();
+        String[] credentials = {  System.getProperty("jboss.management.user",""), System.getProperty("jboss.management.password","") };
+        propEnv.put(JMXConnector.CREDENTIALS, credentials);
+        final String address = managementClient.getMgmtAddress()+":"+managementClient.getMgmtPort();
+        connector = JMXConnectorFactory.connect(new JMXServiceURL("service:jmx:http-remoting-jmx://"+address),propEnv);
+        return connector.getMBeanServerConnection();
+    }
+```
+
+
+Under the **eap sources** edit the class **ModelControllerMBeanTestCase** in the **org.jboss.as.test.integration.jmx** package, change:
+```java
+    private MBeanServerConnection setupAndGetConnection() throws Exception {
+        // Make sure that we can connect to the MBean server
+        String urlString = System
+                .getProperty("jmx.service.url", "service:jmx:http-remoting-jmx://" + managementClient.getMgmtAddress() + ":" + managementClient.getMgmtPort());
+        JMXServiceURL serviceURL = new JMXServiceURL(urlString);
+        connector = JMXConnectorFactory.connect(serviceURL);
+        return connector.getMBeanServerConnection();
+    }
+```
+To:
+```java
+    private MBeanServerConnection setupAndGetConnection() throws Exception {
+        HashMap<String, String[]> propEnv = new HashMap<String, String[]>();
+        String[] credentials = {  System.getProperty("jboss.management.user",""), System.getProperty("jboss.management.password","") };
+        propEnv.put(JMXConnector.CREDENTIALS, credentials);
+
+        // Make sure that we can connect to the MBean server
+        String urlString = System
+                .getProperty("jmx.service.url", "service:jmx:http-remoting-jmx://" + managementClient.getMgmtAddress() + ":" + managementClient.getMgmtPort());
+        JMXServiceURL serviceURL = new JMXServiceURL(urlString);
+        connector = JMXConnectorFactory.connect(serviceURL, propEnv);
+        return connector.getMBeanServerConnection();
+    }
+```
+
+We also need to modify the **CLITestUtil** class in the **jboss-eap-7.0-core** sources under **testsuite/standalone/** subproject, do the following changes:
+
+#### add the variables below just after line number 48:
+```java
+    private static String username = "admin"; //default
+    private static String password = "Admin#70365"; //default
+```
+
+#### Edit all occurrences of:
+```java
+return CommandContextFactory.getInstance().newCommandContext(constructUri("http-remoting", serverAddr , serverPort), null, null);
+```
+To:
+```java
+return CommandContextFactory.getInstance().newCommandContext(constructUri("http-remoting", serverAddr , serverPort), username, password.toCharArray());
+```
+
+Note this return statement may can have more parameters, edit just the usermane/password fields.
+
+#### In the **setJBossCliConfig()** Method add the following lines:
+```java
+        username = System.getProperty("jboss.management.user");
+        password = System.getProperty("jboss.management.password");
+```
+
 #### Building the testsuite project:
 Example:
 ```sh
@@ -181,17 +283,6 @@ The above command will generate the required jars, which are:
 
  
 ### Install the jars manually:
-
-Before installing the jars, is necessary add a user in the **jboss-ejb-client.properties** in the following file: 
-**$EAP_SRC/testsuite/integration/smoke/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar** 
-and add the following content:
-
-```sh
-remote.connection.default.username=guest
-remote.connection.default.password=guest
-```
-
-For eap 7 so the same as described above in the **wildfly-ts-integ-ws-7.0.0.GA-redhat-2-tests.jar** file.
 
 After change the sources as explained above, build the **jboss-as-testsuite-shared** sources:
 ```sh

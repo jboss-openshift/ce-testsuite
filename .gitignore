@@ -4,9 +4,11 @@
 *.ipr
 *.iws
 *.log
+*.jar
 target/
 .project
 .settings/
+.ObjectStore/
 .classpath
 .metadata
 jdg-internal-imagestream.json

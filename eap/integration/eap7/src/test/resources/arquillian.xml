@@ -20,7 +20,12 @@
         http://jboss.org/schema/arquillian
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-    <defaultProtocol type="jmx-as7" />
+    <defaultProtocol type="jmx-as7"/>
+
+    <!-- export the test deployment for further review -->
+    <!--<engine>-->
+    <!--<property name="deploymentExportPath">/tmp/</property>-->
+    <!--</engine>-->
 
     <extension qualifier="ce-cube">
         <property name="kubernetesNamespacePrefix">cearq-integration-eap7</property>
@@ -35,7 +40,7 @@
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <!-- Ports to be proxied locally, <container>:<port> or <container>:0:<port>, to map the same port than container use <container>::<port> or <container>:<port>:<port> -->
-        <property name="proxiedContainerPorts">testrunner::9990,testrunner::8080</property>
+        <property name="proxiedContainerPorts">testrunner-eap7::9990,testrunner-eap7::8080,testrunner-eap7::8443,testrunner-eap7::3528,testrunner-eap7::3529,testrunner-eap7::2020,testrunner-eap7::8181</property>
     </extension>
 
     <!--
@@ -44,7 +49,7 @@
       environment, e.g. service host, port, etc. testrunner relates to the pod
       name in testrunner-pod.json.
     -->
-    <container qualifier="testrunner" mode="suite" default="true">
+    <container qualifier="testrunner-eap7" mode="suite" default="true">
         <configuration>
             <!-- For use with archillian-chameleon -->
             <property name="target">jboss eap:7.0.0.GA:remote</property>
@@ -52,26 +57,69 @@
             <property name="password">Admin#70365</property>
             <property name="managementAddress">127.0.0.1</property>
             <property name="managementPort">9990</property>
-
         </configuration>
-
     </container>
 
     <!-- Configurations needed by the PreparePod class, this class will prepare de pod before top run the tests -->
     <extension qualifier="prepare-pod">
-        <property name="allowConnectingToRunningServer">true</property>
-        <property name="jbossHome">/opt/eap</property>
+        <property name="jbossHome">/dados/server/jboss-eap-7.0</property>
         <property name="username">admin</property>
         <property name="password">Admin#70365</property>
-        <property name="cubeId">testrunner</property>
+        <property name="managementAddress">127.0.0.1</property>
+        <property name="managementPort">9990</property>
+        <property name="cliConnectionTimeout">10000</property>
     </extension>
-
 
     <!-- igonre some methods which fail in the remote container -->
     <extension qualifier="governor-ignore">
         <property name="expression">org\.jboss\.as\.test\.[.]*</property>
-        <property name="methods"></property>
-
+        <property name="methods">org.jboss.as.test.integration.ejb.stateful.passivation.PassivationTestCase#testPassivationFailure</property>
+        <property name="methods_1">org.jboss.as.test.integration.management.deploy.runtime.MDBEJBRuntimeNameTestsCase#testMDB</property>
+        <property name="methods_2">org.jboss.as.test.integration.messaging.mgmt.AddressSettingsTestCase#testSpecificAddressSetting</property>
+        <property name="methods_3">org.jboss.as.test.integration.messaging.mgmt.AddressSettingsTestCase#testAddressSettingWrite</property>
+        <property name="methods_4">org.jboss.as.test.smoke.jms.SendToJMSQueueTest#sendAndReceiveMessage</property>
+        <property name="methods_5">org.jboss.as.test.integration.ee.jmx.property.JMXPropertyEditorsTestCase#testProperties</property>
+        <property name="methods_6">org.jboss.as.test.integration.ejb.security.InherritanceAnnSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_7">org.jboss.as.test.integration.ejb.security.InherritanceAnnSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_8">org.jboss.as.test.integration.ejb.security.InjectionAnnSFSBtoSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_9">org.jboss.as.test.integration.ejb.security.InjectionAnnSFSBtoSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_10">org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_11">org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_12">org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_13">org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
+        <property name="methods_14">org.jboss.as.test.integration.ejb.stateful.locking.AccessSerializationTestCase#testConcurrentAccessNoTransaction</property>
+        <property name="methods_15">org.jboss.as.test.integration.ejb.stateful.passivation.PassivationTestCase#testPassivationMaxSize</property>
+        <property name="methods_16">org.jboss.as.test.integration.ejb.management.deployments.EjbInvocationStatisticsTestCase#testSingletonWaitTime</property>
+        <property name="methods_17">org.jboss.as.test.integration.ejb.timerservice.suspend.TimerServiceSuspendTestCase#testSingleActionTimerWhenSuspended</property>
+        <property name="methods_18">org.jboss.as.test.integration.ejb.timerservice.suspend.TimerServiceSuspendTestCase#testIntervalTimersDoNotBackUp</property>
+        <property name="methods_19">org.jboss.as.test.integration.ejb.stateful.timeout.StatefulTimeoutTestCase#testStatefulTimeoutFromAnnotation</property>
+        <property name="methods_20">org.jboss.as.test.integration.ejb.stateful.timeout.StatefulTimeoutTestCase#testStatefulTimeoutWithPassivation</property>
+        <property name="methods_21">org.jboss.as.test.integration.ejb.stateful.timeout.StatefulTimeoutTestCase#testStatefulTimeoutFromDescriptor</property>
+        <property name="methods_22">org.jboss.as.test.integration.jca.metrics.DriverCfgMetricUnitTestCase#testEmptyDriver</property>
+        <property name="methods_23">org.jboss.as.test.integration.jca.metrics.DriverCfgMetricUnitTestCase#testDriverAttributes</property>
+        <property name="methods_24">org.jboss.as.test.integration.ejb.client.descriptor.EJBClientDescriptorTestCase#testClientPropertiesReplacementInConfig</property>
+        <property name="methods_25">org.jboss.as.test.integration.management.api.web.ListenerTestCase#testHttpsConnector</property>
+        <property name="methods_26">org.jboss.as.test.integration.jpa.datasourcedefinition.DataSourceDefinitionJPATestCase#testTransactionRequiredException</property>
+        <property name="methods_27">org.jboss.as.test.integration.jpa.transaction.TransactionTestCase#testTransactionRequiredException</property>
+        <property name="methods_28">org.jboss.as.test.integration.management.cli.DeployTestCase#testContentObjectDeploy</property>
+        <property name="methods_29">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideInEarAtWarLevelExplodedMultipleDeploymentOverlay</property>
+        <property name="methods_30">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideInEarAtWarLevelExploded</property>
+        <property name="methods_31">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideExplodedMultipleDeploymentOverlay</property>
+        <property name="methods_32">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideInEarAtEarLevelExploded</property>
+        <property name="methods_33">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideExploded</property>
+        <property name="methods_34">org.jboss.as.test.integration.management.deploy.runtime.StatefulEJBRemoteHomeRuntimeNameTestCase#testStatefulLocalHome</property>
+        <property name="methods_35">org.jboss.as.test.integration.management.deploy.runtime.StatelessEJBRemoteHomeRuntimeNameTestCase#testStatelessLocalHome</property>
+        <property name="methods_36">org.jboss.as.test.integration.web.response.DefaultResponseCodeAtRootTestCase#testDefaultResponseCode</property>
+        <property name="methods_37">org.jboss.as.test.integration.web.response.DefaultResponseCodeTestCase#testDefaultResponseCode</property>
+        <property name="methods_38">org.jboss.as.test.integration.web.security.runas.ServletRunAsTestCase#checkDestroyInUndeployingMethodWithCorrectRole</property>
+        <property name="methods_39">org.jboss.as.test.integration.web.security.runas.ServletRunAsTestCase#checkDestroyInUndeployingMethodWithIncorrectRole</property>
+        <property name="methods_40">org.jboss.as.test.integration.web.security.runas.ServletRunAsTestCase#runDestroyMethodInStopServer</property>
+        <property name="methods_41">org.jboss.as.test.integration.web.security.runas.ServletRunAsTestCase#checkDestroyMethodInStopServerWithCorrectRole</property>
+        <property name="methods_42">org.jboss.as.test.integration.web.security.runas.ServletRunAsTestCase#checkDestroyMethodInStopServerWithIncorrectRole</property>
+        <property name="methods_43">org.jboss.as.test.integration.web.sharedsession.SharedSessionTestCase#testSharedSessionsDoNotInterleave</property>
+        <property name="methods_44">org.jboss.as.test.integration.naming.ExternalContextBindingTestCase#testWithActualLDAPContextWithoutCache</property>
+        <property name="methods_45">org.jboss.as.test.integration.naming.ExternalContextBindingTestCase#testWithActualLDAPContextWithCache</property>
+        <property name="methods_46">org.jboss.as.test.integration.security.loginmodules.UsersRolesLoginModuleTestCase#testExternalFiles</property>
+        <property name="methods_47">org.jboss.as.test.integration.web.sharedsession.SharedSessionTestCase#testSharedSessionsOneEar</property>
     </extension>
-
 </arquillian>
