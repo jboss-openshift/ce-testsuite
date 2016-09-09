@@ -2,9 +2,9 @@
   "apiVersion": "v1",
   "kind": "Pod",
   "metadata": {
-    "name": "testrunner",
+    "name": "testrunner-eap7",
     "labels": {
-      "name": "testrunner"
+      "name": "testrunner-eap7"
     }
   },
 
@@ -12,7 +12,7 @@
     "terminationGracePeriodSeconds": 0,
     "containers": [
       {
-        "name": "testrunner",
+        "name": "testrunner-eap7",
         "readinessProbe": {
           "exec": {
             "command": [
@@ -40,19 +40,27 @@
             "protocol": "TCP"
           },
           {
+            "containerPort": 8443,
+            "protocol": "TCP"
+          },
+          {
+            "containerPort": 8181,
+            "protocol": "TCP"
+          },
+          {
             "containerPort": 9990,
             "protocol": "TCP"
           },
           {
-            "containerPort": 9999,
+            "containerPort": 3528,
             "protocol": "TCP"
           },
           {
-            "containerPort": 4447,
+            "containerPort": 2020,
             "protocol": "TCP"
           },
           {
-            "containerPort": 5445,
+            "containerPort": 3529,
             "protocol": "TCP"
           }
         ],
