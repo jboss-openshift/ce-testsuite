@@ -77,15 +77,6 @@ public class AmqQueueMigrationTest extends AmqMigrationTestBase {
         return getDeploymentBase(AmqMigrationTestBase.class);
     }
 
-    private void sendNMessages(int from, int to) throws Exception {
-        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-        Set<String> msgs = new LinkedHashSet<>();
-        for (int i = from; i < to; i++) {
-            msgs.add("msg" + i);
-        }
-        client.produceOpenWireJms(msgs, false);
-    }
-
     @Test
     @InSequence(1)
     public void testSendMsgs() throws Exception {
@@ -107,7 +98,7 @@ public class AmqQueueMigrationTest extends AmqMigrationTestBase {
 
         adapter.deletePod(firstPod, -1); // kill first, msgs should be drained
 
-        waitForDrain(adapter);
+        waitForDrain(adapter, 0);
     }
 
     @Test

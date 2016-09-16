@@ -44,7 +44,7 @@ public class AmqTestBase {
         return new AmqClient(url, username, password);
     }
 
-    protected void restartAmq(OpenShiftHandle handler) throws Exception {
+    protected static void restartAmq(OpenShiftHandle handler) throws Exception {
         handler.scaleDeployment("amq-test-amq", 0);
         handler.scaleDeployment("amq-test-amq", 1);
     }

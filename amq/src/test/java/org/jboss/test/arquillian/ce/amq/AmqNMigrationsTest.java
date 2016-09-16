@@ -24,7 +24,11 @@
 package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.management.ObjectName;
 
@@ -54,7 +58,7 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/alesj/application-templates/amq1/amq/amq62-repl.json",
     parameters = {
         @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
-        @TemplateParameter(name = "MQ_TOPICS", value = "topics.mqtt,TOPICS.FOO"),
+        @TemplateParameter(name = "MQ_TOPICS", value = "topics.mqtt"),
         @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
         @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
         @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
@@ -67,9 +71,11 @@ import org.junit.runner.RunWith;
     @OpenShiftResource("classpath:amq-internal-imagestream.json") // custom dev imagestream; remove when multi repl image is in prod
 })
 @Replicas(1)
-public class AmqDurableTopicSubscriberMigrationTest extends AmqMigrationTestBase {
+public class AmqNMigrationsTest extends AmqMigrationTestBase {
 
-    private static final String TOPIC_OBJECT_NAME = "org.apache.activemq:brokerName=%s,clientId=tmp123,consumerId=Durable(tmp123_SUB.NAME),destinationName=TOPICS.FOO,destinationType=Topic,endpoint=Consumer,type=Broker";
+    private static final Logger log = Logger.getLogger(AmqNMigrationsTest.class.getName());
+
+    private static final String QUEUE_OBJECT_NAME = "org.apache.activemq:brokerName=%s,destinationName=QUEUES.FOO,destinationType=Queue,type=Broker";
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
@@ -77,37 +83,51 @@ public class AmqDurableTopicSubscriberMigrationTest extends AmqMigrationTestBase
     }
 
     @Test
+    @RunAsClient
     @InSequence(1)
-    public void testSubscriberProduce() throws Exception {
-        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
+    public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        adapter.scaleDeployment("amq-test-amq", 5);
+    }
 
-        client.createTopicSubscriber();
-
-        client.produceTopic("Some text!");
+    @Test
+    @InSequence(2)
+    public void testSendMsgs() throws Exception {
+        sendNMessages(1, 11); // 10 msgs
     }
 
     @Test
     @RunAsClient
-    @InSequence(2)
-    public void testScale(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        List<String> pods = adapter.getPods("amq-test-amq");
-        Assert.assertEquals(1, pods.size()); // there should be only one
-        String firstPod = pods.get(0); // we put the msgs here
+    @InSequence(3)
+    public void testMigrate(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        final int N = 10;
 
-        ObjectName objectName = new ObjectName(String.format(TOPIC_OBJECT_NAME, firstPod));
-        Assert.assertEquals(1, queryMessages(adapter, firstPod, objectName, "PendingQueueSize")); // smoke test for 1 msgs
+        int p = 0;
+        for (int i = 0; i < N; i++) {
+            List<String> pods = new ArrayList<>(adapter.getReadyPods("amq-test-amq"));
+            int pi;
+            for (pi = 0; pi < pods.size(); pi++) {
+                String pod = pods.get(pi);
+                ObjectName objectName = new ObjectName(String.format(QUEUE_OBJECT_NAME, pod));
+                Number msgCount = queryMessages(adapter, pod, objectName, "QueueSize");
+                if (msgCount.intValue() > 0) {
+                    break; // find first with some msgs
+                }
+            }
+            Assert.assertTrue("No pod with msgs!?!", pi < pods.size()); // such pod should exist
 
-        adapter.scaleDeployment("amq-test-amq", 2); // scale up
+            log.info(String.format("Deleting pod: %s", pods.get(pi)));
+            adapter.deletePod(pods.get(pi), -1);
 
-        adapter.deletePod(firstPod, -1); // kill first, msgs should be drained
-
-        waitForDrain(adapter, 0);
+            p = waitForDrain(adapter, p);
+        }
     }
 
     @Test
-    @InSequence(3)
-    public void testSubscriberConsume() throws Exception {
+    @InSequence(4)
+    public void testConsumerMsgs() throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-        Assert.assertEquals("Some text!", client.consumeTopic());
+        Set<String> msgs = new LinkedHashSet<>();
+        client.consumeOpenWireJms(msgs, 10, false);
+        while (client.consumeOpenWireJms(2000, false) != null) ;
     }
 }

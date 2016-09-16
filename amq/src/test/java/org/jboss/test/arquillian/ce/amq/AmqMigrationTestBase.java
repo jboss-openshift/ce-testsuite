@@ -23,9 +23,13 @@
 
 package org.jboss.test.arquillian.ce.amq;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import javax.management.ObjectName;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
+import org.jboss.test.arquillian.ce.amq.support.AmqClient;
 import org.jolokia.client.request.J4pReadRequest;
 
 /**
@@ -33,24 +37,36 @@ import org.jolokia.client.request.J4pReadRequest;
  */
 public class AmqMigrationTestBase extends AmqTestBase {
 
+    private static final String END = "A-MQ draining finished";
+
+    protected void sendNMessages(int from, int to) throws Exception {
+        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
+        Set<String> msgs = new LinkedHashSet<>();
+        for (int i = from; i < to; i++) {
+            msgs.add("msg" + i);
+        }
+        client.produceOpenWireJms(msgs, false);
+    }
+
     protected static int queryMessages(OpenShiftHandle adapter, String podName, ObjectName objectName, String attributeName) throws Exception {
         J4pReadRequest request = new J4pReadRequest(objectName, attributeName);
         return adapter.jolokia(Number.class, podName, request).intValue();
     }
 
-    protected static void waitForDrain(OpenShiftHandle adapter) throws Exception {
-        int count = 10;
-        while (count > 0) {
-            String drainLog = adapter.getLog("amq-test-amq-drainer", null);
-            if (drainLog.contains("A-MQ draining finished")) {
-                break;
+    protected static int waitForDrain(OpenShiftHandle adapter, int p) throws Exception {
+        int repeat = 20;
+        while (repeat > 0) {
+            String drainLog = adapter.getLog("amq-test-drainer", null);
+
+            int pp = drainLog.indexOf(END, p);
+            if (pp != -1) {
+                return pp + END.length();
             }
-            count--;
+
+            repeat--;
             Thread.sleep(6000);
         }
-        if (count == 0) {
-            throw new IllegalStateException("Drain not finished?!");
-        }
+        throw new IllegalStateException("Drain not finished?!");
     }
 
 }
