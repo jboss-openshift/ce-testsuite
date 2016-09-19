@@ -63,6 +63,7 @@ import org.junit.runner.RunWith;
 })
 @Replicas(1)
 public class AmqRollingUpgradeTest extends AmqMigrationTestBase {
+    private static final int N = 5;
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
@@ -73,7 +74,7 @@ public class AmqRollingUpgradeTest extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(1)
     public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.scaleDeployment("amq-test-amq", 5);
+        adapter.scaleDeployment("amq-test-amq", N);
     }
 
     @Test
@@ -87,6 +88,12 @@ public class AmqRollingUpgradeTest extends AmqMigrationTestBase {
     @InSequence(3)
     public void testRollingUpdate(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         adapter.rollingUpgrade("amq-test-amq", true);
+
+        // should have N drains?!
+        int p = 0;
+        for (int i = 0; i < N; i++) {
+            p = waitForDrain(adapter, p);
+        }
     }
 
     @Test
