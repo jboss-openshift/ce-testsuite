@@ -121,5 +121,6 @@
         <property name="methods_45">org.jboss.as.test.integration.naming.ExternalContextBindingTestCase#testWithActualLDAPContextWithCache</property>
         <property name="methods_46">org.jboss.as.test.integration.security.loginmodules.UsersRolesLoginModuleTestCase#testExternalFiles</property>
         <property name="methods_47">org.jboss.as.test.integration.web.sharedsession.SharedSessionTestCase#testSharedSessionsOneEar</property>
+        <property name="methods_48">org.jboss.as.test.integration.web.cookie.CookieUnitTestCase#testCookieRetrievedCorrectly</property>
     </extension>
 </arquillian>
