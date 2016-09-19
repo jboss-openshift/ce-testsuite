@@ -24,9 +24,7 @@
 package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.management.ObjectName;
 
@@ -43,7 +41,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.test.arquillian.ce.amq.support.AmqClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,10 +100,7 @@ public class AmqQueueMigrationTest extends AmqMigrationTestBase {
 
     @Test
     @InSequence(3)
-    public void testConsumerMsgs() throws Exception {
-        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-        Set<String> msgs = new LinkedHashSet<>();
-        client.consumeOpenWireJms(msgs, 3, false);
-        while (client.consumeOpenWireJms(2000, false) != null) ;
+    public void testConsumeMsgs() throws Exception {
+        consumeMsgs(3);
     }
 }

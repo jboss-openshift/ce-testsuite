@@ -48,6 +48,14 @@ public class AmqMigrationTestBase extends AmqTestBase {
         client.produceOpenWireJms(msgs, false);
     }
 
+    protected Set<String> consumeMsgs(int msgsSize) throws Exception {
+        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
+        Set<String> msgs = new LinkedHashSet<>();
+        client.consumeOpenWireJms(msgs, msgsSize, false);
+        while (client.consumeOpenWireJms(2000, false) != null) ; // test we don't have more msgs
+        return msgs;
+    }
+
     protected static int queryMessages(OpenShiftHandle adapter, String podName, ObjectName objectName, String attributeName) throws Exception {
         J4pReadRequest request = new J4pReadRequest(objectName, attributeName);
         return adapter.jolokia(Number.class, podName, request).intValue();
