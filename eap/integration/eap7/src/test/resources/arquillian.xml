@@ -62,7 +62,7 @@
 
     <!-- Configurations needed by the PreparePod class, this class will prepare de pod before top run the tests -->
     <extension qualifier="prepare-pod">
-        <property name="jbossHome">/dados/server/jboss-eap-7.0</property>
+        <property name="jbossHome">/opt/eap/</property>
         <property name="username">admin</property>
         <property name="password">Admin#70365</property>
         <property name="managementAddress">127.0.0.1</property>
