@@ -31,23 +31,26 @@ public class PreparePod {
             //"/subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=OFF)",
 
             // create a new io-thread-pool for remoting connections
-            "/subsystem=io/worker=remoting:add(io-threads=400, stack-size=64,task-max-threads=200)",
+            "/subsystem=io/worker=remoting:add(io-threads=800, stack-size=64,task-max-threads=2000)",
             "/subsystem=remoting/configuration=endpoint:write-attribute(name=worker, value=remoting)",
 
             // create a new io-thread-pool for ejb connections
-            "/subsystem=io/worker=ejb-worker:add(io-threads=400, stack-size=64, task-max-threads=200)",
+            "/subsystem=io/worker=ejb-worker:add(io-threads=800, stack-size=64, task-max-threads=2000)",
             "/subsystem=ejb3/service=remote:write-attribute(name=thread-pool-name, value=ejb-worker)",
 
             // increase the ejb thread pool, the default is to small
             "/subsystem=ejb3/thread-pool=default:write-attribute(name=max-threads, value=2000)",
 
             // increase the undertow's buffers values.
-            "/subsystem=undertow/buffer-cache=default:write-attribute(name=buffer-size, value=50192)",
+            "/subsystem=undertow/buffer-cache=default:write-attribute(name=buffer-size, value=1001920)",
             "/subsystem=undertow/buffer-cache=default:write-attribute(name=buffers-per-region, value=10024)",
             "/subsystem=undertow/buffer-cache=default:write-attribute(name=max-regions, value=256)",
 
             // no retries on auth to decrease the overhead
             "/subsystem=remoting/configuration=endpoint:write-attribute(name=authentication-retries, value=0)",
+
+            "/subsystem=remoting/configuration=endpoint:write-attribute(name=receive-window-size, value=12215392000)",
+            "/subsystem=remoting/configuration=endpoint:write-attribute(name=transmit-window-size, value=12215392000)",
 
             ":reload"
     );

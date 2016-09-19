@@ -38,6 +38,7 @@
         <version.org.apache.jbdm>2.0.0-M3</version.org.apache.jbdm>
         <version.org.apache.httpcomponents>4.5.0.redhat-1</version.org.apache.httpcomponents>
         <version.io.undertow>1.3.21.Final-redhat-1</version.io.undertow>
+        <!--<version.io.undertow>1.3.25.Final-SNAPSHOT</version.io.undertow>-->
 
         <version.jboss.ws.api.version>1.0.3.Final-redhat-1</version.jboss.ws.api.version>
         <version.jboss.ws.cfx.version>5.1.3.SP1-redhat-1</version.jboss.ws.cfx.version>
@@ -1206,6 +1207,18 @@
                                 <exclude>**/MySqlDsDriverInEarReauthTestCas.java</exclude>
                                 <exclude>**/LongRunningThreadsCheckTestCase.java</exclude>
                                 <exclude>**/MySqlDsDriverInEarReauthTestCase.java</exclude>
+                                <exclude>**/SAML2AttributeMappingTestCase.java</exclude>
+                                <exclude>**/SAML2BasicAuthenticationTestCase.java</exclude>
+                                <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
+                                <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
+                                <exclude>**/SAML2KerberosAuthenticationTestCase.java</exclude>
+                                <exclude>**/ScriptAssertTestCase.java</exclude>
+                                <exclude>**/SymlinkingUnitTestCase.java</exclude>
+                                <exclude>**/SocketsAndInterfacesTestCase.java</exclude>
+
+                                <!-- Makes the test hang -->
+                                <exclude>**/ServletThreadPoolSelectionTestCase.java</exclude>
+
                             </excludes>
                         </configuration>
                     </plugin>
