@@ -37,8 +37,7 @@
         <version.org.apache.ds>2.0.0-M15</version.org.apache.ds>
         <version.org.apache.jbdm>2.0.0-M3</version.org.apache.jbdm>
         <version.org.apache.httpcomponents>4.5.0.redhat-1</version.org.apache.httpcomponents>
-        <version.io.undertow>1.3.21.Final-redhat-1</version.io.undertow>
-        <!--<version.io.undertow>1.3.25.Final-SNAPSHOT</version.io.undertow>-->
+        <version.io.undertow>1.3.24.Final</version.io.undertow>
         <version.jboss.ws.api.version>1.0.3.Final-redhat-1</version.jboss.ws.api.version>
         <version.jboss.ws.cfx.version>5.1.3.SP1-redhat-1</version.jboss.ws.cfx.version>
         <version.org.picketlink.federation>2.5.5.SP1-redhat-1</version.org.picketlink.federation>
@@ -1033,7 +1032,6 @@
                                     <includeTypes>test-jar</includeTypes>
                                     <includeScope>test</includeScope>
                                     <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-
                                 </configuration>
                             </execution>
                         </executions>
