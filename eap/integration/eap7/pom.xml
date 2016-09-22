@@ -21,24 +21,23 @@
 
     <!-- All versions used here are based on EAP 7.0.0.GA -->
     <properties>
-        <resteasy.multipart.provider.version>3.0.16.Final-redhat-1</resteasy.multipart.provider.version>
-        <hibernate.jpa.version>1.0.0.Final-redhat-1</hibernate.jpa.version>
-        <lucene.core.version>5.3.1.redhat-1</lucene.core.version>
-        <hibernate.core.version>5.0.9.Final-redhat-1</hibernate.core.version>
-        <hibernate.validaitor.version>5.2.4.Final-redhat-1</hibernate.validaitor.version>
-        <artemis.core.version>1.1.0.SP16-redhat-1</artemis.core.version>
-        <bouncycastle.version>1.52.0.redhat-3</bouncycastle.version>
-        <log4j.jboss.logmanage.version>1.1.2.Final-redhat-2</log4j.jboss.logmanage.version>
-        <syslog4j.version>0.9.30</syslog4j.version>
-        <xom.version>1.2.10.redhat-1</xom.version>
-        <jbossxacml.version>2.0.8.Final-redhat-6</jbossxacml.version>
-        <javax.json.version>1.0.3.redhat-1</javax.json.version>
+        <version.org.jboss.resteasy.multipart.provider>3.0.16.Final-redhat-1</version.org.jboss.resteasy.multipart.provider>
+        <version.org.hibernate.javax.persistence.jpa>1.0.0.Final-redhat-1</version.org.hibernate.javax.persistence.jpa>
+        <version.org.apache.lucene.core>5.3.1.redhat-1</version.org.apache.lucene.core>
+        <version.org.hibernate.core>5.0.9.Final-redhat-1</version.org.hibernate.core>
+        <version.org.hibernate.validator>5.2.4.Final-redhat-1</version.org.hibernate.validator>
+        <version.org.apache.activemq.artemis>1.1.0.SP16-redhat-1</version.org.apache.activemq.artemis>
+        <version.org.bouncycastle.bcprov-jdk15on>1.52.0.redhat-3</version.org.bouncycastle.bcprov-jdk15on>
+        <version.org.jboss.logmanager>1.1.2.Final-redhat-2</version.org.jboss.logmanager>
+        <version.org.syslog4j>0.9.30</version.org.syslog4j>
+        <version.com.io7m.xom>1.2.10.redhat-1</version.com.io7m.xom>
+        <version.org.jboss.security.jbossxacml>2.0.8.Final-redhat-6</version.org.jboss.security.jbossxacml>
+        <version.javax.json>1.0.3.redhat-1</version.javax.json>
         <version.org.wildfly.core>2.1.2.Final-redhat-1</version.org.wildfly.core>
         <version.org.apache.ds>2.0.0-M15</version.org.apache.ds>
         <version.org.apache.jbdm>2.0.0-M3</version.org.apache.jbdm>
         <version.org.apache.httpcomponents>4.5.0.redhat-1</version.org.apache.httpcomponents>
-        <version.io.undertow>1.3.21.Final-redhat-1</version.io.undertow>
-
+        <version.io.undertow>1.3.24.Final</version.io.undertow>
         <version.jboss.ws.api.version>1.0.3.Final-redhat-1</version.jboss.ws.api.version>
         <version.jboss.ws.cfx.version>5.1.3.SP1-redhat-1</version.jboss.ws.cfx.version>
         <version.org.picketlink.federation>2.5.5.SP1-redhat-1</version.org.picketlink.federation>
@@ -206,7 +205,7 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-multipart-provider</artifactId>
-                <version>${resteasy.multipart.provider.version}</version>
+                <version>${version.org.jboss.resteasy.multipart.provider}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -224,13 +223,13 @@
             <dependency>
                 <groupId>org.hibernate.javax.persistence</groupId>
                 <artifactId>hibernate-jpa-2.1-api</artifactId>
-                <version>${hibernate.jpa.version}</version>
+                <version>${version.org.hibernate.javax.persistence.jpa}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.core.version}</version>
+                <version>${version.org.hibernate.core}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -242,7 +241,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate.validaitor.version}</version>
+                <version>${version.org.hibernate.validator}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -256,7 +255,7 @@
             <dependency>
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-core-client</artifactId>
-                <version>${artemis.core.version}</version>
+                <version>${version.org.apache.activemq.artemis}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -305,7 +304,7 @@
             <dependency>
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-core</artifactId>
-                <version>${lucene.core.version}</version>
+                <version>${version.org.apache.lucene.core}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -321,7 +320,7 @@
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk15on</artifactId>
-                <version>${bouncycastle.version}</version>
+                <version>${version.org.bouncycastle.bcprov-jdk15on}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -329,7 +328,7 @@
             <dependency>
                 <groupId>org.jboss.logmanager</groupId>
                 <artifactId>log4j-jboss-logmanager</artifactId>
-                <version>${log4j.jboss.logmanage.version}</version>
+                <version>${version.org.jboss.logmanager}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -352,7 +351,7 @@
             <dependency>
                 <groupId>org.jboss.security</groupId>
                 <artifactId>jbossxacml</artifactId>
-                <version>${jbossxacml.version}</version>
+                <version>${version.org.jboss.security.jbossxacml}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -366,7 +365,7 @@
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.json</artifactId>
-                <version>${javax.json.version}</version>
+                <version>${version.javax.json}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -416,7 +415,7 @@
             <dependency>
                 <groupId>org.syslog4j</groupId>
                 <artifactId>syslog4j</artifactId>
-                <version>${syslog4j.version}</version>
+                <version>${version.org.syslog4j}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -424,7 +423,7 @@
             <dependency>
                 <groupId>com.io7m.xom</groupId>
                 <artifactId>xom</artifactId>
-                <version>${xom.version}</version>
+                <version>${version.com.io7m.xom}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -784,7 +783,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>${bouncycastle.version}</version>
+            <version>${version.org.bouncycastle.bcprov-jdk15on}</version>
             <scope>test</scope>
         </dependency>
 
@@ -1033,7 +1032,6 @@
                                     <includeTypes>test-jar</includeTypes>
                                     <includeScope>test</includeScope>
                                     <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-
                                 </configuration>
                             </execution>
                         </executions>
@@ -1043,9 +1041,6 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${version.surefire.plugin}</version>
                         <configuration>
-                            <argLine>
-                                -Dorg.jboss.arquillian.portforwarder.timeout=2400000
-                            </argLine>
                             <systemPropertyVariables combine.children="append">
                                 <!-- EJB client library hack, see WFLY-4973-->
                                 <org.jboss.ejb.client.wildfly-testsuite-hack>true</org.jboss.ejb.client.wildfly-testsuite-hack>
@@ -1161,6 +1156,8 @@
                                 <exclude>**/ExtensionTestCase.java</exclude>
                                 <exclude>**/WeldBundledLibraryDeploymentEarTestCase.java</exclude>
                                 <exclude>**/WeldBundledLibraryDeploymentTestCase.java</exclude>
+                                <exclude>**/StandardConfigsXMLValidationUnitTestCase.java</exclude>
+                                <exclude>**/XSDValidationUnitTestCase.java</exclude>
 
                                 <!-- Uses a local db instance -->
                                 <exclude>**/DatabaseLoginModuleTestCase.java</exclude>
@@ -1206,6 +1203,17 @@
                                 <exclude>**/MySqlDsDriverInEarReauthTestCas.java</exclude>
                                 <exclude>**/LongRunningThreadsCheckTestCase.java</exclude>
                                 <exclude>**/MySqlDsDriverInEarReauthTestCase.java</exclude>
+                                <exclude>**/SAML2AttributeMappingTestCase.java</exclude>
+                                <exclude>**/SAML2BasicAuthenticationTestCase.java</exclude>
+                                <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
+                                <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
+                                <exclude>**/SAML2KerberosAuthenticationTestCase.java</exclude>
+                                <exclude>**/ScriptAssertTestCase.java</exclude>
+                                <exclude>**/SymlinkingUnitTestCase.java</exclude>
+                                <exclude>**/SocketsAndInterfacesTestCase.java</exclude>
+
+                                <!-- Makes the test hang -->
+                                <exclude>**/ServletThreadPoolSelectionTestCase.java</exclude>
                             </excludes>
                         </configuration>
                     </plugin>
