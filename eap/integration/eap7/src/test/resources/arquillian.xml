@@ -62,7 +62,7 @@
 
     <!-- Configurations needed by the PreparePod class, this class will prepare de pod before top run the tests -->
     <extension qualifier="prepare-pod">
-        <property name="jbossHome">/dados/server/jboss-eap-7.0</property>
+        <property name="jbossHome">/opt/eap/</property>
         <property name="username">admin</property>
         <property name="password">Admin#70365</property>
         <property name="managementAddress">127.0.0.1</property>
@@ -121,5 +121,6 @@
         <property name="methods_45">org.jboss.as.test.integration.naming.ExternalContextBindingTestCase#testWithActualLDAPContextWithCache</property>
         <property name="methods_46">org.jboss.as.test.integration.security.loginmodules.UsersRolesLoginModuleTestCase#testExternalFiles</property>
         <property name="methods_47">org.jboss.as.test.integration.web.sharedsession.SharedSessionTestCase#testSharedSessionsOneEar</property>
+        <property name="methods_48">org.jboss.as.test.integration.web.cookie.CookieUnitTestCase#testCookieRetrievedCorrectly</property>
     </extension>
 </arquillian>
