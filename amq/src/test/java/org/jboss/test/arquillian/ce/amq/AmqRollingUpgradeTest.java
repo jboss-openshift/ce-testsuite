@@ -88,12 +88,6 @@ public class AmqRollingUpgradeTest extends AmqMigrationTestBase {
     @InSequence(3)
     public void testRollingUpdate(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         adapter.rollingUpgrade("amq-test-amq", true);
-
-        // should have N drains?!
-        int p = 0;
-        for (int i = 0; i < N; i++) {
-            p = waitForDrain(adapter, p);
-        }
     }
 
     @Test
