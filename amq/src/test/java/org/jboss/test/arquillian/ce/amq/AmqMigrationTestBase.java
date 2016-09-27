@@ -62,13 +62,19 @@ public class AmqMigrationTestBase extends AmqTestBase {
     }
 
     protected static int waitForDrain(OpenShiftHandle adapter, int p) throws Exception {
+        return waitForDrain(adapter, p, END);
+    }
+
+    protected static int waitForDrain(OpenShiftHandle adapter, int p, String... parts) throws Exception {
         int repeat = 20;
         while (repeat > 0) {
             String drainLog = adapter.getLog("amq-test-drainer", null);
 
-            int pp = drainLog.indexOf(END, p);
-            if (pp != -1) {
-                return pp + END.length();
+            for (String content : parts) {
+                int pp = drainLog.indexOf(content, p);
+                if (pp != -1) {
+                    return pp + content.length();
+                }
             }
 
             repeat--;

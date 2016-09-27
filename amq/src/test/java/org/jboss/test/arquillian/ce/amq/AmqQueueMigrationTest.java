@@ -68,6 +68,7 @@ import org.junit.runner.RunWith;
 public class AmqQueueMigrationTest extends AmqMigrationTestBase {
 
     private static final String QUEUE_OBJECT_NAME = "org.apache.activemq:brokerName=%s,destinationName=QUEUES.FOO,destinationType=Queue,type=Broker";
+    private static final String HANDLED_MSGS = "Handled %s messages for queue 'QUEUES.FOO'";
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
@@ -98,18 +99,24 @@ public class AmqQueueMigrationTest extends AmqMigrationTestBase {
         Assert.assertEquals(2, pods.size());
 
         boolean distributed = true;
+        int[] sizes = new int[2];
+        int i = 0;
         for (String podName : pods) {
             ObjectName objectName = new ObjectName(String.format(QUEUE_OBJECT_NAME, podName));
             int size = queryMessages(adapter, podName, objectName, "QueueSize");
             distributed = (distributed && (size > 0));
+            sizes[i++] = size;
         }
 
         adapter.scaleDeployment("amq-test-amq", 1); // scale down
 
         if (distributed) {
             // msgs were distributed, hence should be migrated
-            waitForDrain(adapter, 0);
+            waitForDrain(adapter, 0, String.format(HANDLED_MSGS, sizes[0]), String.format(HANDLED_MSGS, sizes[1]));
         }
+
+        // drain should kick-in in any case
+        waitForDrain(adapter, 0);
     }
 
     @Test
