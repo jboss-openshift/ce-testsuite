@@ -75,32 +75,46 @@ public class AmqQueueMigrationTest extends AmqMigrationTestBase {
     }
 
     @Test
+    @RunAsClient
     @InSequence(1)
+    public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        adapter.scaleDeployment("amq-test-amq", 2); // scale up
+    }
+
+    @Test
+    @InSequence(2)
     public void testSendMsgs() throws Exception {
-        sendNMessages(1, 4);
+        // hopfully msgs get distributed
+        for (int i = 1; i < 11; i++) {
+            sendNMessages(i, i + 1);
+        }
     }
 
     @Test
     @RunAsClient
-    @InSequence(2)
-    public void testScale(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+    @InSequence(3)
+    public void testScaleDown(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         List<String> pods = adapter.getPods("amq-test-amq");
-        Assert.assertEquals(1, pods.size()); // there should be only one
-        String firstPod = pods.get(0); // we put the msgs here
+        Assert.assertEquals(2, pods.size());
 
-        ObjectName objectName = new ObjectName(String.format(QUEUE_OBJECT_NAME, firstPod));
-        Assert.assertEquals(3, queryMessages(adapter, firstPod, objectName, "QueueSize")); // smoke test for 3 msgs
+        boolean distributed = true;
+        for (String podName : pods) {
+            ObjectName objectName = new ObjectName(String.format(QUEUE_OBJECT_NAME, podName));
+            int size = queryMessages(adapter, podName, objectName, "QueueSize");
+            distributed = (distributed && (size > 0));
+        }
 
-        adapter.scaleDeployment("amq-test-amq", 2); // scale up
+        adapter.scaleDeployment("amq-test-amq", 1); // scale down
 
-        adapter.deletePod(firstPod, -1); // kill first, msgs should be drained
-
-        waitForDrain(adapter, 0);
+        if (distributed) {
+            // msgs were distributed, hence should be migrated
+            waitForDrain(adapter, 0);
+        }
     }
 
     @Test
-    @InSequence(3)
+    @InSequence(4)
     public void testConsumeMsgs() throws Exception {
-        consumeMsgs(3);
+        consumeMsgs(10);
     }
 }
