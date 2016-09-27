@@ -36,9 +36,6 @@
 		<version.slf4j>1.7.5</version.slf4j>
 		<version.org.jboss.as.arquillian.container>7.2.0.Final</version.org.jboss.as.arquillian.container>
 		<version.jolokia>1.3.4</version.jolokia>
-		<!-- JDG -->
-		<version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
-		<spymemcached.version>2.8.1</spymemcached.version>
 		<!-- EAP testunit deps -->
 		<version.logging>3.1.4.GA</version.logging>
 		<version.httpclient>4.3.6.redhat-1</version.httpclient>
@@ -379,6 +376,18 @@
 				<version>${version.jolokia}</version>
 			</dependency>
 
+            <dependency>
+                <groupId>org.jboss.xnio</groupId>
+                <artifactId>xnio-api</artifactId>
+                <version>${version.org.jboss.xnio}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.xnio</groupId>
+                <artifactId>xnio-nio</artifactId>
+                <version>${version.org.jboss.xnio}</version>
+            </dependency>
+
 			<!-- AMQ -->
 
 			<dependency>
@@ -450,28 +459,6 @@
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-all</artifactId>
 				<version>${version.activemq}</version>
-			</dependency>
-
-			<!-- JDG -->
-
-            <dependency>
-                <groupId>org.jboss.xnio</groupId>
-                <artifactId>xnio-api</artifactId>
-                <version>${version.org.jboss.xnio}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.jboss.xnio</groupId>
-                <artifactId>xnio-nio</artifactId>
-                <version>${version.org.jboss.xnio}</version>
-            </dependency>
-            
-			<!-- Manage the Spy memcached version -->
-			<dependency>
-				<groupId>com.google.code.simple-spring-memcached</groupId>
-				<artifactId>spymemcached</artifactId>
-				<version>${spymemcached.version}</version>
-				<scope>compile</scope>
 			</dependency>
 
 			<!-- SSO -->
@@ -601,7 +588,9 @@
 			</modules>
 
 			<properties>
+                <version.spymemcached>2.8.1</version.spymemcached>
 				<version.logging>3.2.1.Final</version.logging>
+                <version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
 				<version.org.jboss.xnio>3.3.6.Final-redhat-1</version.org.jboss.xnio>
 			</properties>
 
@@ -627,6 +616,12 @@
 						<type>test-jar</type>
 						<version>${version.org.infinispan}</version>
 					</dependency>
+                    <dependency>
+                        <groupId>com.google.code.simple-spring-memcached</groupId>
+                        <artifactId>spymemcached</artifactId>
+                        <version>${version.spymemcached}</version>
+                        <scope>compile</scope>
+                    </dependency>
 				</dependencies>
 			</dependencyManagement>
 		</profile>
