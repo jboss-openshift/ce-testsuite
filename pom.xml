@@ -45,6 +45,7 @@
 		<version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
 		<version.org.kie>6.2.0.Final-redhat-14</version.org.kie>
 		<version.activemq>5.8.0.redhat-60083</version.activemq>
+		<version.javax.jpa>1.0.1.Final</version.javax.jpa>
 		<!-- AMQ -->
 		<version.jms>1.1</version.jms>
 		<version.activemq>5.11.1</version.activemq>
@@ -459,6 +460,12 @@
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-all</artifactId>
 				<version>${version.activemq}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.0-api</artifactId>
+				<version>${version.javax.jpa}</version>
 			</dependency>
 
 			<!-- SSO -->
