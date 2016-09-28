@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -14,7 +14,6 @@
 
     <!-- Artifact Configuration -->
     <artifactId>ce-testsuite-eap7-integration</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>CE Testsuite -- EAP 7 testsuite Integration tests</name>
     <description>Cloud Enablement Testsuite -- EAP 7 testsuite Integration tests</description>
@@ -995,7 +994,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -1007,219 +1005,212 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>eap7</id>
-            <activation>
-                <property>
-                    <name>eap7</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack-dependencies</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>org.jboss,org.wildfly.core</includeGroupIds>
-                                    <includeTypes>test-jar</includeTypes>
-                                    <includeScope>test</includeScope>
-                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
                         <configuration>
-                            <systemPropertyVariables combine.children="append">
-                                <!-- EJB client library hack, see WFLY-4973-->
-                                <org.jboss.ejb.client.wildfly-testsuite-hack>true</org.jboss.ejb.client.wildfly-testsuite-hack>
-                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                            </systemPropertyVariables>
-                            <runOrder>alphabetical</runOrder>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <trimStackTrace>false</trimStackTrace>
-                            <includes>
-                                <include>**/*TestCase.java</include>
-                                <include>**/*Test.java</include>
-                            </includes>
-                            <excludes>
-                                <!-- reload the server -->
-                                <exclude>**/ChunkPartitionTestCase.java</exclude>
-                                <exclude>**/DeploymentDescriptorTestCase.java</exclude>
-                                <exclude>**/XADatasourceCapacityPoliciesTestCase.java</exclude>
-                                <exclude>**/BasicFlatTestCase.java</exclude>
-                                <exclude>**/BasicJarTestCase.java</exclude>
-                                <exclude>**/InflowFlatTestCase.java</exclude>
-                                <exclude>**/InflowJarTestCase.java</exclude>
-                                <exclude>**/MultiActivationFlatTestCase.java</exclude>
-                                <exclude>**/MultiActivationJarTestCase.java</exclude>
-                                <exclude>**/MultiObjectActivationFlatTestCase.java</exclude>
-                                <exclude>**/MultiObjectActivationJarTestCase.java</exclude>
-                                <exclude>**/PartialObjectActivationFlatTestCase.java</exclude>
-                                <exclude>**/PartialObjectActivationJarTestCase.java</exclude>
-                                <exclude>**/PureFlatTestCase.java</exclude>
-                                <exclude>**/PureJarTestCase.java</exclude>
-                                <exclude>**/TwoModulesFlatTestCase.java</exclude>
-                                <exclude>**/TwoModulesJarTestCase.java</exclude>
-                                <exclude>**/TwoModulesOfDifferentTypeTestCase.java</exclude>
-                                <exclude>**/TwoRaFlatTestCase.java</exclude>
-                                <exclude>**/TwoRaJarTestCase.java</exclude>
-                                <exclude>**/DataSourceJdbcStatisticsTestCase.java</exclude>
-                                <exclude>**/RequestDumpingHandlerTestCase.java</exclude>
-                                <exclude>**/DataSourcePoolStatisticsTestCase.java</exclude>
-                                <exclude>**/SimpleApplicationClientTestCase.java</exclude>
-                                <exclude>**/DatasourceEnableAttributeTestCase.java</exclude>
-                                <exclude>**/DatasourceCapacityPoliciesTestCase.java</exclude>
-                                <exclude>**/DatasourceXaEnableAttributeTestCase.java</exclude>
-                                <exclude>**/DataSourceCfgMetricUnitTestCase.java</exclude>
-                                <exclude>**/RaCfgMetricUnitTestCase.java</exclude>
-                                <exclude>**/ExportImportJournalTestCase.java</exclude>
+                            <includeGroupIds>org.jboss,org.wildfly.core</includeGroupIds>
+                            <includeTypes>test-jar</includeTypes>
+                            <includeScope>test</includeScope>
+                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
 
-                                <!-- path used to map files does not exist in this scenario -->
-                                <exclude>**/AddMySqlDataSourceOperationsUnitTestCase.java</exclude>
-
-                                <!-- always fails -->
-                                <exclude>**/RunAsTestCaseEJBMDB.java</exclude>
-                                <exclude>**/LegacyTimerFormatTestCase.java</exclude>
-                                <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
-                                <exclude>**/LdapExtLikeAdvancedLdapLMTestCase.java</exclude>
-                                <exclude>**/LdapExtLoginModuleTestCase.java</exclude>
-                                <exclude>**/LdapExtPasswordCachingTestCase.java</exclude>
-                                <exclude>**/LdapLoginModuleTestCase.java</exclude>
-                                <exclude>**/AdvancedLdapLoginModuleTestCase.java</exclude>
-                                <exclude>**/SPNEGOLoginModuleTestCase.java</exclude>
-                                <exclude>**/PasswordMaskingInContainerTestCase.java</exclude>
-                                <exclude>**/BasicTests.java</exclude>
-                                <exclude>**/ContextRootTestBase.java</exclude>
-                                <exclude>**/TestNoAddressingTestCase.java</exclude>
-                                <exclude>**/TestOptionalAddressingTestCase.java</exclude>
-                                <exclude>**/TestRequiredAddressingTestCase.java</exclude>
-                                <exclude>**/EJBSignTestCase.java</exclude>
-                                <exclude>**/SignTestCase.java</exclude>
-                                <exclude>**/EJBSignEncryptMultipleClientsTestCase.java</exclude>
-                                <exclude>**/EJBSignEncryptTestCase.java</exclude>
-                                <exclude>**/SignEncryptMultipleClientsTestCase.java</exclude>
-                                <exclude>**/SignEncryptTestCase.java</exclude>
-                                <exclude>**/WSTrustTestCase.java</exclude>
-                                <exclude>**/JMSBridgeTest.java</exclude>
-                                <exclude>**/GlobalModulesTestCase.java</exclude>
-                                <exclude>**/MapBasedInitialContextEjbClientTestCase.java</exclude>
-                                <exclude>**/AccessSerializationTestCase.java</exclude>
-                                <exclude>**/RemoveSFSBOnUndeployTestCase.java</exclude>
-                                <exclude>**/WSTestCase.java</exclude>
-                                <exclude>**/EJBClientUserTransactionTestCase.java</exclude>
-                                <exclude>**/ReentrantLockTestCase.java</exclude>
-                                <exclude>**/WebSuspendTestCase.java</exclude>
-                                <exclude>**/EJBClientDescriptorTestCase.java</exclude>
-                                <exclude>**/JMXFilterTestCase.java</exclude>
-                                <exclude>**/ClientCompatibilityUnitTestCase.java</exclude>
-                                <exclude>**/JmsTestCase.java</exclude>
-                                <exclude>**/WebSecurityCERTTestCase.java</exclude>
-                                <exclude>**/TransactionObjectStoreTestCase.java</exclude>
-                                <exclude>**/CLISecurityTestCase.java</exclude>
-                                <exclude>**/SessionObjectReferenceTestCase.java</exclude>
-                                <exclude>**/WebSecurityProgrammaticLoginTestCase.java</exclude>
-
-                                <!-- tries to create|reach|read files on local filesystem -->
-                                <exclude>**/SecurityAuditingTestCase.java</exclude>
-                                <exclude>**/TestsuiteSanityTestCase.java</exclude>
-                                <exclude>**/DeploymentArchiveTestCase.java</exclude>
-                                <exclude>**/MDBWhichDependsOnTestCase.java</exclude>
-                                <exclude>**/StatefulBeanWhichDependsOnTestCase.java</exclude>
-                                <exclude>**/StatelesBeanWhichDependsOnTestCase.java</exclude>
-                                <exclude>**/DeploymentScannerTestCase.java</exclude>
-                                <exclude>**/JdrReportManagmentTestCase.java</exclude>
-                                <exclude>**/DeployURLTestCase.java</exclude>
-                                <exclude>**/TransportGuaranteeTestCase.java</exclude>
-                                <exclude>**/ObjectFactoryWithEnvironmentBindingTestCase.java</exclude>
-                                <exclude>**/RemotingLoginModuleTestCase.java</exclude>
-                                <exclude>**/WebModuleDeploymentTestCase.java</exclude>
-                                <exclude>**/ExternalTagLibTestCase.java</exclude>
-                                <exclude>**/WeldModuleDeploymentTestCase.java</exclude>
-                                <exclude>**/ExportedModuleTestCase.java</exclude>
-                                <exclude>**/StaticModuleToDeploymentVisibilityWarTest.java</exclude>
-                                <exclude>**/StaticModuleToDeploymentVisibilityEarTest.java</exclude>
-                                <exclude>**/BuiltInBeanWithPackagePrivateConstructorTest.java</exclude>
-                                <exclude>**/PortableExtensionInExternalModuleTestCase.java</exclude>
-                                <exclude>**/MultipleJarInModuleTestCase.java</exclude>
-                                <exclude>**/CrossModuleAccessibilityTestCase.java</exclude>
-                                <exclude>**/ExtensionTestCase.java</exclude>
-                                <exclude>**/WeldBundledLibraryDeploymentEarTestCase.java</exclude>
-                                <exclude>**/WeldBundledLibraryDeploymentTestCase.java</exclude>
-                                <exclude>**/StandardConfigsXMLValidationUnitTestCase.java</exclude>
-                                <exclude>**/XSDValidationUnitTestCase.java</exclude>
-
-                                <!-- Uses a local db instance -->
-                                <exclude>**/DatabaseLoginModuleTestCase.java</exclude>
-
-                                <!-- vault tests -->
-                                <exclude>org/jboss/as/test/integration/security/vault/**</exclude>
-                                <exclude>**/MDBWithVaultedPropertiesTestCase.java</exclude>
-                                <exclude>**/VaultedInjectedJMSContextTestCase.java</exclude>
-                                <exclude>**/JMSResourceDefinitionsTestCase.java</exclude>
-
-                                <!-- uses local auth -->
-                                <exclude>**/GetCallerPrincipalTestCase.java</exclude>
-                                <exclude>**/JMXConnectorTestCase.java</exclude>
-                                <exclude>**/RemoteNamingEjbTestCase.java</exclude>
-                                <exclude>**/RemoteNamingTestCase.java</exclude>
-                                <exclude>**/JNDIBindingMBeanTestCase.java</exclude>
-                                <exclude>**/SarWithinEarTestCase.java</exclude>
-                                <exclude>**/MBeanTCCLTestCase.java</exclude>
-                                <exclude>**/SarInjectionTestCase.java</exclude>
-                                <exclude>**/DependsTestCase.java</exclude>
-                                <exclude>**/SarResourceInjectionTestCase.java</exclude>
-                                <exclude>**/ServiceMBeanSupportTestCase.java</exclude>
-
-                                <!-- unsupported subsystems -->
-                                <exclude>**/ModClusterSubsystemAddTestCase.java</exclude>
-                                <exclude>**/ResourceInjectionTestCas.java</exclude>
-                                <exclude>**/IIOPNamingTestCase.java</exclude>
-                                <exclude>**/ResourceInjectionTestCase.java</exclude>
-                                <exclude>**/IIOPNamingInContainerDDNameTestCase.java</exclude>
-                                <exclude>**/IIOPNamingInContainerTestCase.java</exclude>
-
-                                <!-- tests skipped by default -->
-                                <exclude>**/PersistentCalendarTimerManagementTestCase.java</exclude>
-                                <exclude>**/Hibernate4NativeAPINaturalIdTestCase.java</exclude>
-                                <exclude>**/MultipleMappingTestCase.java</exclude>
-                                <exclude>**/ArchiveValidationDeploymentTestCase.java</exclude>
-                                <exclude>**/OrmTestCase.java</exclude>
-                                <exclude>**/TxTimeoutTestCase.java</exclude>
-                                <exclude>**/ManagementOnlyModeTestCase.java</exclude>
-                                <exclude>**/CustomProvidersTestCase.java</exclude>
-                                <exclude>**/BeanValidationCdiIntegrationTestCase.java</exclude>
-                                <exclude>**/CustomBootstrapContextTestCase.java</exclude>
-                                <exclude>**/MySqlDsDriverInEarReauthTestCas.java</exclude>
-                                <exclude>**/LongRunningThreadsCheckTestCase.java</exclude>
-                                <exclude>**/MySqlDsDriverInEarReauthTestCase.java</exclude>
-                                <exclude>**/SAML2AttributeMappingTestCase.java</exclude>
-                                <exclude>**/SAML2BasicAuthenticationTestCase.java</exclude>
-                                <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
-                                <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
-                                <exclude>**/SAML2KerberosAuthenticationTestCase.java</exclude>
-                                <exclude>**/ScriptAssertTestCase.java</exclude>
-                                <exclude>**/SymlinkingUnitTestCase.java</exclude>
-                                <exclude>**/SocketsAndInterfacesTestCase.java</exclude>
-
-                                <!-- Makes the test hang -->
-                                <exclude>**/ServletThreadPoolSelectionTestCase.java</exclude>
-                            </excludes>
                         </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.surefire.plugin}</version>
+                <configuration>
+                    <systemPropertyVariables
+                        combine.children="append">
+                        <!-- EJB client library hack, see WFLY-4973 -->
+                        <org.jboss.ejb.client.wildfly-testsuite-hack>true</org.jboss.ejb.client.wildfly-testsuite-hack>
+                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                    </systemPropertyVariables>
+                    <runOrder>alphabetical</runOrder>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <includes>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <excludes>
+                        <!-- reload the server -->
+                        <exclude>**/ChunkPartitionTestCase.java</exclude>
+                        <exclude>**/DeploymentDescriptorTestCase.java</exclude>
+                        <exclude>**/XADatasourceCapacityPoliciesTestCase.java</exclude>
+                        <exclude>**/BasicFlatTestCase.java</exclude>
+                        <exclude>**/BasicJarTestCase.java</exclude>
+                        <exclude>**/InflowFlatTestCase.java</exclude>
+                        <exclude>**/InflowJarTestCase.java</exclude>
+                        <exclude>**/MultiActivationFlatTestCase.java</exclude>
+                        <exclude>**/MultiActivationJarTestCase.java</exclude>
+                        <exclude>**/MultiObjectActivationFlatTestCase.java</exclude>
+                        <exclude>**/MultiObjectActivationJarTestCase.java</exclude>
+                        <exclude>**/PartialObjectActivationFlatTestCase.java</exclude>
+                        <exclude>**/PartialObjectActivationJarTestCase.java</exclude>
+                        <exclude>**/PureFlatTestCase.java</exclude>
+                        <exclude>**/PureJarTestCase.java</exclude>
+                        <exclude>**/TwoModulesFlatTestCase.java</exclude>
+                        <exclude>**/TwoModulesJarTestCase.java</exclude>
+                        <exclude>**/TwoModulesOfDifferentTypeTestCase.java</exclude>
+                        <exclude>**/TwoRaFlatTestCase.java</exclude>
+                        <exclude>**/TwoRaJarTestCase.java</exclude>
+                        <exclude>**/DataSourceJdbcStatisticsTestCase.java</exclude>
+                        <exclude>**/RequestDumpingHandlerTestCase.java</exclude>
+                        <exclude>**/DataSourcePoolStatisticsTestCase.java</exclude>
+                        <exclude>**/SimpleApplicationClientTestCase.java</exclude>
+                        <exclude>**/DatasourceEnableAttributeTestCase.java</exclude>
+                        <exclude>**/DatasourceCapacityPoliciesTestCase.java</exclude>
+                        <exclude>**/DatasourceXaEnableAttributeTestCase.java</exclude>
+                        <exclude>**/DataSourceCfgMetricUnitTestCase.java</exclude>
+                        <exclude>**/RaCfgMetricUnitTestCase.java</exclude>
+                        <exclude>**/ExportImportJournalTestCase.java</exclude>
+
+                        <!-- path used to map files does not exist in this 
+                            scenario -->
+                        <exclude>**/AddMySqlDataSourceOperationsUnitTestCase.java</exclude>
+
+                        <!-- always fails -->
+                        <exclude>**/RunAsTestCaseEJBMDB.java</exclude>
+                        <exclude>**/LegacyTimerFormatTestCase.java</exclude>
+                        <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
+                        <exclude>**/LdapExtLikeAdvancedLdapLMTestCase.java</exclude>
+                        <exclude>**/LdapExtLoginModuleTestCase.java</exclude>
+                        <exclude>**/LdapExtPasswordCachingTestCase.java</exclude>
+                        <exclude>**/LdapLoginModuleTestCase.java</exclude>
+                        <exclude>**/AdvancedLdapLoginModuleTestCase.java</exclude>
+                        <exclude>**/SPNEGOLoginModuleTestCase.java</exclude>
+                        <exclude>**/PasswordMaskingInContainerTestCase.java</exclude>
+                        <exclude>**/BasicTests.java</exclude>
+                        <exclude>**/ContextRootTestBase.java</exclude>
+                        <exclude>**/TestNoAddressingTestCase.java</exclude>
+                        <exclude>**/TestOptionalAddressingTestCase.java</exclude>
+                        <exclude>**/TestRequiredAddressingTestCase.java</exclude>
+                        <exclude>**/EJBSignTestCase.java</exclude>
+                        <exclude>**/SignTestCase.java</exclude>
+                        <exclude>**/EJBSignEncryptMultipleClientsTestCase.java</exclude>
+                        <exclude>**/EJBSignEncryptTestCase.java</exclude>
+                        <exclude>**/SignEncryptMultipleClientsTestCase.java</exclude>
+                        <exclude>**/SignEncryptTestCase.java</exclude>
+                        <exclude>**/WSTrustTestCase.java</exclude>
+                        <exclude>**/JMSBridgeTest.java</exclude>
+                        <exclude>**/GlobalModulesTestCase.java</exclude>
+                        <exclude>**/MapBasedInitialContextEjbClientTestCase.java</exclude>
+                        <exclude>**/AccessSerializationTestCase.java</exclude>
+                        <exclude>**/RemoveSFSBOnUndeployTestCase.java</exclude>
+                        <exclude>**/WSTestCase.java</exclude>
+                        <exclude>**/EJBClientUserTransactionTestCase.java</exclude>
+                        <exclude>**/ReentrantLockTestCase.java</exclude>
+                        <exclude>**/WebSuspendTestCase.java</exclude>
+                        <exclude>**/EJBClientDescriptorTestCase.java</exclude>
+                        <exclude>**/JMXFilterTestCase.java</exclude>
+                        <exclude>**/ClientCompatibilityUnitTestCase.java</exclude>
+                        <exclude>**/JmsTestCase.java</exclude>
+                        <exclude>**/WebSecurityCERTTestCase.java</exclude>
+                        <exclude>**/TransactionObjectStoreTestCase.java</exclude>
+                        <exclude>**/CLISecurityTestCase.java</exclude>
+                        <exclude>**/SessionObjectReferenceTestCase.java</exclude>
+                        <exclude>**/WebSecurityProgrammaticLoginTestCase.java</exclude>
+
+                        <!-- tries to create|reach|read files on local filesystem -->
+                        <exclude>**/SecurityAuditingTestCase.java</exclude>
+                        <exclude>**/TestsuiteSanityTestCase.java</exclude>
+                        <exclude>**/DeploymentArchiveTestCase.java</exclude>
+                        <exclude>**/MDBWhichDependsOnTestCase.java</exclude>
+                        <exclude>**/StatefulBeanWhichDependsOnTestCase.java</exclude>
+                        <exclude>**/StatelesBeanWhichDependsOnTestCase.java</exclude>
+                        <exclude>**/DeploymentScannerTestCase.java</exclude>
+                        <exclude>**/JdrReportManagmentTestCase.java</exclude>
+                        <exclude>**/DeployURLTestCase.java</exclude>
+                        <exclude>**/TransportGuaranteeTestCase.java</exclude>
+                        <exclude>**/ObjectFactoryWithEnvironmentBindingTestCase.java</exclude>
+                        <exclude>**/RemotingLoginModuleTestCase.java</exclude>
+                        <exclude>**/WebModuleDeploymentTestCase.java</exclude>
+                        <exclude>**/ExternalTagLibTestCase.java</exclude>
+                        <exclude>**/WeldModuleDeploymentTestCase.java</exclude>
+                        <exclude>**/ExportedModuleTestCase.java</exclude>
+                        <exclude>**/StaticModuleToDeploymentVisibilityWarTest.java</exclude>
+                        <exclude>**/StaticModuleToDeploymentVisibilityEarTest.java</exclude>
+                        <exclude>**/BuiltInBeanWithPackagePrivateConstructorTest.java</exclude>
+                        <exclude>**/PortableExtensionInExternalModuleTestCase.java</exclude>
+                        <exclude>**/MultipleJarInModuleTestCase.java</exclude>
+                        <exclude>**/CrossModuleAccessibilityTestCase.java</exclude>
+                        <exclude>**/ExtensionTestCase.java</exclude>
+                        <exclude>**/WeldBundledLibraryDeploymentEarTestCase.java</exclude>
+                        <exclude>**/WeldBundledLibraryDeploymentTestCase.java</exclude>
+                        <exclude>**/StandardConfigsXMLValidationUnitTestCase.java</exclude>
+                        <exclude>**/XSDValidationUnitTestCase.java</exclude>
+
+                        <!-- Uses a local db instance -->
+                        <exclude>**/DatabaseLoginModuleTestCase.java</exclude>
+
+                        <!-- vault tests -->
+                        <exclude>org/jboss/as/test/integration/security/vault/**</exclude>
+                        <exclude>**/MDBWithVaultedPropertiesTestCase.java</exclude>
+                        <exclude>**/VaultedInjectedJMSContextTestCase.java</exclude>
+                        <exclude>**/JMSResourceDefinitionsTestCase.java</exclude>
+
+                        <!-- uses local auth -->
+                        <exclude>**/GetCallerPrincipalTestCase.java</exclude>
+                        <exclude>**/JMXConnectorTestCase.java</exclude>
+                        <exclude>**/RemoteNamingEjbTestCase.java</exclude>
+                        <exclude>**/RemoteNamingTestCase.java</exclude>
+                        <exclude>**/JNDIBindingMBeanTestCase.java</exclude>
+                        <exclude>**/SarWithinEarTestCase.java</exclude>
+                        <exclude>**/MBeanTCCLTestCase.java</exclude>
+                        <exclude>**/SarInjectionTestCase.java</exclude>
+                        <exclude>**/DependsTestCase.java</exclude>
+                        <exclude>**/SarResourceInjectionTestCase.java</exclude>
+                        <exclude>**/ServiceMBeanSupportTestCase.java</exclude>
+
+                        <!-- unsupported subsystems -->
+                        <exclude>**/ModClusterSubsystemAddTestCase.java</exclude>
+                        <exclude>**/ResourceInjectionTestCas.java</exclude>
+                        <exclude>**/IIOPNamingTestCase.java</exclude>
+                        <exclude>**/ResourceInjectionTestCase.java</exclude>
+                        <exclude>**/IIOPNamingInContainerDDNameTestCase.java</exclude>
+                        <exclude>**/IIOPNamingInContainerTestCase.java</exclude>
+
+                        <!-- tests skipped by default -->
+                        <exclude>**/PersistentCalendarTimerManagementTestCase.java</exclude>
+                        <exclude>**/Hibernate4NativeAPINaturalIdTestCase.java</exclude>
+                        <exclude>**/MultipleMappingTestCase.java</exclude>
+                        <exclude>**/ArchiveValidationDeploymentTestCase.java</exclude>
+                        <exclude>**/OrmTestCase.java</exclude>
+                        <exclude>**/TxTimeoutTestCase.java</exclude>
+                        <exclude>**/ManagementOnlyModeTestCase.java</exclude>
+                        <exclude>**/CustomProvidersTestCase.java</exclude>
+                        <exclude>**/BeanValidationCdiIntegrationTestCase.java</exclude>
+                        <exclude>**/CustomBootstrapContextTestCase.java</exclude>
+                        <exclude>**/MySqlDsDriverInEarReauthTestCas.java</exclude>
+                        <exclude>**/LongRunningThreadsCheckTestCase.java</exclude>
+                        <exclude>**/MySqlDsDriverInEarReauthTestCase.java</exclude>
+                        <exclude>**/SAML2AttributeMappingTestCase.java</exclude>
+                        <exclude>**/SAML2BasicAuthenticationTestCase.java</exclude>
+                        <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
+                        <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
+                        <exclude>**/SAML2KerberosAuthenticationTestCase.java</exclude>
+                        <exclude>**/ScriptAssertTestCase.java</exclude>
+                        <exclude>**/SymlinkingUnitTestCase.java</exclude>
+                        <exclude>**/SocketsAndInterfacesTestCase.java</exclude>
+
+                        <!-- Makes the test hang -->
+                        <exclude>**/ServletThreadPoolSelectionTestCase.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

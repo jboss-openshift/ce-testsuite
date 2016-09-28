@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -15,13 +15,16 @@
     <!-- Artifact Configuration -->
     <artifactId>jdg65-ce-testsuite</artifactId>
     <packaging>jar</packaging>
-    <name>JDG CE Testsuite</name>
-    <description>JDG Cloud Enablement Testsuite</description>
+    <name>JDG 6.5 CE Testsuite</name>
+    <description>JDG 6.5 Cloud Enablement Testsuite</description>
+    
+    <properties>
+        <version.spymemcached>2.8.1</version.spymemcached>
+    </properties>
 
     <dependencies>
 
         <!-- Tests - add any external existing tests here -->
-
 
         <!-- TODO -->
 
@@ -103,99 +106,62 @@
         <dependency>
             <groupId>com.google.code.simple-spring-memcached</groupId>
             <artifactId>spymemcached</artifactId>
+            <version>${version.spymemcached}</version>
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.jboss.ce.testsuite</groupId>
-            <artifactId>common-ce-testsuite</artifactId>
-        </dependency>
 
     </dependencies>
 
-    <profiles>
-        <!-- Default, compile tests, but not run -->
-        <profile>
-            <id>default</id>
-
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-
-        <!-- Run tests against wildfly -->
-        <profile>
-            <id>jdg</id>
-
-            <activation>
-                <property>
-                    <name>jdg</name>
-                </property>
-            </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${version.dependency.plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>unpack-dependencies</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>org.jboss</includeGroupIds>
-                                    <includeTypes>test-jar</includeTypes>
-                                    <includeScope>test</includeScope>
-                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                                    <overWriteReleases>false</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
                         <configuration>
-                            <runOrder>alphabetical</runOrder>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <trimStackTrace>false</trimStackTrace>
-                            <forkMode>once</forkMode>
-                            <properties>
-                                <property>
-                                    <name>listener</name>
-                                    <value>org.jboss.arquillian.ce.common.FailListener</value>
-                                </property>
-                            </properties>
-                            <includes>
-                                <include>org/jboss/**/*Test.java</include>
-                            </includes>
-                            <excludes>
-                                <exclude>**/JdgQueryTest.java</exclude>
-                            </excludes>
-                            <systemPropertyVariables>
-                                <!-- Custom DNS resolver for OpenShift routes -->
-                                <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
-                                <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
-                                <kubernetes.master>${kubernetes.master}</kubernetes.master>
-                                <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
-                                <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
-                            </systemPropertyVariables>
+                            <includeGroupIds>org.jboss</includeGroupIds>
+                            <includeTypes>test-jar</includeTypes>
+                            <includeScope>test</includeScope>
+                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <runOrder>alphabetical</runOrder>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <forkMode>once</forkMode>
+                    <includes>
+                        <include>org/jboss/**/*Test.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/JdgQueryTest.java</exclude>
+                    </excludes>
+                    <systemPropertyVariables>
+                        <!-- Custom DNS resolver for OpenShift routes -->
+                        <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
+                        <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
+                        <kubernetes.master>${kubernetes.master}</kubernetes.master>
+                        <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
+                        <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
 
 

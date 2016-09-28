@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -15,7 +15,6 @@
 
     <!-- Artifact Configuration -->
     <artifactId>ce-eap-testsuite</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>CE Testsuite -- EAP testsuite</name>
@@ -24,86 +23,10 @@
 
     <modules>
         <module>common</module>
+        <module>eap64</module>
+        <module>eap70</module>
+        <module>compat</module>
+        <module>integration/eap6</module>
+        <module>integration/eap7</module>
     </modules>
-
-    <profiles>
-
-        <profile>
-            <id>all</id>
-
-            <activation>
-                <property>
-                    <name>all</name>
-                </property>
-            </activation>
-
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-
-            <modules>
-                <module>eap64</module>
-                <module>eap70</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <!-- Existing EAP tests - from testsuite (requires custom mvn build) -->
-
-            <id>testsuite</id>
-
-            <activation>
-                <property>
-                    <name>testsuite</name>
-                </property>
-            </activation>
-
-            <modules>
-                <module>compat</module>
-                <module>integration/eap6</module>
-                <!--module>integration/eap7</module-->
-            </modules>
-        </profile>
-
-        <profile>
-            <id>eap64</id>
-            <activation>
-                <property>
-                    <name>eap64</name>
-                </property>
-            </activation>
-
-            <modules>
-                <module>eap64</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>eap70</id>
-            <activation>
-                <property>
-                    <name>eap70</name>
-                </property>
-            </activation>
-
-            <modules>
-                <module>eap70</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>compat</id>
-            <activation>
-                <property>
-                    <name>compat</name>
-                </property>
-            </activation>
-
-            <modules>
-                <module>compat</module>
-            </modules>
-        </profile>
-
-    </profiles>
-
 </project>

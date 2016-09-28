@@ -86,28 +86,8 @@
             <artifactId>json-simple</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.jboss.ce.testsuite</groupId>
-            <artifactId>common-ce-testsuite</artifactId>
-        </dependency>
-
     </dependencies>
 
-    <profiles>
-        <!-- Default, compile tests, but not run -->
-        <profile>
-            <id>default</id>
-
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-
-    </profiles>
 </project>
 
 

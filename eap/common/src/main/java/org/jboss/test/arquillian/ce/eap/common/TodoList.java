@@ -21,7 +21,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.arquillian.ce.common;
+package org.jboss.test.arquillian.ce.eap.common;
 
 import java.util.HashMap;
 import java.util.Map;

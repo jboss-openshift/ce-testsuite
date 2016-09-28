@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -15,7 +15,6 @@
 
     <!-- Artifact Configuration -->
     <artifactId>ce-testsuite-eap6-integration</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>CE Testsuite -- EAP 6 testsuite Integration tests</name>
     <description>Cloud Enablement Testsuite -- EAP 6 testsuite Integration tests</description>
@@ -693,8 +692,8 @@
             <artifactId>arquillian-governor-ignore</artifactId>
         </dependency>
 
-        <!-- verify if exist a new version for the following libraries need by the
-        org.jboss.as.test.integration.sar.servicembean.ServiceMBeanSupportTestCase-->
+        <!-- verify if exist a new version for the following libraries need 
+            by the org.jboss.as.test.integration.sar.servicembean.ServiceMBeanSupportTestCase -->
         <dependency>
             <groupId>jboss</groupId>
             <artifactId>jboss-system</artifactId>
@@ -726,232 +725,235 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>eap6</id>
-            <activation>
-                <property>
-                    <name>eap6</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.5.0</version>
-                        <executions>
-                            <execution>
-                                <id>some-execution</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
+                    <execution>
+                        <id>some-execution</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>jar</executable>
+                    <arguments>
+                        <argument>uf</argument>
+                        <argument>
+                            ${user.home}/.m2/repository/org/jboss/as/jboss-as-ts-integ-basic/${version.eap6}/jboss-as-ts-integ-basic-${version.eap6}-tests.jar
+                        </argument>
+                        <argument>jboss-ejb-client.properties</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${version.dependency.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
                         <configuration>
-                            <executable>jar</executable>
-                            <arguments>
-                                <argument>uf</argument>
-                                <argument>
-                                    ${user.home}/.m2/repository/org/jboss/as/jboss-as-ts-integ-basic/${version.eap6}/jboss-as-ts-integ-basic-${version.eap6}-tests.jar
-                                </argument>
-                                <argument>jboss-ejb-client.properties</argument>
-                            </arguments>
+                            <includeGroupIds>org.jboss</includeGroupIds>
+                            <includeTypes>test-jar</includeTypes>
+                            <includeScope>test</includeScope>
+                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${version.dependency.plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>unpack-dependencies</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>org.jboss</includeGroupIds>
-                                    <includeTypes>test-jar</includeTypes>
-                                    <includeScope>test</includeScope>
-                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                                    <overWriteReleases>false</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <!--<version>${version.surefire.plugin}</version>-->
-                        <version>2.18.1</version>
-                        <configuration>
-                            <argLine>
-                                -Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${version.alpn-boot}/alpn-boot-${version.alpn-boot}.jar
-                                -Djboss.node.name=testrunner -Djboss.qualified.host.name=testrunner
-                                -Dorg.jboss.as.test.integration.remote=true
-                                -Djava.util.logging.manager=org.jboss.logmanager.LogManager
-                            </argLine>
-                            <runOrder>alphabetical</runOrder>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <trimStackTrace>false</trimStackTrace>
-                            <includes>
-                                <include>org/jboss/**/*Test.java</include>
-                                <include>org/jboss/**/*TestCase.java</include>
-                            </includes>
-                            <excludes>
-                                <!-- do filesystem operations in the host the tests are started instead the pod -->
-                                <exclude>**/AuditLogTestCase.java</exclude>
-                                <exclude>**/JmxAuditLogTestCase.java</exclude>
-                                <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
-                                <exclude>**/LdapExtLikeAdvancedLdapLMTestCase.java</exclude>
-                                <exclude>**/LdapExtLoginModuleTestCase.java</exclude>
-                                <exclude>**/LdapExtPasswordCachingTestCase.java</exclude>
-                                <exclude>**/LdapLoginModuleTestCase.java</exclude>
-                                <exclude>**/AdvancedLdapLoginModuleTestCase.java</exclude>
-                                <exclude>**/SPNEGOLoginModuleTestCase.java</exclude>
-                                <exclude>**/SAML2AttributeMappingTestCase.java</exclude>
-                                <exclude>**/SAML2KerberosAuthenticationTestCase.java</exclude>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!--<version>${version.surefire.plugin}</version> -->
+                <version>2.18.1</version>
+                <configuration>
+                    <argLine>
+                        -Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${version.alpn-boot}/alpn-boot-${version.alpn-boot}.jar
+                        -Djboss.node.name=testrunner
+                        -Djboss.qualified.host.name=testrunner
+                        -Dorg.jboss.as.test.integration.remote=true
+                        -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+                    </argLine>
+                    <runOrder>alphabetical</runOrder>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <includes>
+                        <include>org/jboss/**/*Test.java</include>
+                        <include>org/jboss/**/*TestCase.java</include>
+                    </includes>
+                    <excludes>
+                        <!-- do filesystem operations in the host the tests 
+                            are started instead the pod -->
+                        <exclude>**/AuditLogTestCase.java</exclude>
+                        <exclude>**/JmxAuditLogTestCase.java</exclude>
+                        <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
+                        <exclude>**/LdapExtLikeAdvancedLdapLMTestCase.java</exclude>
+                        <exclude>**/LdapExtLoginModuleTestCase.java</exclude>
+                        <exclude>**/LdapExtPasswordCachingTestCase.java</exclude>
+                        <exclude>**/LdapLoginModuleTestCase.java</exclude>
+                        <exclude>**/AdvancedLdapLoginModuleTestCase.java</exclude>
+                        <exclude>**/SPNEGOLoginModuleTestCase.java</exclude>
+                        <exclude>**/SAML2AttributeMappingTestCase.java</exclude>
+                        <exclude>**/SAML2KerberosAuthenticationTestCase.java</exclude>
 
-                                <!-- looks for files/directories on the localhost instead pod, it should be ignored -->
-                                <exclude>**/OverlaySymboliclinkTestCase.java</exclude>
-                                <exclude>**/CliArgumentsTestCase.java</exclude>
-                                <exclude>**/CommandsExitCodeTestCase.java</exclude>
-                                <exclude>**/DeploymentArchiveTestCase.java</exclude>
-                                <exclude>**/FileArgumentTestCase.java</exclude>
-                                <exclude>**/FileWithPropertiesTestCase.java</exclude>
-                                <exclude>**/ModuleTestCase.java</exclude>
-                                <exclude>**/ResponseAttachmentTestCase.java</exclude>
-                                <exclude>**/ModelPersistenceTestCase.java</exclude>
-                                <exclude>**/DeploymentScannerTestCase.java</exclude>
-                                <exclude>**/LoggingPerDeployFalseTestCase.java</exclude>
-                                <exclude>**/CustomHandlerTestCase.java</exclude>
-                                <exclude>**/Log4jCustomHandlerTestCase.java</exclude>
-                                <exclude>**/SizeRotatingHandlerTestCase.java</exclude>
-                                <exclude>**/GenericCommandTestCase.java</exclude>
-                                <exclude>**/NonExistingProfileTestCase.java</exclude>
-                                <exclude>**/LoggingProfilesTestCase.java</exclude>
-                                <exclude>**/LoggingPreferencesTestCase.java</exclude>
-                                <exclude>**/JBossLoggingPropertiesTestCase.java</exclude>
-                                <exclude>**/Log4jPropertiesTestCase.java</exclude>
-                                <exclude>**/Log4jXmlTestCase.java</exclude>
-                                <exclude>**/LoggingPropertiesTestCase.java</exclude>
-                                <exclude>**/ExternalTagLibTestCase.java</exclude>
-                                <exclude>**/TransportGuaranteeTestCase.java</exclude>
-                                <exclude>**/TestRequiredAddressingTestCase.java</exclude>
-                                <exclude>**/TestOptionalAddressingTestCase.java</exclude>
-                                <exclude>**/TestNoAddressingTestCase.java</exclude>
-                                <exclude>**/JBossLog4jXmlTestCase.java</exclude>
-                                <exclude>**/CertificateRolesLoginModuleTestCase.java</exclude>
-                                <exclude>**/DatabaseCertLoginModuleTestCase.java</exclude>
-                                <exclude>**/StandardConfigsXMLValidationUnitTestCase.java</exclude>
-                                <exclude>**/TestsuiteSanityTestCase.java</exclude>
-                                <exclude>**/AddMySqlDataSourceOperationsUnitTestCase.java</exclude>
-                                <exclude>**/ServerInModuleDeploymentTestCase.java</exclude>
-                                <exclude>**/XSDValidationUnitTestCase.java</exclude>
+                        <!-- looks for files/directories on the localhost 
+                            instead pod, it should be ignored -->
+                        <exclude>**/OverlaySymboliclinkTestCase.java</exclude>
+                        <exclude>**/CliArgumentsTestCase.java</exclude>
+                        <exclude>**/CommandsExitCodeTestCase.java</exclude>
+                        <exclude>**/DeploymentArchiveTestCase.java</exclude>
+                        <exclude>**/FileArgumentTestCase.java</exclude>
+                        <exclude>**/FileWithPropertiesTestCase.java</exclude>
+                        <exclude>**/ModuleTestCase.java</exclude>
+                        <exclude>**/ResponseAttachmentTestCase.java</exclude>
+                        <exclude>**/ModelPersistenceTestCase.java</exclude>
+                        <exclude>**/DeploymentScannerTestCase.java</exclude>
+                        <exclude>**/LoggingPerDeployFalseTestCase.java</exclude>
+                        <exclude>**/CustomHandlerTestCase.java</exclude>
+                        <exclude>**/Log4jCustomHandlerTestCase.java</exclude>
+                        <exclude>**/SizeRotatingHandlerTestCase.java</exclude>
+                        <exclude>**/GenericCommandTestCase.java</exclude>
+                        <exclude>**/NonExistingProfileTestCase.java</exclude>
+                        <exclude>**/LoggingProfilesTestCase.java</exclude>
+                        <exclude>**/LoggingPreferencesTestCase.java</exclude>
+                        <exclude>**/JBossLoggingPropertiesTestCase.java</exclude>
+                        <exclude>**/Log4jPropertiesTestCase.java</exclude>
+                        <exclude>**/Log4jXmlTestCase.java</exclude>
+                        <exclude>**/LoggingPropertiesTestCase.java</exclude>
+                        <exclude>**/ExternalTagLibTestCase.java</exclude>
+                        <exclude>**/TransportGuaranteeTestCase.java</exclude>
+                        <exclude>**/TestRequiredAddressingTestCase.java</exclude>
+                        <exclude>**/TestOptionalAddressingTestCase.java</exclude>
+                        <exclude>**/TestNoAddressingTestCase.java</exclude>
+                        <exclude>**/JBossLog4jXmlTestCase.java</exclude>
+                        <exclude>**/CertificateRolesLoginModuleTestCase.java</exclude>
+                        <exclude>**/DatabaseCertLoginModuleTestCase.java</exclude>
+                        <exclude>**/StandardConfigsXMLValidationUnitTestCase.java</exclude>
+                        <exclude>**/TestsuiteSanityTestCase.java</exclude>
+                        <exclude>**/AddMySqlDataSourceOperationsUnitTestCase.java</exclude>
+                        <exclude>**/ServerInModuleDeploymentTestCase.java</exclude>
+                        <exclude>**/XSDValidationUnitTestCase.java</exclude>
 
-                                <!-- we do not use jacorb subsystem -->
-                                <exclude>**/IIOPNamingInContainerTestCase.java</exclude>
-                                <exclude>**/IIOPNamingTestCase.java</exclude>
-                                <exclude>**/ResourceInjectionTestCase.java</exclude>
+                        <!-- we do not use jacorb subsystem -->
+                        <exclude>**/IIOPNamingInContainerTestCase.java</exclude>
+                        <exclude>**/IIOPNamingTestCase.java</exclude>
+                        <exclude>**/ResourceInjectionTestCase.java</exclude>
 
-                                <!-- we don't have the CMP subsystem -->
-                                <exclude>org/jboss/as/test/integration/ejb/entity/cmp/**</exclude>
-                                <exclude>org/jboss/as/test/integration/ejb/remote/entity/cmp/**</exclude>
+                        <!-- we don't have the CMP subsystem -->
+                        <exclude>org/jboss/as/test/integration/ejb/entity/cmp/**</exclude>
+                        <exclude>org/jboss/as/test/integration/ejb/remote/entity/cmp/**</exclude>
 
-                                <!-- we don't have jaxr subsystem -->
-                                <exclude>**/JaxrConnectionFactoryBindingTestCase.java</exclude>
+                        <!-- we don't have jaxr subsystem -->
+                        <exclude>**/JaxrConnectionFactoryBindingTestCase.java</exclude>
 
-                                <!-- The test below tries to manipulate modules using filesystem operations, which will fail because it looks the module path on localhost instead pod -->
-                                <exclude>**/GlobalModulesTestCase.java</exclude>
-                                <exclude>**/ExtensionRemoveTestCase.java</exclude>
-                                <exclude>**/ObjectFactoryWithEnvironmentBindingTestCase.java</exclude>
-                                <exclude>**/WeldModuleDeploymentTestCase.java</exclude>
-                                <exclude>**/BuiltInBeanWithPackagePrivateConstructorTest.java</exclude>
-                                <exclude>**/WebModuleDeploymentTestCase.java</exclude>
-                                <exclude>**/ValveUnitTestCase.java</exclude>
-                                <exclude>**/MDBWhichDependsOnTestCase.java</exclude>
-                                <exclude>**/StatelesBeanWhichDependsOnTestCase.java</exclude>
-                                <exclude>**/StatefulBeanWhichDependsOnTestCase.java</exclude>
+                        <!-- The test below tries to manipulate modules using 
+                            filesystem operations, which will fail because it looks the module path on 
+                            localhost instead pod -->
+                        <exclude>**/GlobalModulesTestCase.java</exclude>
+                        <exclude>**/ExtensionRemoveTestCase.java</exclude>
+                        <exclude>**/ObjectFactoryWithEnvironmentBindingTestCase.java</exclude>
+                        <exclude>**/WeldModuleDeploymentTestCase.java</exclude>
+                        <exclude>**/BuiltInBeanWithPackagePrivateConstructorTest.java</exclude>
+                        <exclude>**/WebModuleDeploymentTestCase.java</exclude>
+                        <exclude>**/ValveUnitTestCase.java</exclude>
+                        <exclude>**/MDBWhichDependsOnTestCase.java</exclude>
+                        <exclude>**/StatelesBeanWhichDependsOnTestCase.java</exclude>
+                        <exclude>**/StatefulBeanWhichDependsOnTestCase.java</exclude>
 
-                                <!-- Enabling audit log wasn't logged into the syslog - even if the given port is opened in the pod and forwarded -->
-                                <exclude>**/AuditLogToUDPSyslogTestCase.java</exclude>
-                                <exclude>**/AuditLogToTLSSyslogTestCase.java</exclude>
-                                <exclude>**/TLSAuditLogToTCPSyslogTestCase.java</exclude>
-                                <exclude>**/AuditLogToTCPSyslogTestCase.java</exclude>
-                                <exclude>**/SyslogHandlerTestCase.java</exclude>
+                        <!-- Enabling audit log wasn't logged into the syslog 
+                            - even if the given port is opened in the pod and forwarded -->
+                        <exclude>**/AuditLogToUDPSyslogTestCase.java</exclude>
+                        <exclude>**/AuditLogToTLSSyslogTestCase.java</exclude>
+                        <exclude>**/TLSAuditLogToTCPSyslogTestCase.java</exclude>
+                        <exclude>**/AuditLogToTCPSyslogTestCase.java</exclude>
+                        <exclude>**/SyslogHandlerTestCase.java</exclude>
 
-                                <!-- Needs a extra class to be added on classpath in the pod -->
-                                <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
+                        <!-- Needs a extra class to be added on classpath 
+                            in the pod -->
+                        <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
 
-                                <!-- it create the logs in the correct path, but the assertion looks for the file in the host where the tests are running instead to look in the pod -->
-                                <exclude>**/SecurityAuditingTestCase.java</exclude>
+                        <!-- it create the logs in the correct path, but 
+                            the assertion looks for the file in the host where the tests are running 
+                            instead to look in the pod -->
+                        <exclude>**/SecurityAuditingTestCase.java</exclude>
 
-                                <!-- this test works but it validate it the jdr was created on the host where the tests are running.
-                                 ls /opt/eap/standalone/tmp/jdr*
-                                 /opt/eap/standalone/tmp/jdr_16-04-11_11-29-46_testrunner.zip-->
-                                <exclude>**/JdrReportManagmentTestCase.java</exclude>
+                        <!-- this test works but it validate it the jdr was 
+                            created on the host where the tests are running. ls /opt/eap/standalone/tmp/jdr* 
+                            /opt/eap/standalone/tmp/jdr_16-04-11_11-29-46_testrunner.zip -->
+                        <exclude>**/JdrReportManagmentTestCase.java</exclude>
 
-                                <!-- The tests below looks for the jboss.dist property which point to a path in the localhost(where the tests are running)
-                                Ex: java.lang.Exception: AS dir from 'jboss.dist' doesn't exist: /opt/eap/ user.dir: /data/ce/ce-testsuite/eap/integration-->
-                                <exclude>**/SimpleApplicationClientTestCase.java</exclude>
+                        <!-- The tests below looks for the jboss.dist property 
+                            which point to a path in the localhost(where the tests are running) Ex: java.lang.Exception: 
+                            AS dir from 'jboss.dist' doesn't exist: /opt/eap/ user.dir: /data/ce/ce-testsuite/eap/integration -->
+                        <exclude>**/SimpleApplicationClientTestCase.java</exclude>
 
-                                <!-- vault tests -->
-                                <exclude>**/MDBWithVaultedPropertiesTestCase.java</exclude>
-                                <exclude>org/jboss/as/test/integration/security/vault/**</exclude>
+                        <!-- vault tests -->
+                        <exclude>**/MDBWithVaultedPropertiesTestCase.java</exclude>
+                        <exclude>org/jboss/as/test/integration/security/vault/**</exclude>
 
-                                <!-- Assertion always fail -->
-                                <exclude>**/ear/OverlayExistingResourceTestCase.java</exclude>
-                                <exclude>**/ear/OverlayNonExistingResourceTestCase.java</exclude>
-                                <exclude>**/war/OverlayExistingResourceTestCase.java</exclude>
-                                <exclude>**/HornetQServerManagementTestCase.java</exclude>
-                                <exclude>**/JACCForEarModulesTestCase.java</exclude>
-                                <exclude>**/JACCTranslateServletDDTestCase.java</exclude>
-                                <exclude>**/HttpSessionTest.java</exclude>
-                                <exclude>**/JACCAuthzPropagationTestCase.java</exclude>
-                                <exclude>**/WebConsoleSecurityTestCase.java</exclude>
-                                <exclude>**/DatabaseLoginModuleTestCase.java</exclude>
-                                <exclude>**/NonTransactionalEmTestCase.java</exclude>
-                                <exclude>**/UnhadledExceptionJASPITestCase.java</exclude>
-                                <exclude>**/SarValueFactoryInjectionTestCase.java</exclude>
+                        <!-- Assertion always fail -->
+                        <exclude>**/ear/OverlayExistingResourceTestCase.java</exclude>
+                        <exclude>**/ear/OverlayNonExistingResourceTestCase.java</exclude>
+                        <exclude>**/war/OverlayExistingResourceTestCase.java</exclude>
+                        <exclude>**/HornetQServerManagementTestCase.java</exclude>
+                        <exclude>**/JACCForEarModulesTestCase.java</exclude>
+                        <exclude>**/JACCTranslateServletDDTestCase.java</exclude>
+                        <exclude>**/HttpSessionTest.java</exclude>
+                        <exclude>**/JACCAuthzPropagationTestCase.java</exclude>
+                        <exclude>**/WebConsoleSecurityTestCase.java</exclude>
+                        <exclude>**/DatabaseLoginModuleTestCase.java</exclude>
+                        <exclude>**/NonTransactionalEmTestCase.java</exclude>
+                        <exclude>**/UnhadledExceptionJASPITestCase.java</exclude>
+                        <exclude>**/SarValueFactoryInjectionTestCase.java</exclude>
 
-                                <!-- java.io.IOException: Command NOOP unexpectedly read Void data with length 4. -->
-                                <exclude>**/TimeoutRedeployTestCase.java</exclude>
+                        <!-- java.io.IOException: Command NOOP unexpectedly 
+                            read Void data with length 4. -->
+                        <exclude>**/TimeoutRedeployTestCase.java</exclude>
 
-                                <!-- Failed to deploy war due missing dependencies -->
-                                <exclude>org/jboss/as/test/integration/security/passwordmasking/**</exclude>
+                        <!-- Failed to deploy war due missing dependencies -->
+                        <exclude>org/jboss/as/test/integration/security/passwordmasking/**</exclude>
 
-                                <!-- JBWS020000: Failed to load org.jboss.ws.common.spi.DefaultSPIProviderResolver -->
-                                <exclude>**/JBWS3207TestCase.java</exclude>
+                        <!-- JBWS020000: Failed to load org.jboss.ws.common.spi.DefaultSPIProviderResolver -->
+                        <exclude>**/JBWS3207TestCase.java</exclude>
 
-                                <!-- Fails even using a local eap instance -->
-                                <exclude>**/ReliableServiceTestCase.java</exclude>
-                                <exclude>**/EJBSignTestCase.java</exclude>
-                                <exclude>**/SignTestCase.java</exclude>
-                                <exclude>**/EJBSignEncryptMultipleClientsTestCase.java</exclude>
-                                <exclude>**/EJBSignEncryptTestCase.java</exclude>
-                                <exclude>**/SignEncryptMultipleClientsTestCase.java</exclude>
-                                <exclude>**/SignEncryptTestCase.java</exclude>
+                        <!-- Fails even using a local eap instance -->
+                        <exclude>**/ReliableServiceTestCase.java</exclude>
+                        <exclude>**/EJBSignTestCase.java</exclude>
+                        <exclude>**/SignTestCase.java</exclude>
+                        <exclude>**/EJBSignEncryptMultipleClientsTestCase.java</exclude>
+                        <exclude>**/EJBSignEncryptTestCase.java</exclude>
+                        <exclude>**/SignEncryptMultipleClientsTestCase.java</exclude>
+                        <exclude>**/SignEncryptTestCase.java</exclude>
 
-                                <!-- org.jboss.msc.inject.InjectionException: Injection failed -->
-                                <exclude>**/SarInjectionTestCase.java</exclude>
+                        <!-- org.jboss.msc.inject.InjectionException: Injection 
+                            failed -->
+                        <exclude>**/SarInjectionTestCase.java</exclude>
 
-                                <!-- Starts a service on localhost, and the pod can't connect on it -->
-                                <exclude>**/JMXConnectorTestCase.java</exclude>
+                        <!-- Starts a service on localhost, and the pod can't 
+                            connect on it -->
+                        <exclude>**/JMXConnectorTestCase.java</exclude>
 
-                                <!-- Looks like it does not allow you to supply credentials -->
-                                <exclude>**/TransactionObjectStoreTestCase.java</exclude>
+                        <!-- Looks like it does not allow you to supply credentials -->
+                        <exclude>**/TransactionObjectStoreTestCase.java</exclude>
 
-                                <!-- TODO verifies if is possible to provide credentials -->
-                                <exclude>**/ClientCompatibilityUnitTestCase.java</exclude>
+                        <!-- TODO verifies if is possible to provide credentials -->
+                        <exclude>**/ClientCompatibilityUnitTestCase.java</exclude>
 
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
