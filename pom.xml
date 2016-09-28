@@ -595,11 +595,11 @@
 			</modules>
 
 			<properties>
-                <version.spymemcached>2.8.1</version.spymemcached>
-                <version.junit>4.11</version.junit>
+				<version.arquillian>1.0.0.Final</version.arquillian>
 				<version.logging>3.2.1.Final</version.logging>
-                <version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
+				<version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
 				<version.org.jboss.xnio>3.3.6.Final-redhat-1</version.org.jboss.xnio>
+				<version.spymemcached>2.8.1</version.spymemcached>
 			</properties>
 
 			<dependencyManagement>
