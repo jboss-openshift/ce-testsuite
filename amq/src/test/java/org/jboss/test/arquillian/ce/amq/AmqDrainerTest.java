@@ -24,11 +24,8 @@
 package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Logger;
-
-import javax.management.ObjectName;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -68,12 +65,10 @@ import org.junit.runner.RunWith;
     @OpenShiftResource("classpath:amq-internal-imagestream.json") // custom dev imagestream; remove when multi repl image is in prod
 })
 @Replicas(1)
-public class AmqNMigrationsTest extends AmqMigrationTestBase {
+public class AmqDrainerTest extends AmqMigrationTestBase {
 
-    private static final Logger log = Logger.getLogger(AmqNMigrationsTest.class.getName());
-
-    private static final int REPLICAS = 5;
-    private static final String QUEUE_OBJECT_NAME = "org.apache.activemq:brokerName=%s,destinationName=QUEUES.FOO,destinationType=Queue,type=Broker";
+    private static final int MSGS_SIZE = 2_000;
+    private static final String MIGRATING = "Processing queue: 'QUEUES.FOO'";
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
@@ -84,44 +79,56 @@ public class AmqNMigrationsTest extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(1)
     public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.scaleDeployment("amq-test-amq", REPLICAS);
+        adapter.scaleDeployment("amq-test-amq", 2); // scale up
     }
 
     @Test
     @InSequence(2)
     public void testSendMsgs() throws Exception {
-        sendNMessages(1, 11); // 10 msgs
+        // hopfully msgs get distributed
+        for (int i = 1; i <= MSGS_SIZE; i++) {
+            sendNMessages(i, i + 1);
+        }
     }
 
     @Test
     @RunAsClient
     @InSequence(3)
-    public void testMigrate(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        final int N = 10;
+    public void testDrainer(@ArquillianResource final OpenShiftHandle adapter) throws Exception {
+        List<String> pods = adapter.getPods("amq-test-amq");
+        Assert.assertEquals(2, pods.size());
 
-        for (int i = 0; i < N; i++) {
-            List<String> pods = new ArrayList<>(adapter.getReadyPods("amq-test-amq"));
-            int pi;
-            for (pi = 0; pi < pods.size(); pi++) {
-                String pod = pods.get(pi);
-                ObjectName objectName = new ObjectName(String.format(QUEUE_OBJECT_NAME, pod));
-                Number msgCount = queryMessages(adapter, pod, objectName, "QueueSize");
-                if (msgCount.intValue() > 0) {
-                    break; // find first with some msgs
+        //
+        List<String> drainer = adapter.getPods("amq-test-drainer");
+        Assert.assertEquals(1, drainer.size());
+        final String drainerPod = drainer.get(0);
+        new Thread(new Runnable() {
+            public void run() {
+                try (InputStream stream = adapter.streamLog(drainerPod)) {
+                    StringBuilder buffer = new StringBuilder();
+                    int ch;
+                    while ((ch = stream.read()) != -1) {
+                        buffer.append((char) (ch & 0xFF));
+                        if (buffer.indexOf(MIGRATING) >= 0) {
+                            adapter.deletePod(drainerPod, -1);
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
                 }
             }
-            Assert.assertTrue("No pod with msgs!?!", pi < pods.size()); // such pod should exist
+        }).start();
 
-            log.info(String.format("Deleting pod: %s", pods.get(pi)));
-            adapter.deletePod(pods.get(pi), -1);
-        }
+        adapter.scaleDeployment("amq-test-amq", 1); // scale down
 
-        adapter.waitForReadyPods("amq-test-amq", REPLICAS);
+        // drain should kick-in in any case
+        waitForDrain(adapter, 0, true, END);
     }
 
     @Test
     @InSequence(4)
     public void testConsumeMsgs() throws Exception {
-        consumeMsgs(10);
+        consumeMsgs(MSGS_SIZE);
     }
 }

@@ -23,6 +23,7 @@
 
 package org.jboss.test.arquillian.ce.amq;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ import org.jolokia.client.request.J4pReadRequest;
  */
 public class AmqMigrationTestBase extends AmqTestBase {
 
-    private static final String END = "A-MQ draining finished";
+    protected static final String END = "A-MQ migration finished";
 
     protected void sendNMessages(int from, int to) throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
@@ -66,21 +67,35 @@ public class AmqMigrationTestBase extends AmqTestBase {
     }
 
     protected static int waitForDrain(OpenShiftHandle adapter, int p, String... parts) throws Exception {
+        return waitForDrain(adapter, p, false, parts);
+    }
+
+    protected static int waitForDrain(OpenShiftHandle adapter, int p, boolean checkIfReady, String... parts) throws Exception {
         int repeat = 20;
         while (repeat > 0) {
-            String drainLog = adapter.getLog("amq-test-drainer", null);
+            String drainLog = null;
+            if (checkIfReady) {
+                Collection<String> drainers = adapter.getReadyPods("amq-test-drainer");
+                if (drainers.size() > 0) {
+                    drainLog = adapter.getLog(drainers.iterator().next());
+                }
+            } else {
+                drainLog = adapter.getLog("amq-test-drainer", null);
+            }
 
-            for (String content : parts) {
-                int pp = drainLog.indexOf(content, p);
-                if (pp != -1) {
-                    return pp + content.length();
+            if (drainLog != null) {
+                for (String content : parts) {
+                    int pp = drainLog.indexOf(content, p);
+                    if (pp != -1) {
+                        return pp + content.length();
+                    }
                 }
             }
 
             repeat--;
             Thread.sleep(6000);
         }
-        throw new IllegalStateException("Drain not finished?!");
+        throw new IllegalStateException("Migration not finished?!");
     }
 
 }
