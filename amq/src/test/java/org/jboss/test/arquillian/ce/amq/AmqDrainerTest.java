@@ -26,6 +26,9 @@ package org.jboss.test.arquillian.ce.amq;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -67,8 +70,11 @@ import org.junit.runner.RunWith;
 @Replicas(1)
 public class AmqDrainerTest extends AmqMigrationTestBase {
 
+    private static final Logger log = Logger.getLogger(AmqDrainerTest.class.getName());
     private static final int MSGS_SIZE = 2_000;
     private static final String MIGRATING = "Processing queue: 'QUEUES.FOO'";
+    private static final String STATS = "Processing stats: 'QUEUES.FOO' -> \\[([0-9]+) / ([0-9]+)\\]";
+    private static final Pattern STATS_PATTERN = Pattern.compile(STATS);
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
@@ -104,13 +110,20 @@ public class AmqDrainerTest extends AmqMigrationTestBase {
         final String drainerPod = drainer.get(0);
         new Thread(new Runnable() {
             public void run() {
+                boolean deleted = false;
                 try (InputStream stream = adapter.streamLog(drainerPod)) {
                     StringBuilder buffer = new StringBuilder();
                     int ch;
                     while ((ch = stream.read()) != -1) {
                         buffer.append((char) (ch & 0xFF));
-                        if (buffer.indexOf(MIGRATING) >= 0) {
+
+                        if (!deleted && buffer.indexOf(MIGRATING) >= 0) {
                             adapter.deletePod(drainerPod, -1);
+                            deleted = true;
+                        }
+                        Matcher matcher = STATS_PATTERN.matcher(buffer);
+                        if (matcher.find()) {
+                            log.info(String.format("Processing stats -> %s / %s.", matcher.group(1), matcher.group(2)));
                             break;
                         }
                     }

@@ -26,12 +26,14 @@ package org.jboss.test.arquillian.ce.amq;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.management.ObjectName;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
 import org.jolokia.client.request.J4pReadRequest;
+import org.junit.Assert;
 
 /**
  * @author Ales Justin
@@ -51,9 +53,18 @@ public class AmqMigrationTestBase extends AmqTestBase {
 
     protected Set<String> consumeMsgs(int msgsSize) throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
+
         Set<String> msgs = new LinkedHashSet<>();
         client.consumeOpenWireJms(msgs, msgsSize, false);
+
+        Set<Integer> msgNumbers = new TreeSet<>();
+        for (String msg : msgs) {
+            msgNumbers.add(Integer.parseInt(msg.substring(3)));
+        }
+        Assert.assertEquals("Missing msgs: " + msgNumbers, msgsSize, msgNumbers.size()); // make sure we have all msgs
+
         while (client.consumeOpenWireJms(2000, false) != null) ; // test we don't have more msgs
+
         return msgs;
     }
 

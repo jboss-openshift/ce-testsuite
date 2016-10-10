@@ -86,7 +86,7 @@ public class AmqQueueMigrationTest extends AmqMigrationTestBase {
     @InSequence(2)
     public void testSendMsgs() throws Exception {
         // hopfully msgs get distributed
-        for (int i = 1; i < 11; i++) {
+        for (int i = 1; i <= 10; i++) {
             sendNMessages(i, i + 1);
         }
     }
