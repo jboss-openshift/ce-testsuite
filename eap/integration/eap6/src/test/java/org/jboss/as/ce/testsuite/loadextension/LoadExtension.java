@@ -21,9 +21,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.as.ce.testsuite;
+package org.jboss.as.ce.testsuite.loadextension;
 
 import org.jboss.arquillian.core.spi.LoadableExtension;
+import org.jboss.as.ce.testsuite.preparepod.PreparePod;
 
 /**
  * @author spolti
