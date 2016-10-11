@@ -31,26 +31,25 @@
         <version.org.hornetq>2.3.25.SP6-redhat-1</version.org.hornetq>
         <version.org.jboss.xnio>3.3.1.Final</version.org.jboss.xnio>
         <version.alpn-boot>8.1.7.v20160121</version.alpn-boot>
-        <ejb3.version>7.5.0.Final-redhat-21</ejb3.version>
-        <commons-lang>2.6</commons-lang>
-        <apache.lucene.version>3.6.2</apache.lucene.version>
-        <commons.io.version>2.4</commons.io.version>
-        <resteasy-jaxrs.version>2.3.12.Final-redhat-1</resteasy-jaxrs.version>
-        <jboss.as.ee.deployment.version>7.5.4.Final-redhat-4</jboss.as.ee.deployment.version>
-        <cxf-bundle-jaxrs.version>2.7.18</cxf-bundle-jaxrs.version>
-        <bouncyclastle.version>1.45</bouncyclastle.version>
-        <hornetq-jms-client.version>2.4.7.Final</hornetq-jms-client.version>
-        <hornetq-core.version>2.2.21.Final</hornetq-core.version>
-        <jboss-as-messaging.version>7.5.4.Final-redhat-4</jboss-as-messaging.version>
-        <jaxen.version>1.1.3.redhat-4</jaxen.version>
-        <h2.version>1.3.168.redhat-4</h2.version>
-        <jbossws-spi.version>2.3.1.Final-redhat-1</jbossws-spi.version>
-        <aether-impl.version>1.0.1.v20141111</aether-impl.version>
-        <!-- the version of eap testsuite and eap final version is different -->
-        <jboss-cli-version>7.5.4.Final-redhat-4</jboss-cli-version>
-        <jboss-security-version>7.5.4.Final-redhat-4</jboss-security-version>
-        <jboss.arquillian.common.version>7.5.5.Final-redhat-3</jboss.arquillian.common.version>
+        <version.log4j>1.2.17</version.log4j>
+        <version.org.jboss.as.ejb3>7.5.0.Final-redhat-21</version.org.jboss.as.ejb3>
+        <version.commons.lang>2.6</version.commons.lang>
+        <version.org.apache.lucene.analyzers>3.6.2</version.org.apache.lucene.analyzers>
+        <version.commons.io>2.4</version.commons.io>
+        <version.org.jboss.resteasy.jaxrs>2.3.12.Final-redhat-1</version.org.jboss.resteasy.jaxrs>
+        <version.jboss.as.ee.deployment>7.5.4.Final-redhat-4</version.jboss.as.ee.deployment>
+        <version.org.apache.cxf.bundle.jaxrs>2.7.18</version.org.apache.cxf.bundle.jaxrs>
+        <version.org.bouncycastle.bcprov.jdk16>1.45</version.org.bouncycastle.bcprov.jdk16>
+        <version.org.hornetq.core>2.2.21.Final</version.org.hornetq.core>
+        <version.org.jboss.as.messaging>7.5.4.Final-redhat-4</version.org.jboss.as.messaging>
+        <version.jaxen>1.1.3.redhat-4</version.jaxen>
+        <version.com.h2database>1.3.168.redhat-4</version.com.h2database>
+        <version.org.jboss.ws.jbossws.spi>2.3.1.Final-redhat-1</version.org.jboss.ws.jbossws.spi>
+        <version.org.jboss.as.cli>7.5.4.Final-redhat-4</version.org.jboss.as.cli>
+        <version.org.jboss.as.security>7.5.4.Final-redhat-4</version.org.jboss.as.security>
+        <version.org.jboss.as.arquillian.common>7.5.5.Final-redhat-3</version.org.jboss.as.arquillian.common>
         <version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
+        <version.org.apache.cxf.rt.ws.rm>3.0.4</version.org.apache.cxf.rt.ws.rm>
     </properties>
 
     <dependencyManagement>
@@ -60,7 +59,7 @@
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-ts-integ-basic</artifactId>
                 <type>test-jar</type>
-                <version>${version.eap}</version>
+                <version>${version.eap6}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>*</groupId>
@@ -73,7 +72,7 @@
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-ts-integ-smoke</artifactId>
                 <type>test-jar</type>
-                <version>${version.eap}</version>
+                <version>${version.eap6}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>*</groupId>
@@ -85,7 +84,7 @@
             <dependency>
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-testsuite-shared</artifactId>
-                <version>${version.eap}</version>
+                <version>${version.eap6}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -105,7 +104,7 @@
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-cli</artifactId>
                 <scope>test</scope>
-                <version>${jboss-cli-version}</version>
+                <version>${version.org.jboss.as.cli}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.jboss.xnio</groupId>
@@ -117,14 +116,21 @@
             <dependency>
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-security</artifactId>
-                <version>${jboss-security-version}</version>
+                <version>${version.org.jboss.as.security}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-arquillian-common</artifactId>
-                <version>${jboss.arquillian.common.version}</version>
+                <version>${version.org.jboss.as.arquillian.common}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-web</artifactId>
+                <version>${version.eap6}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -195,58 +201,70 @@
             <dependency>
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-ejb3</artifactId>
-                <version>${ejb3.version}</version>
+                <version>${version.org.jboss.as.ejb3}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>${commons-lang}</version>
+                <version>${version.commons.lang}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-analyzers</artifactId>
-                <version>${apache.lucene.version}</version>
+                <version>${version.org.apache.lucene.analyzers}</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>${commons.io.version}</version>
+                <version>${version.commons.io}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
-                <version>${resteasy-jaxrs.version}</version>
+                <version>${version.org.jboss.resteasy.jaxrs}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-ee-deployment</artifactId>
-                <version>${jboss.as.ee.deployment.version}</version>
+                <version>${version.jboss.as.ee.deployment}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-model-test</artifactId>
-                <version>${version.eap}</version>
+                <version>${version.eap6}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-messaging</artifactId>
-                <version>${jboss-as-messaging.version}</version>
+                <version>${version.org.jboss.as.messaging}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-connector</artifactId>
+                <version>${version.eap6}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-core-model-test-framework</artifactId>
+                <version>${version.eap6}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-bundle-jaxrs</artifactId>
-                <version>${cxf-bundle-jaxrs.version}</version>
+                <version>${version.org.apache.cxf.bundle.jaxrs}</version>
             </dependency>
 
             <dependency>
@@ -259,7 +277,7 @@
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk16</artifactId>
-                <version>${bouncyclastle.version}</version>
+                <version>${version.org.bouncycastle.bcprov.jdk16}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -274,6 +292,13 @@
                 <groupId>org.apache.directory.server</groupId>
                 <artifactId>apacheds-server-annotations</artifactId>
                 <version>${apacheds-server-annotations.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-ws-rm</artifactId>
+                <version>${version.org.apache.cxf.rt.ws.rm}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -311,41 +336,34 @@
             <dependency>
                 <groupId>org.hornetq</groupId>
                 <artifactId>hornetq-core</artifactId>
-                <version>${hornetq-core.version}</version>
+                <version>${version.org.hornetq.core}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>jaxen</groupId>
                 <artifactId>jaxen</artifactId>
-                <version>${jaxen.version}</version>
+                <version>${version.jaxen}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
+                <version>${version.com.h2database}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.ws</groupId>
                 <artifactId>jbossws-spi</artifactId>
-                <version>${jbossws-spi.version}</version>
+                <version>${version.org.jboss.ws.jbossws.spi}</version>
             </dependency>
 
-            <!-- arquillian chamaleon depenencies -->
-            <!--dependency>
-                <groupId>org.arquillian.container</groupId>
-                <artifactId>arquillian-container-chameleon</artifactId>
-                <version>1.0.0.Alpha6</version>
-                <scope>test</scope>
-            </dependency>
-
+            <!-- log4j -->
             <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-impl</artifactId>
-                <version>${aether-impl.version}</version>
-            </dependency-->
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${version.log4j}</version>
+            </dependency>
 
             <!-- arquillian governor -->
             <dependency>
@@ -375,7 +393,6 @@
         </dependency>
 
         <!-- Tests - add any external existing tests here -->
-
         <dependency>
             <groupId>org.jboss.ce.testsuite</groupId>
             <artifactId>tests-ce-testsuite</artifactId>
@@ -394,6 +411,7 @@
             <type>test-jar</type>
         </dependency>
 
+        <!-- EAP testunit deps -->
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-testsuite-shared</artifactId>
@@ -415,7 +433,10 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- EAP testunit deps -->
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-web</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.jboss.xnio</groupId>
@@ -503,30 +524,20 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <version>${hamcrest.library.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-connector</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-core-model-test-framework</artifactId>
+        </dependency>
+
 
         <!-- hornetq dependencies -->
         <dependency>
@@ -569,6 +580,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-rm</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-analyzers</artifactId>
         </dependency>
@@ -596,6 +612,12 @@
         <dependency>
             <groupId>org.apache.directory.server</groupId>
             <artifactId>apacheds-server-annotations</artifactId>
+        </dependency>
+
+        <!-- log4j -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
         </dependency>
 
         <!-- Arquillian dependencies -->
@@ -665,39 +687,79 @@
             <artifactId>arquillian-testenricher-initialcontext</artifactId>
         </dependency>
 
-
-        <!-- arquillian chamaleon depenencies -->
-        <!--dependency>
-            <groupId>org.arquillian.container</groupId>
-            <artifactId>arquillian-container-chameleon</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-impl</artifactId>
-        </dependency-->
-
         <!-- arquillian governor -->
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-governor-ignore</artifactId>
         </dependency>
 
-    </dependencies>
+        <!-- verify if exist a new version for the following libraries need by the
+        org.jboss.as.test.integration.sar.servicembean.ServiceMBeanSupportTestCase-->
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-system</artifactId>
+            <version>4.2.3.GA</version>
+        </dependency>
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-jmx</artifactId>
+            <version>4.2.3.GA</version>
+        </dependency>
 
+        <!-- Junit -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
 
     <profiles>
         <profile>
             <id>eap6</id>
-
             <activation>
                 <property>
                     <name>eap6</name>
                 </property>
             </activation>
-
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>some-execution</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>jar</executable>
+                            <arguments>
+                                <argument>uf</argument>
+                                <argument>
+                                    ${user.home}/.m2/repository/org/jboss/as/jboss-as-ts-integ-basic/${version.eap6}/jboss-as-ts-integ-basic-${version.eap6}-tests.jar
+                                </argument>
+                                <argument>jboss-ejb-client.properties</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
@@ -723,13 +785,14 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
+                        <!--<version>${version.surefire.plugin}</version>-->
+                        <version>2.18.1</version>
                         <configuration>
                             <argLine>
                                 -Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${version.alpn-boot}/alpn-boot-${version.alpn-boot}.jar
                                 -Djboss.node.name=testrunner -Djboss.qualified.host.name=testrunner
-                                -Dorg.jboss.remoting-jmx.timeout=120
-                                -Dorg.jboss.arquillian.portforwarder.timeout=2400000
+                                -Dorg.jboss.as.test.integration.remote=true
+                                -Djava.util.logging.manager=org.jboss.logmanager.LogManager
                             </argLine>
                             <runOrder>alphabetical</runOrder>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -739,15 +802,9 @@
                                 <include>org/jboss/**/*TestCase.java</include>
                             </includes>
                             <excludes>
-                                <!-- The tests try to create a local file using the File API, it will not work -->
+                                <!-- do filesystem operations in the host the tests are started instead the pod -->
                                 <exclude>**/AuditLogTestCase.java</exclude>
                                 <exclude>**/JmxAuditLogTestCase.java</exclude>
-                                <!-- Use extra ports -->
-                                <exclude>**/AuditLogToUDPSyslogTestCase.java</exclude>
-                                <exclude>**/AuditLogToTLSSyslogTestCase.java</exclude>
-                                <exclude>**/TLSAuditLogToTCPSyslogTestCase.java</exclude>
-                                <exclude>**/SyslogHandlerTestCase.java</exclude>
-                                <exclude>**/ConnectorTestCase.java</exclude>
                                 <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
                                 <exclude>**/LdapExtLikeAdvancedLdapLMTestCase.java</exclude>
                                 <exclude>**/LdapExtLoginModuleTestCase.java</exclude>
@@ -757,27 +814,9 @@
                                 <exclude>**/SPNEGOLoginModuleTestCase.java</exclude>
                                 <exclude>**/SAML2AttributeMappingTestCase.java</exclude>
                                 <exclude>**/SAML2KerberosAuthenticationTestCase.java</exclude>
-                                <!-- it create the logs in the correct path, but the assertion looks for the file in the host where the tests are running instead
-                                to look in the pod -->
-                                <exclude>**/SecurityAuditingTestCase.java</exclude>
-                                <!-- THe tests below looks for the jboss.dist property which point to a path in the localhost(where the tests are running)
-                                 Ex: java.lang.Exception: AS dir from 'jboss.dist' doesn't exist: /opt/eap/ user.dir: /data/ce/ce-testsuite/eap/integration-->
-                                <exclude>**/SimpleApplicationClientTestCase.java</exclude>
-                                <!-- The test below tries to manipulate modules using filesystem operations, which will fail because it looks the module path
-                                 on localhost instead pod -->
-                                <exclude>**/GlobalModulesTestCase.java</exclude>
-                                <exclude>**/ExtensionRemoveTestCase.java</exclude>
-                                <exclude>**/ObjectFactoryWithEnvironmentBindingTestCase.java</exclude>
-                                <exclude>**/WebModuleDeploymentTestCase.java</exclude>
-                                <exclude>**/WeldModuleDeploymentTestCase.java</exclude>
-                                <exclude>**/BuiltInBeanWithPackagePrivateConstructorTest.java</exclude>
-                                <exclude>**/ValveUnitTestCase.java</exclude>
-                                <!-- The below tests needs a pre installed module -->
-                                <exclude>**/StatelesBeanWhichDependsOnTestCase.java</exclude>
-                                <exclude>**/StatefulBeanWhichDependsOnTestCase.java</exclude>
-                                <exclude>**/MDBWhichDependsOnTestCase.java</exclude>
-                                <!-- The tests below looks for the module.path and other files on the localhost instead pod, it should be ignored -->
-                                <exclude>**/CliScriptTestBase.java</exclude>
+
+                                <!-- looks for files/directories on the localhost instead pod, it should be ignored -->
+                                <exclude>**/OverlaySymboliclinkTestCase.java</exclude>
                                 <exclude>**/CliArgumentsTestCase.java</exclude>
                                 <exclude>**/CommandsExitCodeTestCase.java</exclude>
                                 <exclude>**/DeploymentArchiveTestCase.java</exclude>
@@ -785,7 +824,6 @@
                                 <exclude>**/FileWithPropertiesTestCase.java</exclude>
                                 <exclude>**/ModuleTestCase.java</exclude>
                                 <exclude>**/ResponseAttachmentTestCase.java</exclude>
-                                <exclude>**/AuditLogToTLSSyslogTestCase.java</exclude>
                                 <exclude>**/ModelPersistenceTestCase.java</exclude>
                                 <exclude>**/DeploymentScannerTestCase.java</exclude>
                                 <exclude>**/LoggingPerDeployFalseTestCase.java</exclude>
@@ -805,68 +843,89 @@
                                 <exclude>**/TestRequiredAddressingTestCase.java</exclude>
                                 <exclude>**/TestOptionalAddressingTestCase.java</exclude>
                                 <exclude>**/TestNoAddressingTestCase.java</exclude>
+                                <exclude>**/JBossLog4jXmlTestCase.java</exclude>
+                                <exclude>**/CertificateRolesLoginModuleTestCase.java</exclude>
+                                <exclude>**/DatabaseCertLoginModuleTestCase.java</exclude>
+                                <exclude>**/StandardConfigsXMLValidationUnitTestCase.java</exclude>
+                                <exclude>**/TestsuiteSanityTestCase.java</exclude>
+                                <exclude>**/AddMySqlDataSourceOperationsUnitTestCase.java</exclude>
+                                <exclude>**/ServerInModuleDeploymentTestCase.java</exclude>
+                                <exclude>**/XSDValidationUnitTestCase.java</exclude>
+
                                 <!-- we do not use jacorb subsystem -->
                                 <exclude>**/IIOPNamingInContainerTestCase.java</exclude>
                                 <exclude>**/IIOPNamingTestCase.java</exclude>
                                 <exclude>**/ResourceInjectionTestCase.java</exclude>
-                                <!-- The following tests set the EJB client properties in runtime, which will lead the test to fail due unsuccessful auth -->
-                                <exclude>**/MapBasedInitialContextEjbClientTestCase.java</exclude>
-                                <exclude>**/RemoteNamingEjbTestCase.java</exclude>
-                                <exclude>**/RemoteNamingTestCase.java</exclude>
-                                <!-- The following test tries to download internal stuffs from download.lab.bos.redhat.com -->
-                                <exclude>**/ClientCompatibilityUnitTestCase.java</exclude>
-                                <!-- The vault configuration is not configured in the contaiener -->
-                                <exclude>**/MDBWithVaultedPropertiesTestCase.java</exclude>
-                                <!-- Needs JMX auth or $local auth-->
-                                <exclude>**/ModelControllerMBeanTestCase.java</exclude>
-                                <exclude>**/TransactionObjectStoreTestCase.java</exclude>
-                                <exclude>**/JMXConnectorTestCase.java</exclude>
-                                <exclude>**/JMXPropertyEditorsTestCase.java</exclude>
-                                <exclude>org/simjboss/as/test/integration/sar/**</exclude>
-                                <exclude>**/GetCallerPrincipalTestCase.java</exclude>
-                                <exclude>**/SarWithinEarTestCase.java</exclude>
-                                <exclude>**/SarInjectionTestCase.java</exclude>
-                                <exclude>**/SarResourceInjectionTestCase.java</exclude>
-                                <exclude>**/MBeanTCCLTestCase.java</exclude>
+
                                 <!-- we don't have the CMP subsystem -->
                                 <exclude>org/jboss/as/test/integration/ejb/entity/cmp/**</exclude>
                                 <exclude>org/jboss/as/test/integration/ejb/remote/entity/cmp/**</exclude>
+
                                 <!-- we don't have jaxr subsystem -->
                                 <exclude>**/JaxrConnectionFactoryBindingTestCase.java</exclude>
+
+                                <!-- The test below tries to manipulate modules using filesystem operations, which will fail because it looks the module path on localhost instead pod -->
+                                <exclude>**/GlobalModulesTestCase.java</exclude>
+                                <exclude>**/ExtensionRemoveTestCase.java</exclude>
+                                <exclude>**/ObjectFactoryWithEnvironmentBindingTestCase.java</exclude>
+                                <exclude>**/WeldModuleDeploymentTestCase.java</exclude>
+                                <exclude>**/BuiltInBeanWithPackagePrivateConstructorTest.java</exclude>
+                                <exclude>**/WebModuleDeploymentTestCase.java</exclude>
+                                <exclude>**/ValveUnitTestCase.java</exclude>
+                                <exclude>**/MDBWhichDependsOnTestCase.java</exclude>
+                                <exclude>**/StatelesBeanWhichDependsOnTestCase.java</exclude>
+                                <exclude>**/StatefulBeanWhichDependsOnTestCase.java</exclude>
+
+                                <!-- Enabling audit log wasn't logged into the syslog - even if the given port is opened in the pod and forwarded -->
+                                <exclude>**/AuditLogToUDPSyslogTestCase.java</exclude>
+                                <exclude>**/AuditLogToTLSSyslogTestCase.java</exclude>
+                                <exclude>**/TLSAuditLogToTCPSyslogTestCase.java</exclude>
+                                <exclude>**/AuditLogToTCPSyslogTestCase.java</exclude>
+                                <exclude>**/SyslogHandlerTestCase.java</exclude>
+
+                                <!-- Needs a extra class to be added on classpath in the pod -->
+                                <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
+
+                                <!-- it create the logs in the correct path, but the assertion looks for the file in the host where the tests are running instead to look in the pod -->
+                                <exclude>**/SecurityAuditingTestCase.java</exclude>
+
                                 <!-- this test works but it validate it the jdr was created on the host where the tests are running.
                                  ls /opt/eap/standalone/tmp/jdr*
                                  /opt/eap/standalone/tmp/jdr_16-04-11_11-29-46_testrunner.zip-->
                                 <exclude>**/JdrReportManagmentTestCase.java</exclude>
-                                <!-- tries to create a file in a nonexistent directory -->
-                                <exclude>**/JBossLog4jXmlTestCase.java</exclude>
+
+                                <!-- The tests below looks for the jboss.dist property which point to a path in the localhost(where the tests are running)
+                                Ex: java.lang.Exception: AS dir from 'jboss.dist' doesn't exist: /opt/eap/ user.dir: /data/ce/ce-testsuite/eap/integration-->
+                                <exclude>**/SimpleApplicationClientTestCase.java</exclude>
+
+                                <!-- vault tests -->
+                                <exclude>**/MDBWithVaultedPropertiesTestCase.java</exclude>
+                                <exclude>org/jboss/as/test/integration/security/vault/**</exclude>
+
                                 <!-- Assertion always fail -->
+                                <exclude>**/ear/OverlayExistingResourceTestCase.java</exclude>
+                                <exclude>**/ear/OverlayNonExistingResourceTestCase.java</exclude>
+                                <exclude>**/war/OverlayExistingResourceTestCase.java</exclude>
+                                <exclude>**/HornetQServerManagementTestCase.java</exclude>
                                 <exclude>**/JACCForEarModulesTestCase.java</exclude>
                                 <exclude>**/JACCTranslateServletDDTestCase.java</exclude>
-                                <exclude>**/TimeoutRedeployTestCase.java</exclude>
-                                <exclude>**/DeployedXmlDataSourceTestCase.java</exclude>
-                                <exclude>**/DuplicateGlobalBindingInjectionTestCase.java</exclude>
-                                <exclude>**/HornetQServerManagementTestCase.java</exclude>
                                 <exclude>**/HttpSessionTest.java</exclude>
-                                <!-- java.lang.RuntimeException: Could not invoke deployment method... -->
-                                <exclude>org/jboss/as/test/integration/security/jaspi/**</exclude>
-                                <exclude>**/ServiceMBeanSupportTestCase.java</exclude>
-                                <exclude>**/ContextHandlerEndpointTestCase.java</exclude>
-                                <exclude>**/EjbEndpointInsideWarTestCase.java</exclude>
-                                <exclude>**/InjectionTestCase.java</exclude>
-                                <exclude>**/ReliableServiceWithRMTxStoreTestCase.java</exclude>
-                                <!-- Vault is not configured -->
-                                <exclude>org/jboss/as/test/integration/security/vault/**</exclude>
-                                <!-- The tests below hangs or fail. Todo: find the reason -->
-                                <exclude>**/PassivationSucceedsUnitTestCase.java</exclude>
                                 <exclude>**/JACCAuthzPropagationTestCase.java</exclude>
                                 <exclude>**/WebConsoleSecurityTestCase.java</exclude>
-                                <!-- Failed to deploy war due missing dependencies -->
-                                <exclude>**/CertificateRolesLoginModuleTestCase.java</exclude>
-                                <exclude>**/DatabaseCertLoginModuleTestCase.java</exclude>
-                                <exclude>**/MappedNameInjectionTestCase.java</exclude>
-                                <exclude>org/jboss/as/test/integration/security/passwordmasking/**</exclude>
-                                <!-- Uses in memory database -->
                                 <exclude>**/DatabaseLoginModuleTestCase.java</exclude>
+                                <exclude>**/NonTransactionalEmTestCase.java</exclude>
+                                <exclude>**/UnhadledExceptionJASPITestCase.java</exclude>
+                                <exclude>**/SarValueFactoryInjectionTestCase.java</exclude>
+
+                                <!-- java.io.IOException: Command NOOP unexpectedly read Void data with length 4. -->
+                                <exclude>**/TimeoutRedeployTestCase.java</exclude>
+
+                                <!-- Failed to deploy war due missing dependencies -->
+                                <exclude>org/jboss/as/test/integration/security/passwordmasking/**</exclude>
+
+                                <!-- JBWS020000: Failed to load org.jboss.ws.common.spi.DefaultSPIProviderResolver -->
+                                <exclude>**/JBWS3207TestCase.java</exclude>
+
                                 <!-- Fails even using a local eap instance -->
                                 <exclude>**/ReliableServiceTestCase.java</exclude>
                                 <exclude>**/EJBSignTestCase.java</exclude>
@@ -875,10 +934,19 @@
                                 <exclude>**/EJBSignEncryptTestCase.java</exclude>
                                 <exclude>**/SignEncryptMultipleClientsTestCase.java</exclude>
                                 <exclude>**/SignEncryptTestCase.java</exclude>
-                                <!-- 4 tests are ignored and the last throws NPE -->
-                                <exclude>**/PojoEndpointAuthenticationTestCase.java</exclude>
-                                <!-- JBWS020000: Failed to load org.jboss.ws.common.spi.DefaultSPIProviderResolver -->
-                                <exclude>**/JBWS3207TestCase.java</exclude>
+
+                                <!-- org.jboss.msc.inject.InjectionException: Injection failed -->
+                                <exclude>**/SarInjectionTestCase.java</exclude>
+
+                                <!-- Starts a service on localhost, and the pod can't connect on it -->
+                                <exclude>**/JMXConnectorTestCase.java</exclude>
+
+                                <!-- Looks like it does not allow you to supply credentials -->
+                                <exclude>**/TransactionObjectStoreTestCase.java</exclude>
+
+                                <!-- TODO verifies if is possible to provide credentials -->
+                                <exclude>**/ClientCompatibilityUnitTestCase.java</exclude>
+
                             </excludes>
                         </configuration>
                     </plugin>

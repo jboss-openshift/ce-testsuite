@@ -28,7 +28,7 @@
 		<version.arquillian>1.1.11.Final</version.arquillian>
 		<version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
 		<version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
-		<version.eap>7.5.5.Final-redhat-SNAPSHOT</version.eap> <!--eap 6.4.5/6 -->
+		<version.eap6>7.5.11.Final-redhat-SNAPSHOT</version.eap6> <!--eap 6.4.10/11 -->
 		<version.eap7>7.0.0.GA-redhat-2</version.eap7> <!-- eap-7.0.0-->
 		<org.jboss.bom.version>7.0.0.GA</org.jboss.bom.version>
 		<version.junit>4.12</version.junit>

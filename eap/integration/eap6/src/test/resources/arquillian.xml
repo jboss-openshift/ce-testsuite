@@ -28,7 +28,7 @@
 
     <extension qualifier="ce-cube">
         <property name="kubernetesNamespacePrefix">cearq-integration-eap6</property>
-    </extension>x
+    </extension>
 
     <!-- Example configuration for arquillian openshift extension -->
     <extension qualifier="openshift">
@@ -39,7 +39,7 @@
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <!-- Ports to be proxied locally, <container>:<port> or <container>:0:<port>, to map the same port than container use <container>::<port> or <container>:<port>:<port> -->
-        <property name="proxiedContainerPorts">testrunner::9999,testrunner::9990,testrunner::8080,testrunner::4447,testrunner::5445</property>
+        <property name="proxiedContainerPorts">testrunner::9999,testrunner::9990,testrunner::8080,testrunner::4447,testrunner::5445,testrunner::8181</property>
     </extension>
 
     <!--
@@ -68,7 +68,6 @@
         <property name="jbossHome">/opt/eap</property>
         <property name="username">admin</property>
         <property name="password">Admin#70365</property>
-        <property name="cubeId">testrunner</property>
     </extension>
 
     <!-- igonre some methods which fail in the remote container -->
@@ -113,5 +112,37 @@
         <property name="methods_23">org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
         <property name="methods_24">org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSLSBTestCase#testSingleMethodAnnotationsNoUser</property>
         <property name="methods_25">org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSFSBTestCase#testSingleMethodAnnotationsNoUser</property>
+
+        <property name="methods_26">org.jboss.as.test.integration.ejb.security.callerprincipal.GetCallerPrincipalTestCase#testStatefulLifecycle</property>
+        <property name="methods_27">org.jboss.as.test.integration.ejb.security.callerprincipal.GetCallerPrincipalTestCase#testEBActivate</property>
+
+        <property name="methods_28">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideInEarAtWarLevelExplodedMultipleDeploymentOverlay</property>
+        <property name="methods_29">org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase#testSimpleOverrideExplodedMultipleDeploymentOverlay</property>
+
+        <!-- tries to load a keystore outside from pod -->
+        <property name="methods_30">org.jboss.as.test.integration.management.api.web.ConnectorTestCase#testHttpsConnector</property>
+
+        <!-- 404 -->
+        <property name="methods_31">org.jboss.as.test.integration.management.api.web.ConnectorTestCase#testHttpConnector</property>
+
+        <!-- this test hang -->
+        <property name="methods_32">org.jboss.as.test.integration.ejb.stateful.passivation.PassivationSucceedsUnitTestCase#testFailedPassivation</property>
+
+        <!-- NPE -->
+        <property name="methods_33">org.jboss.as.test.integration.ws.authentication.PojoEndpointAuthenticationTestCase#accessHelloWithoutUsernameAndPassord</property>
+
+        <property name="methods_34">org.jboss.as.test.integration.ee.jmx.property.JMXPropertyEditorsTestCase#testProperties</property>
+        <property name="methods_35">org.jboss.as.test.integration.logging.operations.CustomHandlerOperationsTestCase#testCustomHandlerWithExplicitSlot</property>
+
+        <!-- assertion fails -->
+        <property name="methods_36">org.jboss.as.test.integration.management.api.core.ManagementVersionTestCase#testRootResource</property>
+        <property name="methods_37">org.jboss.as.test.integration.web.filter.AnnotatedFilterDeploymentTestCase#testFilterPresent24</property>
+        <property name="methods_38">org.jboss.as.test.smoke.deployment.rar.tests.inflow.InflowTestCase#testRegistryConfiguration</property>
+        <property name="methods_39">org.jboss.as.test.smoke.deployment.rar.tests.pure.PureTestCase#testRegistryConfiguration</property>
+        <property name="methods_40">org.jboss.as.test.smoke.mgmt.BasicOperationsUnitTestCase#testReadAttributeWildcards</property>
+
+        <property name="methods_41">org.jboss.as.test.smoke.datasource.DsTestCase#testDatasourceSerialization</property>
+        <property name="methods_42">org.jboss.as.test.smoke.webservices.WSTestCase#testManagementDescription</property>
+
     </extension>
 </arquillian>

@@ -110,7 +110,7 @@ ___
 EAP integration will run all integration tests from EAP project.
 The reason to perform these tests is to make sure all of basic EAP's functionality are properly working in a containerized envorironment.
 For this tests we are using EAP 6.4.5 and EAP 7.0.0.GA
-To be able to run this tests you may have to download the [source coude](https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=40901&product=appplatform&version=6.4&downloadType=patches) and build the needed dependencies. To build the dependencies please follow the steps below:
+To be able to run this tests you may have to download the [source code](https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=40901&product=appplatform&version=6.4&downloadType=patches) and build the needed dependencies. To build the dependencies please follow the steps below:
 
 **Note**, remember to choose the correct version of EAP 6 or 7.
 
@@ -141,7 +141,7 @@ To make the JBoss CLI tests work, we need to change the jboss-as-testsuite-share
 
 ## EAP6 needed changes:
 
-In the files **"$EAP6_SOURCES/testsuite/integration/basic/src/test/resources/jboss-ejb-client.properties** add the following content in the end of the file:
+In the file **"$EAP6_SOURCES/testsuite/integration/basic/src/test/resources/jboss-ejb-client.properties** add the following content in the end of the file:
 
 ```sh
 remote.connection.default.username=guest
@@ -276,8 +276,8 @@ cd $EAP_SRC/testsuite/integration/basic && mvn clean install -DskipTests
 
 The above command will generate the required jars, which are:
 
-  - $EAP_SRC/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar
-  - $EAP_SRC/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.5.5.Final-redhat-SNAPSHOT-tests.jar
+  - $EAP_SRC/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.11.5.Final-redhat-SNAPSHOT-tests.jar
+  - $EAP_SRC/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.11.5.Final-redhat-SNAPSHOT-tests.jar
  
  **Note** for EAP7 the file name will start with **wildfly-**, example: **wildfly-ts-integ-basic-7.0.0.GA-redhat-2-tests.jar**. If you are building EAP7 remember to change the file name in the steps below.
 
@@ -300,8 +300,8 @@ $ mvn clean install -DskipTests
 After all steps above install the needed jars:
 
 ```sh
-mvn install:install-file -Dfile=/sources/jboss-eap-6.4.5-src/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-basic -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
-mvn install:install-file -Dfile=/sources/jboss-eap-6.4.5-src/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.5.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-smoke -Dversion=7.5.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
+mvn install:install-file -Dfile=/sources/jboss-eap-6.4.5-src/testsuite/integration/basic/target/jboss-as-ts-integ-basic-7.11.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-basic -Dversion=7.11.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
+mvn install:install-file -Dfile=/sources/jboss-eap-6.4.5-src/testsuite/integration/smoke/target/jboss-as-ts-integ-smoke-7.11.5.Final-redhat-SNAPSHOT-tests.jar -DgroupId=org.jboss.as -DartifactId=jboss-as-ts-integ-smoke -Dversion=7.11.5.Final-redhat-SNAPSHOT -Dpackaging=test-jar
 ```
 
 For EAP 7, we also need to install the dependencies below:
@@ -325,7 +325,7 @@ mvn clean test -Peap6|eap7 -Dkubernetes.master=https://openshift-master.mydomain
 
 If you are going to use a newer EAP version, remember to change parent pom.xml according EAP version that you are using:
 ```java
-<version.eap>7.5.5.Final-redhat-SNAPSHOT</version.eap>
+<version.eap6>7.11.5.Final-redhat-SNAPSHOT</version.eap6>
 <version.eap7>7.0.0.GA-redhat-2</version.eap7>
 ```
 Also remember to change the EAP related stuff versions like CLI.

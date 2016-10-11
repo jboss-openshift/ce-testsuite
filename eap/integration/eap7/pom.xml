@@ -1032,7 +1032,6 @@
                                     <includeTypes>test-jar</includeTypes>
                                     <includeScope>test</includeScope>
                                     <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-
                                 </configuration>
                             </execution>
                         </executions>
