@@ -24,7 +24,8 @@
 package org.jboss.test.arquillian.ce.amq.support;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jms.Connection;
@@ -110,7 +111,7 @@ public class AmqClient {
         }
     }
 
-    public void consumeOpenWireJms(Set<String> msgs, int size, boolean isSecured) throws Exception {
+    public void consumeOpenWireJms(List<String> msgs, int size, boolean isSecured) throws Exception {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(isSecured);
@@ -153,7 +154,7 @@ public class AmqClient {
         }
     }
 
-    public void produceOpenWireJms(Set<String> msgs, boolean isSecured) throws Exception {
+    public void produceOpenWireJms(List<String> msgs, boolean isSecured) throws Exception {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(isSecured);
@@ -256,7 +257,7 @@ public class AmqClient {
         }
     }
 
-    public void createTopicSubscriber() throws Exception {
+    public void createTopicSubscriber(String subscriptionName) throws Exception {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(false);
@@ -267,7 +268,7 @@ public class AmqClient {
 
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Topic tFoo = session.createTopic("TOPICS.FOO");
-            TopicSubscriber subscriber = session.createDurableSubscriber(tFoo, "SUB.NAME");
+            TopicSubscriber subscriber = session.createDurableSubscriber(tFoo, subscriptionName);
             subscriber.close();
         } finally {
             close(conn);
@@ -291,7 +292,7 @@ public class AmqClient {
         }
     }
 
-    public String consumeTopic() throws Exception {
+    public List<String> consumeTopic(int N, String subscriptionName) throws Exception {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(false);
@@ -302,8 +303,15 @@ public class AmqClient {
 
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Topic tFoo = session.createTopic("TOPICS.FOO");
-            MessageConsumer subscriber = session.createDurableSubscriber(tFoo, "SUB.NAME");
-            return ((TextMessage) subscriber.receive()).getText();
+            MessageConsumer subscriber = session.createDurableSubscriber(tFoo, subscriptionName);
+            log.info("Sub: " + subscriptionName);
+            List<String> msgs = new ArrayList<>();
+            while (N > 0) {
+                log.info("N --> " + N);
+                msgs.add(((TextMessage) subscriber.receive()).getText());
+                N--;
+            }
+            return msgs;
         } finally {
             close(conn);
         }

@@ -25,8 +25,8 @@ package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
 import java.util.List;
-
-import javax.management.ObjectName;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -69,7 +69,9 @@ import org.junit.runner.RunWith;
 @Replicas(1)
 public class AmqDurableTopicSubscriberMigrationTest extends AmqMigrationTestBase {
 
-    private static final String TOPIC_OBJECT_NAME = "org.apache.activemq:brokerName=%s,clientId=tmp123,consumerId=Durable(tmp123_SUB.NAME),destinationName=TOPICS.FOO,destinationType=Topic,endpoint=Consumer,type=Broker";
+    private static final int N = 10;
+//    private static final String TOPIC_OBJECT_NAME = "org.apache.activemq:brokerName=%s,clientId=tmp123,consumerId=Durable(tmp123_%s),destinationName=TOPICS.FOO,destinationType=Topic,endpoint=Consumer,type=Broker";
+//    private static final String HANDLED_MSGS = "Handled %s messages for topic subscriber 'TOPICS.FOO'";
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
@@ -77,37 +79,65 @@ public class AmqDurableTopicSubscriberMigrationTest extends AmqMigrationTestBase
     }
 
     @Test
+    @RunAsClient
     @InSequence(1)
-    public void testSubscriberProduce() throws Exception {
-        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-
-        client.createTopicSubscriber();
-
-        client.produceTopic("Some text!");
+    public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        adapter.scaleDeployment("amq-test-amq", 2); // scale up
     }
 
     @Test
-    @RunAsClient
     @InSequence(2)
-    public void testScale(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+    public void testSendMsgs() throws Exception {
+        // hopfully msgs get distributed
+        AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
+        for (int i = 1; i <= N; i++) {
+            client.createTopicSubscriber("Sub" + i);
+        }
+        for (int i = 1; i <= N; i++) {
+            client.produceTopic("Text" + i);
+        }
+    }
+
+    //    @Test
+//    @RunAsClient
+//    @InSequence(3)
+    public void testScaleDown(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         List<String> pods = adapter.getPods("amq-test-amq");
-        Assert.assertEquals(1, pods.size()); // there should be only one
-        String firstPod = pods.get(0); // we put the msgs here
+        Assert.assertEquals(2, pods.size());
 
-        ObjectName objectName = new ObjectName(String.format(TOPIC_OBJECT_NAME, firstPod));
-        Assert.assertEquals(1, queryMessages(adapter, firstPod, objectName, "PendingQueueSize")); // smoke test for 1 msgs
+//        boolean distributed = true;
+//        int[] sizes = new int[2];
+//        int i = 0;
+//        for (String podName : pods) {
+//            for (int j = 1; j <= N; j++) {
+//                ObjectName objectName = new ObjectName(String.format(TOPIC_OBJECT_NAME, podName, "Sub" + j));
+//                int size = queryMessages(adapter, podName, objectName, "PendingQueueSize");
+//                distributed = (distributed && (size > 0));
+//                sizes[i++] = size;
+//            }
+//        }
 
-        adapter.scaleDeployment("amq-test-amq", 2); // scale up
+        adapter.scaleDeployment("amq-test-amq", 1); // scale down
 
-        adapter.deletePod(firstPod, -1); // kill first, msgs should be drained
+//        if (distributed) {
+//            // msgs were distributed, hence should be migrated
+//            waitForDrain(adapter, 0, String.format(HANDLED_MSGS, sizes[0]), String.format(HANDLED_MSGS, sizes[1]));
+//        }
 
+        // drain should kick-in in any case
         waitForDrain(adapter, 0);
     }
 
     @Test
-    @InSequence(3)
+    @InSequence(4)
     public void testSubscriberConsume() throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-        Assert.assertEquals("Some text!", client.consumeTopic());
+        for (int i = 1; i <= N; i++) {
+            Set<Integer> msgNumbers = new TreeSet<>();
+            for (String msg : client.consumeTopic(N, "Sub" + i)) {
+                msgNumbers.add(Integer.parseInt(msg.substring(4)));
+            }
+            Assert.assertEquals(N, msgNumbers.size());
+        }
     }
 }

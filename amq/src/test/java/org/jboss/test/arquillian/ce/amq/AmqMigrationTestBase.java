@@ -23,8 +23,9 @@
 
 package org.jboss.test.arquillian.ce.amq;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -44,17 +45,17 @@ public class AmqMigrationTestBase extends AmqTestBase {
 
     protected void sendNMessages(int from, int to) throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
-        Set<String> msgs = new LinkedHashSet<>();
+        List<String> msgs = new ArrayList<>();
         for (int i = from; i < to; i++) {
             msgs.add("msg" + i);
         }
         client.produceOpenWireJms(msgs, false);
     }
 
-    protected Set<String> consumeMsgs(int msgsSize) throws Exception {
+    protected List<String> consumeMsgs(int msgsSize) throws Exception {
         AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
 
-        Set<String> msgs = new LinkedHashSet<>();
+        List<String> msgs = new ArrayList<>();
         client.consumeOpenWireJms(msgs, msgsSize, false);
 
         Set<Integer> msgNumbers = new TreeSet<>();
@@ -70,7 +71,8 @@ public class AmqMigrationTestBase extends AmqTestBase {
 
     protected static int queryMessages(OpenShiftHandle adapter, String podName, ObjectName objectName, String attributeName) throws Exception {
         J4pReadRequest request = new J4pReadRequest(objectName, attributeName);
-        return adapter.jolokia(Number.class, podName, request).intValue();
+        Number number = adapter.jolokia(Number.class, podName, request);
+        return (number != null) ? number.intValue() : 0;
     }
 
     protected static int waitForDrain(OpenShiftHandle adapter, int p) throws Exception {
