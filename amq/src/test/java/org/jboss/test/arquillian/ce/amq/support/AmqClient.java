@@ -304,10 +304,8 @@ public class AmqClient {
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Topic tFoo = session.createTopic("TOPICS.FOO");
             MessageConsumer subscriber = session.createDurableSubscriber(tFoo, subscriptionName);
-            log.info("Sub: " + subscriptionName);
             List<String> msgs = new ArrayList<>();
             while (N > 0) {
-                log.info("N --> " + N);
                 msgs.add(((TextMessage) subscriber.receive()).getText());
                 N--;
             }
