@@ -3,17 +3,32 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>datagrid-integration</artifactId>
+    <name>JDG Integration CE Testsuite</name>
+    <description>JDG Integration Cloud Enablement Testsuite</description>
 
     <parent>
         <groupId>org.jboss.ce.testsuite</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <artifactId>jdg-ce-testsuite</artifactId>
     </parent>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.infinispan.server</groupId>
+                <artifactId>infinispan-server-versions</artifactId>
+                <version>${version.org.infinispan}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>org.infinispan.server</groupId>
             <artifactId>infinispan-server-testsuite</artifactId>
+            <version>${version.org.infinispan}</version>
             <type>test-jar</type>
             <exclusions>
                 <exclusion>
@@ -195,89 +210,95 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>integration</id>
+    <properties>
+        <version.arquillian>1.0.0.Final</version.arquillian>
+        <version.logging>3.2.1.Final</version.logging>
+        <version.org.jboss.xnio>3.3.6.Final-redhat-1</version.org.jboss.xnio>
+        <suite.client.dist.phase>test</suite.client.dist.phase>
+        <suite.client.repl.phase>test</suite.client.repl.phase>
+        <suite.client.clustered.groups>org.infinispan.server.test.category.ClientClustered</suite.client.clustered.groups>
+    </properties>
 
-            <properties>
-                <suite.client.dist.phase>integration-test</suite.client.dist.phase>
-                <suite.client.repl.phase>integration-test</suite.client.repl.phase>
-                <suite.client.clustered.groups>org.infinispan.server.test.category.ClientClustered</suite.client.clustered.groups>
-            </properties>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${version.dependency.plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>unpack-dependencies</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>org.infinispan.server</includeGroupIds>
-                                    <includeArtifactIds>infinispan-server-testsuite</includeArtifactIds>
-                                    <includeTypes>test-jar</includeTypes>
-                                    <includeScope>test</includeScope>
-                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                                    <excludes>arquillian.xml</excludes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
                         <configuration>
-                            <argLine>
-                                -Dorg.jboss.arquillian.portforwarder.timeout=2400000
-                            </argLine>
-                            <runOrder>alphabetical</runOrder>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <trimStackTrace>false</trimStackTrace>
-                            <failIfNoTests>true</failIfNoTests>
-                            <excludedGroups>${groups.unstable}</excludedGroups>
+                            <includeGroupIds>org.infinispan.server</includeGroupIds>
+                            <includeArtifactIds>infinispan-server-testsuite</includeArtifactIds>
+                            <includeTypes>test-jar</includeTypes>
+                            <includeScope>test</includeScope>
+                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                            <excludes>arquillian.xml</excludes>
                         </configuration>
-                        <executions>
-                            <execution>
-                                <id>dist</id>
-                                <phase>${suite.client.dist.phase}</phase>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                </goals>
-                                <configuration>
-                                    <groups>${suite.client.clustered.groups}</groups>
-                                    <systemPropertyVariables>
-                                        <arquillian.launch>suite-client-clustered</arquillian.launch>
-                                        <clustering.mode>dist</clustering.mode>
-                                        <definitions.file>src/test/resources/suite-client-dist.json</definitions.file>
-                                    </systemPropertyVariables>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>repl</id>
-                                <phase>${suite.client.repl.phase}</phase>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                </goals>
-                                <configuration>
-                                    <groups>${suite.client.clustered.groups}</groups>
-                                    <systemPropertyVariables>
-                                        <arquillian.launch>suite-client-clustered</arquillian.launch>
-                                        <clustering.mode>repl</clustering.mode>
-                                        <definitions.file>src/test/resources/suite-client-repl.json</definitions.file>
-                                    </systemPropertyVariables>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        -Dorg.jboss.arquillian.portforwarder.timeout=2400000
+                    </argLine>
+                    <runOrder>alphabetical</runOrder>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <failIfNoTests>true</failIfNoTests>
+                    <excludedGroups>${groups.unstable}</excludedGroups>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>dist</id>
+                        <phase>${suite.client.dist.phase}</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <groups>${suite.client.clustered.groups}</groups>
+                            <systemPropertyVariables>
+                                <arquillian.launch>suite-client-clustered</arquillian.launch>
+                                <clustering.mode>dist</clustering.mode>
+                                <definitions.file>src/test/resources/suite-client-dist.json</definitions.file>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>repl</id>
+                        <phase>${suite.client.repl.phase}</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <groups>${suite.client.clustered.groups}</groups>
+                            <systemPropertyVariables>
+                                <arquillian.launch>suite-client-clustered</arquillian.launch>
+                                <clustering.mode>repl</clustering.mode>
+                                <definitions.file>src/test/resources/suite-client-repl.json</definitions.file>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
         <!-- Execute the clustered tests with distributed caches -->
         <profile>
             <id>dist</id>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -81,30 +81,21 @@
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.10</artifactId>
-          <version>2.0.0-preview</version>
-    	    <exclusions>
+            <version>2.0.0-preview</version>
+            <exclusions>
                 <exclusion>
                     <artifactId>com.fasterxml.jackson.core</artifactId>
                     <groupId>jackson-databind</groupId>
                 </exclusion>
-<!--		<exclusion>
-		    <artifactId>org.glassfish.jersey.core</artifactId>
-		    <groupId>jersey-server</groupId>
-            	</exclusion>
-		<exclusion>
-		    <artifactId>org.glassfish.jersey.containers</artifactId>
-		    <groupId>jersey-container-servlet</groupId>
-		</exclusion>
-		<exclusion>
-		    <artifactId>org.glassfish.jersey.containers</artifactId>
-		    <groupId>jersey-container-servlet-core</groupId>
-		</exclusion>	
--->	   </exclusions>
+                <!-- <exclusion> <artifactId>org.glassfish.jersey.core</artifactId> 
+                    <groupId>jersey-server</groupId> </exclusion> <exclusion> <artifactId>org.glassfish.jersey.containers</artifactId> 
+                    <groupId>jersey-container-servlet</groupId> </exclusion> <exclusion> <artifactId>org.glassfish.jersey.containers</artifactId> 
+                    <groupId>jersey-container-servlet-core</groupId> </exclusion> -->
+            </exclusions>
         </dependency>
 
-        <!--  TODO Spark exclusion should be sufficient to make arquillian work.
-              But for some reason, explicit inclusion fixes everythin.
-        -->
+        <!-- TODO Spark exclusion should be sufficient to make arquillian 
+            work. But for some reason, explicit inclusion fixes everythin. -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -113,79 +104,51 @@
 
     </dependencies>
 
-    <profiles>
-        <!-- Default, compile tests, but not run -->
-        <profile>
-            <id>default</id>
-
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-
-        <!-- Run tests against wildfly -->
-        <profile>
-            <id>spark</id>
-
-            <activation>
-                <property>
-                    <name>spark</name>
-                </property>
-            </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${version.dependency.plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>unpack-dependencies</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>org.jboss</includeGroupIds>
-                                    <includeTypes>test-jar</includeTypes>
-                                    <includeScope>test</includeScope>
-                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                                    <overWriteReleases>false</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
                         <configuration>
-                            <runOrder>alphabetical</runOrder>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <trimStackTrace>false</trimStackTrace>
-                            <includes>
-                                <include>org/jboss/**/*Test.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <!-- Custom DNS resolver for OpenShift routes -->
-                                <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
-                                <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
-                                <kubernetes.master>${kubernetes.master}</kubernetes.master>
-                                <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
-                                <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
-                            </systemPropertyVariables>
+                            <includeGroupIds>org.jboss</includeGroupIds>
+                            <includeTypes>test-jar</includeTypes>
+                            <includeScope>test</includeScope>
+                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <runOrder>alphabetical</runOrder>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <includes>
+                        <include>org/jboss/**/*Test.java</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <!-- Custom DNS resolver for OpenShift routes -->
+                        <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
+                        <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
+                        <kubernetes.master>${kubernetes.master}</kubernetes.master>
+                        <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
+                        <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
 
 

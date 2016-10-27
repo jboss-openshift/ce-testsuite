@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -18,20 +18,26 @@
     <name>JDG CE Testsuite</name>
     <description>JDG Cloud Enablement Testsuite</description>
 
-    <profiles>
-        <profile>
-            <id>jdg65</id>
-            <modules>
-                <module>jdg65</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>integration</id>
-            <modules>
-                <module>integration</module>
-            </modules>
-        </profile>
-    </profiles>
+    <modules>
+        <module>jdg65</module>
+        <module>integration</module>
+    </modules>
+
+    <properties>
+        <version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-bom</artifactId>
+                <version>${version.org.infinispan}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
 
 

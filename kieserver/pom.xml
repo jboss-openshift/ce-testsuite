@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.ce.testsuite</groupId>
+        <artifactId>parent-ce</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>kieserver-ce-testsuite</artifactId>
+    <packaging>pom</packaging>
+    <name>KIE Server CE Testsuite</name>
+    <description>Decision Server Cloud Enablement Testsuite</description>
+
+    <modules>
+        <module>62</module>
+        <module>63</module>
+    </modules>
+    
+    <properties>
+        <version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
+        <version.org.kie>6.2.0.Final-redhat-14</version.org.kie>
+        <version.activemq>5.8.0.redhat-60083</version.activemq>
+        <version.javax.jpa>1.0.1.Final</version.javax.jpa>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.bom.brms</groupId>
+                <artifactId>jboss-brms-bpmsuite-bom</artifactId>
+                <version>${version.jboss.bom.brms}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-bom</artifactId>
+                <version>${version.org.kie}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-all</artifactId>
+                <version>${version.activemq}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate.javax.persistence</groupId>
+                <artifactId>hibernate-jpa-2.0-api</artifactId>
+                <version>${version.javax.jpa}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

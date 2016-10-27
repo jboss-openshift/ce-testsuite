@@ -63,7 +63,6 @@ The CE-Testsuite is divided by profiles, to enable the WebServer profile all you
   - -Dtest=**The test class name, if you want to run only one test, otherwise all tests will be executed**
     - -Dtest=WebServerTomcat7BasicTest
   - -Dkubernetes.ignore.cleanup=true **(default is false), It will ignore the resources cleanup, so you can take a look in the used pods to troubleshooting**
-  - -DAbortOnFirstFailure=true **Abort the execution of the test upon the first failure.** This is useful for debugging/troubleshooting purposes. It will leave behind all created artifacts, like logs and the whole namespace/project. It's up to you do the cleaning.
 
 > **All those are java parameters, so use -D.**
 ___

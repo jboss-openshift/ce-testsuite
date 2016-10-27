@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
         <groupId>org.jboss.ce.testsuite</groupId>
-        <artifactId>parent-ce</artifactId>
+        <artifactId>kieserver-ce-testsuite</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- Model Version -->
@@ -20,9 +19,9 @@
     <description>KIE Server Cloud Enablement Testsuite includes tests for decision server and process server</description>
 
     <properties>
-      <!-- Decision server -->
-      <version.jboss.bom.brms>6.3.0.GA-redhat-3</version.jboss.bom.brms>
-      <version.org.kie>6.4.0.Final-redhat-3</version.org.kie>
+        <!-- Decision server -->
+        <version.jboss.bom.brms>6.3.0.GA-redhat-3</version.jboss.bom.brms>
+        <version.org.kie>6.4.0.Final-redhat-3</version.org.kie>
     </properties>
 
     <dependencies>
@@ -109,94 +108,56 @@
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>org.jboss.ce.testsuite</groupId>
-            <artifactId>common-ce-testsuite</artifactId>
-        </dependency>
 
-     </dependencies>
 
-    <profiles>
-        <!-- Default, compile tests, but not run -->
-        <profile>
-            <id>default</id>
+    </dependencies>
 
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-
-        <!-- Run tests against wildfly -->
-        <profile>
-            <id>kieserver63</id>
-
-            <activation>
-                <property>
-                    <name>kieserver63</name>
-                </property>
-            </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${version.dependency.plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>unpack-dependencies</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>org.jboss</includeGroupIds>
-                                    <includeTypes>test-jar</includeTypes>
-                                    <includeScope>test</includeScope>
-                                    <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                                    <overWriteReleases>false</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
                         <configuration>
-                            <runOrder>alphabetical</runOrder>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <trimStackTrace>false</trimStackTrace>
-                            <forkMode>once</forkMode>
-                            <properties>
-                                <property>
-                                    <name>listener</name>
-                                    <value>org.jboss.arquillian.ce.common.FailListener</value>
-                                </property>
-                            </properties>
-                            <includes>
-                                <include>org/jboss/**/*Test.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <!-- Custom DNS resolver for OpenShift routes -->
-                                <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
-                                <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
-                                <kubernetes.master>${kubernetes.master}</kubernetes.master>
-                                <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
-                                <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
-                                <template.repository>jboss-openshift</template.repository>
-                                <template.branch>kieserver-wip</template.branch>
-                            </systemPropertyVariables>
+                            <includeGroupIds>org.jboss</includeGroupIds>
+                            <includeTypes>test-jar</includeTypes>
+                            <includeScope>test</includeScope>
+                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <runOrder>alphabetical</runOrder>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <forkMode>once</forkMode>
+                    <includes>
+                        <include>org/jboss/**/*Test.java</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <!-- Custom DNS resolver for OpenShift routes -->
+                        <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
+                        <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
+                        <kubernetes.master>${kubernetes.master}</kubernetes.master>
+                        <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
+                        <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
+                        <template.repository>jboss-openshift</template.repository>
+                        <template.branch>kieserver-wip</template.branch>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

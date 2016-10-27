@@ -63,8 +63,7 @@ import org.junit.runner.RunWith;
 // remove when amq-internal-is is removed
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-    @OpenShiftResource("classpath:testrunner-secret.json"),
-    @OpenShiftResource("classpath:amq-internal-imagestream.json") // custom dev imagestream; remove when multi repl image is in prod
+    @OpenShiftResource("classpath:testrunner-secret.json")
 })
 @Replicas(1)
 public class AmqDurableTopicSubscriberMigrationTest extends AmqMigrationTestBase {
