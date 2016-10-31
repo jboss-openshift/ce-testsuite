@@ -141,13 +141,7 @@ To make the JBoss CLI tests work, we need to change the jboss-as-testsuite-share
 
 ## EAP6 needed changes:
 
-In the file **"$EAP6_SOURCES/testsuite/integration/basic/src/test/resources/jboss-ejb-client.properties** add the following content in the end of the file:
-
-```sh
-remote.connection.default.username=guest
-remote.connection.default.password=guest
-```
-
+The changes below is a temporary solution while the patch is not merged.
 ###### Create the variables username and password (after line 46):
 ```java
     private static String username = System.getProperty("jboss.cli.username");
@@ -172,12 +166,8 @@ remote.connection.default.password=guest
 ```
 
 ## EAP7 needed changes:
-In the files **"$EAP7_SOURCES/testsuite/integration/basic/src/test/resources/jboss-ejb-client.properties** and **$EAP7_SOURCES/dados/ce/sources/jboss-eap-7.0-src/testsuite/integration/ws/src/test/resources/jboss-ejb-client.properties**, add the following content in the end of the file:
-```sh
-remote.connection.default.username=guest
-remote.connection.default.password=guest
-```
 
+Note, the steps below are a temproary solution while the fix is not merged.
 Edit following lines the **Authentication** class in the **wilfly-core** sources under the **org.wildfly.test.api** package:
 ```java
     public static String username = "";
@@ -263,6 +253,7 @@ Note this return statement may can have more parameters, edit just the usermane/
         username = System.getProperty("jboss.management.user");
         password = System.getProperty("jboss.management.password");
 ```
+
 
 #### Building the testsuite project:
 Example:

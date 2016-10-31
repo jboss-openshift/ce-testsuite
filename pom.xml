@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -28,8 +28,8 @@
         <version.arquillian>1.1.11.Final</version.arquillian>
         <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
         <version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
-        <version.eap6>7.5.11.Final-redhat-SNAPSHOT</version.eap6>
-        <version.eap7>7.0.0.GA-redhat-2</version.eap7> <!-- eap-7.0.0 -->
+        <version.eap6>7.5.11.Final-redhat-SNAPSHOT</version.eap6> <!--eap 6.4.x downstream -->
+        <version.eap7>7.0.3.GA-redhat-SNAPSHOT</version.eap7> <!-- eap-7 downstream-->
         <org.jboss.bom.version>7.0.0.GA</org.jboss.bom.version>
         <version.junit>4.12</version.junit>
         <version.javax.servlet.api>3.1.0</version.javax.servlet.api>
@@ -99,7 +99,7 @@
         </plugins>
     </build>
 
-    <!-- Some artifacts, like infinispan-remote-query-client/6.3.1.Final-redhat-1/infinispan-remote-query-client-6.3.1.Final-redhat-1.pom 
+    <!-- Some artifacts, like infinispan-remote-query-client/6.3.1.Final-redhat-1/infinispan-remote-query-client-6.3.1.Final-redhat-1.pom
         and so on, will need these. -->
     <repositories>
         <repository>
@@ -116,8 +116,7 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
-        <!-- <repository> <id>1rhat</id> <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url> 
-            </repository> -->
+
         <repository>
             <id>2rhat</id>
             <url>https://maven.repository.redhat.com/techpreview/all/</url>
@@ -127,22 +126,22 @@
             <id>3rhat</id>
             <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
         </repository>
-        <!-- <repository> <id>4rhat</id> <url>https://repository.jboss.org/</url> 
-            </repository> -->
+
         <repository>
             <id>5rhat</id>
             <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
         </repository>
+
         <repository>
             <id>6rhat</id>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
+
         <repository>
             <id>7rhat</id>
             <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads/</url>
         </repository>
-        <!-- <repository> <id>8rhat</id> <url>http://repository.jboss.org/nexus/content/groups/developer/</url> 
-            </repository> -->
+
     </repositories>
 
     <dependencyManagement>
