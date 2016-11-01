@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -20,7 +20,8 @@
 
     <!-- All versions used here are based on EAP 7.0.0.GA -->
     <properties>
-        <version.org.jboss.resteasy.multipart.provider>3.0.16.Final-redhat-1</version.org.jboss.resteasy.multipart.provider>
+        <version.org.jboss.resteasy.multipart.provider>3.0.16.Final-redhat-1
+        </version.org.jboss.resteasy.multipart.provider>
         <version.org.hibernate.javax.persistence.jpa>1.0.0.Final-redhat-1</version.org.hibernate.javax.persistence.jpa>
         <version.org.apache.lucene.core>5.3.1.redhat-1</version.org.apache.lucene.core>
         <version.org.hibernate.core>5.0.9.Final-redhat-1</version.org.hibernate.core>
@@ -32,7 +33,7 @@
         <version.com.io7m.xom>1.2.10.redhat-1</version.com.io7m.xom>
         <version.org.jboss.security.jbossxacml>2.0.8.Final-redhat-6</version.org.jboss.security.jbossxacml>
         <version.javax.json>1.0.3.redhat-1</version.javax.json>
-        <version.org.wildfly.core>2.1.2.Final-redhat-1</version.org.wildfly.core>
+        <version.org.wildfly.core>2.1.10.Final-redhat-SNAPSHOT</version.org.wildfly.core>
         <version.org.apache.ds>2.0.0-M15</version.org.apache.ds>
         <version.org.apache.jbdm>2.0.0-M3</version.org.apache.jbdm>
         <version.org.apache.httpcomponents>4.5.0.redhat-1</version.org.apache.httpcomponents>
@@ -45,8 +46,8 @@
         <version.org.codehaus.plexus>3.0.24</version.org.codehaus.plexus>
         <version.org.apache.maven>3.3.9</version.org.apache.maven>
         <version.org.eclipse.aether>1.1.0</version.org.eclipse.aether>
-        <version.org.jboss.eap.wildfly.jaxrs>7.0.0.GA-redhat-2</version.org.jboss.eap.wildfly.jaxrs>
-        <version.org.jboss.eap.wildfly.messaging>7.0.0.GA-redhat-2</version.org.jboss.eap.wildfly.messaging>
+        <version.org.jboss.eap.wildfly.jaxrs>7.0.3.GA-redhat-SNAPSHOT</version.org.jboss.eap.wildfly.jaxrs>
+        <version.org.jboss.eap.wildfly.messaging>7.0.3.GA-redhat-SNAPSHOT</version.org.jboss.eap.wildfly.messaging>
         <version.org.apache.activemq.artemis>1.1.0.SP16-redhat-1</version.org.apache.activemq.artemis>
     </properties>
 
@@ -1002,11 +1003,34 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
+                    <execution>
+                        <id>basic</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>jar</executable>
+                            <arguments>
+                                <argument>uf</argument>
+                                <argument>
+                                    ${user.home}/.m2/repository/org/jboss/eap/wildfly-ts-integ-basic/${version.eap7}/wildfly-ts-integ-basic-${version.eap7}-tests.jar
+                                </argument>
+                                <argument>jboss-ejb-client.properties</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -1022,7 +1046,6 @@
                             <includeTypes>test-jar</includeTypes>
                             <includeScope>test</includeScope>
                             <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-
                         </configuration>
                     </execution>
                 </executions>
@@ -1032,11 +1055,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${version.surefire.plugin}</version>
                 <configuration>
-                    <systemPropertyVariables
-                        combine.children="append">
-                        <!-- EJB client library hack, see WFLY-4973 -->
+                    <systemPropertyVariables combine.children="append">
+                        <!-- EJB client library hack, see WFLY-4973-->
                         <org.jboss.ejb.client.wildfly-testsuite-hack>true</org.jboss.ejb.client.wildfly-testsuite-hack>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                        <org.jboss.as.test.integration.remote>true</org.jboss.as.test.integration.remote>
                     </systemPropertyVariables>
                     <runOrder>alphabetical</runOrder>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -1078,8 +1101,7 @@
                         <exclude>**/RaCfgMetricUnitTestCase.java</exclude>
                         <exclude>**/ExportImportJournalTestCase.java</exclude>
 
-                        <!-- path used to map files does not exist in this 
-                            scenario -->
+                        <!-- path used to map files does not exist in this scenario -->
                         <exclude>**/AddMySqlDataSourceOperationsUnitTestCase.java</exclude>
 
                         <!-- always fails -->
@@ -1123,6 +1145,14 @@
                         <exclude>**/CLISecurityTestCase.java</exclude>
                         <exclude>**/SessionObjectReferenceTestCase.java</exclude>
                         <exclude>**/WebSecurityProgrammaticLoginTestCase.java</exclude>
+                        <exclude>**/ear/OverlayExistingResourceTestCase.java</exclude>
+                        <exclude>**/ear/OverlayNonExistingResourceTestCase.java</exclude>
+                        <exclude>**/war/OverlayNonExistingResourceTestCase.java</exclude>
+                        <exclude>**/EJBNameWildcardTestCase.java</exclude>
+                        <exclude>**/AroundConstructSimpleTestCase.java</exclude>
+                        <exclude>**/BeanManagedTransactionsTestCase.java</exclude>
+                        <exclude>**/SarValueFactoryInjectionTestCase.java</exclude>
+                        <exclude>**/SarInjectionTestCase.java</exclude>
 
                         <!-- tries to create|reach|read files on local filesystem -->
                         <exclude>**/SecurityAuditingTestCase.java</exclude>
@@ -1163,17 +1193,7 @@
                         <exclude>**/JMSResourceDefinitionsTestCase.java</exclude>
 
                         <!-- uses local auth -->
-                        <exclude>**/GetCallerPrincipalTestCase.java</exclude>
-                        <exclude>**/JMXConnectorTestCase.java</exclude>
-                        <exclude>**/RemoteNamingEjbTestCase.java</exclude>
-                        <exclude>**/RemoteNamingTestCase.java</exclude>
-                        <exclude>**/JNDIBindingMBeanTestCase.java</exclude>
-                        <exclude>**/SarWithinEarTestCase.java</exclude>
-                        <exclude>**/MBeanTCCLTestCase.java</exclude>
-                        <exclude>**/SarInjectionTestCase.java</exclude>
-                        <exclude>**/DependsTestCase.java</exclude>
-                        <exclude>**/SarResourceInjectionTestCase.java</exclude>
-                        <exclude>**/ServiceMBeanSupportTestCase.java</exclude>
+                        <exclude>**/WildCardReadsTestCase.java</exclude>
 
                         <!-- unsupported subsystems -->
                         <exclude>**/ModClusterSubsystemAddTestCase.java</exclude>
@@ -1206,8 +1226,14 @@
                         <exclude>**/SymlinkingUnitTestCase.java</exclude>
                         <exclude>**/SocketsAndInterfacesTestCase.java</exclude>
 
-                        <!-- Makes the test hang -->
+                        <!-- Makes the test hang,  -->
                         <exclude>**/ServletThreadPoolSelectionTestCase.java</exclude>
+                        <exclude>**/EjbJarInEarRuntimeResourcesTestCase.java</exclude>
+                        <exclude>**/EjbJarRuntimeResourcesTestCase.java</exclude>
+                        <exclude>**/ModelControllerMBeanTestCase.java</exclude>
+
+                        <!-- tries to open a port on local host instead the pod -->
+                        <exclude>**/JMXConnectorTestCase.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>

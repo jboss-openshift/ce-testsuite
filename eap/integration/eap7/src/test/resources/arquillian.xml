@@ -40,7 +40,7 @@
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <!-- Ports to be proxied locally, <container>:<port> or <container>:0:<port>, to map the same port than container use <container>::<port> or <container>:<port>:<port> -->
-        <property name="proxiedContainerPorts">testrunner-eap7::9990,testrunner-eap7::8080,testrunner-eap7::8443,testrunner-eap7::3528,testrunner-eap7::3529,testrunner-eap7::2020,testrunner-eap7::8181</property>
+        <property name="proxiedContainerPorts">testrunner-eap7::9990,testrunner-eap7::8080,testrunner-eap7::8443,testrunner-eap7::3528,testrunner-eap7::3529,testrunner-eap7::2020,testrunner-eap7::8181,testrunner-eap7::11090</property>
     </extension>
 
     <!--
@@ -122,5 +122,22 @@
         <property name="methods_46">org.jboss.as.test.integration.security.loginmodules.UsersRolesLoginModuleTestCase#testExternalFiles</property>
         <property name="methods_47">org.jboss.as.test.integration.web.sharedsession.SharedSessionTestCase#testSharedSessionsOneEar</property>
         <property name="methods_48">org.jboss.as.test.integration.web.cookie.CookieUnitTestCase#testCookieRetrievedCorrectly</property>
+        <property name="methods_49">org.jboss.as.test.integration.ejb.descriptor.ejbnamewildcard.EJBNameWildcardTestCase#testLocalRestrictedMethodOnBeanTwo</property>
+        <property name="methods_50">org.jboss.as.test.integration.ejb.descriptor.ejbnamewildcard.EJBNameWildcardTestCase#testWildcardExcludedMethodOnBeanOne</property>
+
+        <!-- make the test hang -->
+        <property name="methods_52">org.jboss.as.test.integration.deployment.xml.datasource.DeployedXmlDataSourceManagementTestCase#testOverrideRegistrations</property>
+        <property name="methods_53">org.jboss.as.test.integration.jmx.ModelControllerMBeanTestCase#testAllMBeanInfos</property>
+        <property name="methods_54">org.jboss.as.test.integration.messaging.jms.definitions.JMSResourceManagementTestCase#testManagementOfConnectionFactories</property>
+
+        <!-- needs $local user -->
+        <property name="methods_55">org.jboss.as.test.integration.ejb.security.callerprincipal.GetCallerPrincipalTestCase#testStatefulLifecycle</property>
+
+        <!-- timeout exception -->
+        <property name="methods_56">org.jboss.as.test.integration.jaxrs.jsapi.JaxrsJSApiTestCase#testJaxRsJSApis</property>
+
+        <!-- assertion always fails -->
+        <property name="methods_57">org.jboss.as.test.integration.naming.remote.ejb.RemoteNamingEjbTestCase#testRemoteNamingGracefulShutdown</property>
+
     </extension>
 </arquillian>

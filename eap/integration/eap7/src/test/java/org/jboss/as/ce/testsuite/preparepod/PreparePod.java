@@ -49,9 +49,6 @@ public class PreparePod {
             // no retries on auth to decrease the overhead
             "/subsystem=remoting/configuration=endpoint:write-attribute(name=authentication-retries, value=0)",
 
-            "/subsystem=remoting/configuration=endpoint:write-attribute(name=receive-window-size, value=12215392000)",
-            "/subsystem=remoting/configuration=endpoint:write-attribute(name=transmit-window-size, value=12215392000)",
-
             ":reload"
     );
 
