@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Test;
 
@@ -27,6 +26,9 @@ public abstract class EapPersistentTestBase {
     @RouteURL("secure-eap-app")
     private URL secureUrl;
 
+    @ArquillianResource
+    OpenShiftHandle adapter;
+
     private final static String summary1 = UUID.randomUUID().toString();
     private final static String summary2 = UUID.randomUUID().toString();
     private final static String description1 = UUID.randomUUID().toString();
@@ -34,32 +36,31 @@ public abstract class EapPersistentTestBase {
 
     @Test
     @RunAsClient
-    @InSequence(1)
-    public void InsertItems() throws Exception {
+    public void insertRestartAndVerify() throws Exception {
+        insertItems();
+        restartPods();
+        verifyItems();
+    }
+
+    private void insertItems() throws Exception {
         TodoList.insertItem(url.toString(), summary1, description1);
         TodoList.insertItem(secureUrl.toString(), summary2, description2);
     }
 
-    private void restartPod(OpenShiftHandle adapter, String name) throws Exception {
+    private void restartPod(String name) throws Exception {
         log.info("Scaling down " + name);
         adapter.scaleDeployment(name, 0);
         log.info("Scaling up " + name);
         adapter.scaleDeployment(name, 1);
     }
 
-    @Test
-    @RunAsClient
-    @InSequence(2)
-    public void restartPods(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+    private void restartPods() throws Exception {
         for (String rc : getRCNames()) {
-            restartPod(adapter, rc);
+            restartPod(rc);
         }
     }
 
-    @Test
-    @RunAsClient
-    @InSequence(3)
-    public void verifyItems() throws Exception {
+    private void verifyItems() throws Exception {
         TodoList.checkItem(url.toString(), summary1, description1);
         TodoList.checkItem(secureUrl.toString(), summary2, description2);
     }
