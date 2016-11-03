@@ -249,6 +249,9 @@
                     <argLine>
                         -Dorg.jboss.arquillian.portforwarder.timeout=2400000
                     </argLine>
+                    <systemPropertyVariables>
+                        <portForwardBindAddress>${portForwardBindAddress}</portForwardBindAddress>
+                    </systemPropertyVariables>
                     <runOrder>alphabetical</runOrder>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <trimStackTrace>false</trimStackTrace>

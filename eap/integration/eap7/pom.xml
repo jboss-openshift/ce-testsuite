@@ -1060,6 +1060,7 @@
                         <org.jboss.ejb.client.wildfly-testsuite-hack>true</org.jboss.ejb.client.wildfly-testsuite-hack>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <org.jboss.as.test.integration.remote>true</org.jboss.as.test.integration.remote>
+                        <portForwardBindAddress>${portForwardBindAddress}</portForwardBindAddress>
                     </systemPropertyVariables>
                     <runOrder>alphabetical</runOrder>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>

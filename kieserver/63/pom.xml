@@ -153,6 +153,7 @@
                         <kubernetes.master>${kubernetes.master}</kubernetes.master>
                         <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
                         <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
+                        <portForwardBindAddress>${portForwardBindAddress}</portForwardBindAddress>
                         <template.repository>jboss-openshift</template.repository>
                         <template.branch>kieserver-wip</template.branch>
                     </systemPropertyVariables>
