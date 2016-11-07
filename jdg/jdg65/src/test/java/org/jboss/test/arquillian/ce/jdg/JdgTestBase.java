@@ -23,7 +23,7 @@
 
 package org.jboss.test.arquillian.ce.jdg;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
 
