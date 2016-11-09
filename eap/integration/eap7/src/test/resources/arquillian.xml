@@ -50,6 +50,9 @@
       name in testrunner-pod.json.
     -->
     <container qualifier="testrunner-eap7" mode="suite" default="true">
+        <protocol type="jmx-as7">
+            <property name="executionType">REMOTE</property>
+        </protocol>
         <configuration>
             <!-- For use with archillian-chameleon -->
             <property name="target">jboss eap:7.0.0.GA:remote</property>
