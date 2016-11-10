@@ -81,14 +81,14 @@
         <!-- KIE -->
 
         <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-server-api</artifactId>
+            <groupId>org.kie.server</groupId>
+            <artifactId>kie-server-client</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-server-client</artifactId>
         </dependency>
+
 
         <!-- Dependencies needed to use JMS/AMQ -->
 
@@ -96,7 +96,6 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-all</artifactId>
         </dependency>
-
 
     </dependencies>
 
