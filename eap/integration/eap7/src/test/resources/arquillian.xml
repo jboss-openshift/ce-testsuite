@@ -52,7 +52,6 @@
     <container qualifier="testrunner-eap7" mode="suite" default="true">
         <configuration>
             <!-- For use with archillian-chameleon -->
-            <property name="target">jboss eap:7.0.0.GA:remote</property>
             <property name="username">admin</property>
             <property name="password">Admin#70365</property>
             <property name="managementAddress">127.0.0.1</property>
