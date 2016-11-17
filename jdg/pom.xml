@@ -20,7 +20,7 @@
 
     <modules>
         <module>jdg65</module>
-        <!-- <module>integration</module> -->
+        <module>integration</module>
     </modules>
 
     <properties>
