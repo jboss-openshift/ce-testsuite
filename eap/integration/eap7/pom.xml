@@ -433,12 +433,12 @@
                 <artifactId>undertow-servlet</artifactId>
                 <version>${version.io.undertow}</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>io.undertow</groupId>
-                        <artifactId>undertow-core</artifactId>
-                    </exclusion>
-                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>io.undertow</groupId>
+                <artifactId>undertow-core</artifactId>
+                <version>${version.io.undertow}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- jbossws dependencies -->
@@ -865,19 +865,6 @@
             <groupId>com.io7m.xom</groupId>
             <artifactId>xom</artifactId>
         </dependency>
-
-        <!-- undertow dependencies -->
-        <dependency>
-            <groupId>io.undertow</groupId>
-            <artifactId>undertow-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.undertow</groupId>
-            <artifactId>undertow-core</artifactId>
-            <version>${version.io.undertow}</version>
-            <scope>test</scope>
-        </dependency>
-
 
         <!-- jbossws api -->
         <dependency>
