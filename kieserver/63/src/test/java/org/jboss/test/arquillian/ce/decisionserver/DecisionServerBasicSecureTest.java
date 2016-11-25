@@ -38,11 +38,11 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/decisionserver/decisionserver63-https-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver63-https-s2i.json",
         parameters = {
-@TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
-@TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
-})
+                @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
+                @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
+        })
 public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
 
     @RouteURL("secure-kie-app")
@@ -53,10 +53,16 @@ public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
         return routeURL;
     }
 
-    // only needed for non-production test scenarios
+    /* only needed for non-production test scenarios
+    * @throws Exception for any error, inherited from org.jboss.arquillian.ce.api.trustAllCertificates
+    */
     @Override
-    protected void prepareClientInvocation() throws Exception {
-        trustAllCertificates();
+    protected void prepareClientInvocation() {
+        try {
+            trustAllCertificates();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         log.info("Trusting all certs");
     }
 }

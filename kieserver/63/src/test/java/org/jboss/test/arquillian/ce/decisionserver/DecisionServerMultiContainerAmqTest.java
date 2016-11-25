@@ -23,7 +23,10 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 
 import javax.naming.NamingException;
 
@@ -41,11 +44,11 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/decisionserver/decisionserver63-amq-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver63-amq-s2i.json",
         parameters = {
                 //the Containers list will be sorted in alphabetical order
-                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final|" +
-                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final"),
+                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final|" +
+                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final"),
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}"),
                 @TemplateParameter(name = "MQ_USERNAME", value = "${mq.username:kieserver}"),
@@ -64,23 +67,23 @@ public class DecisionServerMultiContainerAmqTest extends DecisionServerAmqTest {
 
     @Test
     @RunAsClient
-    public void testSecondDecisionServerContainer() throws Exception {
+    public void testSecondDecisionServerContainer() throws UnsupportedEncodingException, NoSuchAlgorithmException, MalformedURLException {
         checkSecondDecisionServerContainer();
     }
 
     @Test
-    public void testDecisionServerSecondContainerAMQ() throws NamingException {
+    public void testDecisionServerSecondContainerAMQ() throws UnsupportedEncodingException, NamingException, NoSuchAlgorithmException {
         checkDecisionServerSecondContainerAMQ();
     }
 
     @Test
     @RunAsClient
-    public void testFireAllRulesInSecondContainer() throws Exception {
+    public void testFireAllRulesInSecondContainer() throws MalformedURLException {
         checkFireAllRulesInSecondContainer();
     }
 
     @Test
-    public void testFireAllRulesInSecondContainerAMQ() throws Exception {
+    public void testFireAllRulesInSecondContainerAMQ() throws NamingException {
         checkFireAllRulesInSecondContainerAMQ();
     }
 }

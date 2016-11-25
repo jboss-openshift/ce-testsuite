@@ -28,6 +28,7 @@
         <version.org.kie>6.2.0.Final-redhat-14</version.org.kie>
         <version.activemq>5.8.0.redhat-60083</version.activemq>
         <version.javax.jpa>1.0.1.Final</version.javax.jpa>
+        <version.org.openshift.kieserver>1.0.8.Final-redhat-1</version.org.openshift.kieserver>
     </properties>
     
     <dependencyManagement>
@@ -57,6 +58,13 @@
                 <groupId>org.hibernate.javax.persistence</groupId>
                 <artifactId>hibernate-jpa-2.0-api</artifactId>
                 <version>${version.javax.jpa}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openshift.kieserver</groupId>
+                <artifactId>openshift-kieserver-common</artifactId>
+                <version>${version.org.openshift.kieserver}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

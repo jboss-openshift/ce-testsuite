@@ -23,6 +23,7 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -40,14 +41,14 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/decisionserver/decisionserver63-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver63-basic-s2i.json",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/secrets/decisionserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/decisionserver-app-secret.json")
 })
 public class DecisionServerBasicTest extends DecisionServerTestBase {
 
@@ -61,19 +62,19 @@ public class DecisionServerBasicTest extends DecisionServerTestBase {
 
     @Test
     @RunAsClient
-    public void testDecisionServerCapabilities() throws Exception {
+    public void testDecisionServerCapabilities() throws MalformedURLException {
         checkKieServerCapabilities(getRouteURL(), "BRM");
     }
 
     @Test
     @RunAsClient
-    public void testDecisionServerContainer() throws Exception {
+    public void testDecisionServerContainer() throws MalformedURLException {
         checkDecisionServerContainer();
     }
 
     @Test
     @RunAsClient
-    public void testFireAllRules() throws Exception {
+    public void testFireAllRules() throws MalformedURLException {
         checkFireAllRules();
     }
 }
