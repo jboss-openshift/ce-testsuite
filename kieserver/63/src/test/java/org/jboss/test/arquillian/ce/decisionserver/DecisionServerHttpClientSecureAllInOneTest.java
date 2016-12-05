@@ -42,17 +42,17 @@ import java.net.URL;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/decisionserver/decisionserver63-https-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver63-https-s2i.json",
         parameters = {
                 //the Containers list will be sorted in alphabetical order
-                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final|" +
-                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final"),
+                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final|" +
+                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final"),
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
-    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/secrets/decisionserver-app-secret.json")
+    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/decisionserver-app-secret.json")
 })
 public class DecisionServerHttpClientSecureAllInOneTest extends DecisionServerTestBase {
 
@@ -72,12 +72,12 @@ public class DecisionServerHttpClientSecureAllInOneTest extends DecisionServerTe
     }
 
     @Test
-    public void testDecisionServerCapabilitiesHttpClient() throws Exception {
+    public void testDecisionServerCapabilitiesHttpClient() {
         checkDecisionServerCapabilitiesHttpClient();
     }
 
     @Test
-    public void testDecisionServerSecureMultiContainerHttpClient() throws Exception {
+    public void testDecisionServerSecureMultiContainerHttpClient() {
         checkDecisionServerSecureMultiContainerHttpClient();
     }
 

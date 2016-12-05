@@ -38,12 +38,11 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-//The rest of template's parameters are coming from DecisionServerBasicTest class
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/decisionserver/decisionserver63-https-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver63-https-s2i.json",
         parameters = {
                 //the Containers list will be sorted in alphabetical order
-                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final|" +
-                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final"),
+                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final|" +
+                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final"),
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
@@ -58,10 +57,16 @@ public class DecisionServerBasicSecureMultiContainerTest extends DecisionServerB
         return routeURL;
     }
 
-    // only needed for non-production test scenarios
+    /* only needed for non-production test scenarios
+    * @throws Exception for any error, inherited from org.jboss.arquillian.ce.api.trustAllCertificates
+    */
     @Override
-    protected void prepareClientInvocation() throws Exception {
-        trustAllCertificates();
+    protected void prepareClientInvocation() {
+        try {
+            trustAllCertificates();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         log.info("Trusting all certs");
     }
 }

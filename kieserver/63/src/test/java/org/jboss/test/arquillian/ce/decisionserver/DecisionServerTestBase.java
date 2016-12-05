@@ -24,23 +24,6 @@
 package org.jboss.test.arquillian.ce.decisionserver;
 
 import io.fabric8.utils.Base64Encoder;
-
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Logger;
-
-import javax.jms.ConnectionFactory;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
@@ -67,9 +50,29 @@ import org.kie.server.client.KieServicesClient;
 import org.kie.server.client.KieServicesConfiguration;
 import org.kie.server.client.KieServicesFactory;
 import org.kie.server.client.RuleServicesClient;
+import org.openshift.kieserver.common.coder.SumCoder;
 import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
+import javax.jms.ConnectionFactory;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * @author Filippe Spolti
@@ -85,6 +88,7 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
 
     /*
     * Returns the JMS kieService client
+    * TODO move to KieServerTestBase
     */
     public KieServicesClient getKieJmsServiceClient() throws NamingException {
         Properties props = new Properties();
@@ -131,36 +135,32 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
     }
 
     /*
-    * Verifies the KieContainer ID, it should be decisionserver-hellorules
+    * Verifies the KieContainer ID, it should be 41895328c0d0a1747e2b24d53cbbfeb2 for decisionserver-hellorules
+    *                                        and 5fe16e3ab6fc8ae7fbf9fd71b8eb57f1 for AnotherContainer
     * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
     */
-    public void checkDecisionServerContainer() throws Exception {
+    public void checkDecisionServerContainer() throws MalformedURLException {
         log.info("Running test checkDecisionServerContainer");
+
         // for untrusted connections
         prepareClientInvocation();
 
-        List<KieContainerResource> kieContainers = getKieRestServiceClient(getRouteURL()).listContainers().getResult().getContainers();
-
-        // Sorting kieContainerList
-        Collections.sort(kieContainers, ALPHABETICAL_ORDER);
-        // verify the KieContainer Name
-
-        //When the multicontainer test is running, the decisionserver-hellorules will not be the first anymore
-        int pos = 0;
-        if (kieContainers.size() > 1) {
-            pos = 1;
+        for (KieContainerResource container : getKieRestServiceClient(getRouteURL()).listContainers().getResult().getContainers()) {
+            String containerAliasToID = new SumCoder.MD5().encode(container.getResolvedReleaseId().getArtifactId() + "=" + container.getReleaseId());
+            //Make sure the second container name is AnotherContainer
+            if (!containerAliasToID.equals(container.getContainerId())) {
+                containerAliasToID = new SumCoder.MD5().encode("AnotherContainer=" + container.getReleaseId());
+            }
+            Assert.assertTrue(container.getContainerId().equals(containerAliasToID));
+            Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, container.getStatus());
         }
-
-        Assert.assertTrue(kieContainers.get(pos).getContainerId().startsWith("decisionserver-hellorules_"));
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(pos).getStatus());
     }
 
     /*
     * Test the rule deployed on Openshift, the template used to register the HelloRules container with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
-    public void checkFireAllRules() throws Exception {
+    public void checkFireAllRules() throws MalformedURLException {
         log.info("Running test checkFireAllRules");
         // for untrusted connections
         prepareClientInvocation();
@@ -189,7 +189,7 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
     * Test the rule deployed on Openshift using AMQ client, the template used to register the HelloRules container with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
-    public void checkFireAllRulesAMQ() throws Exception {
+    public void checkFireAllRulesAMQ() throws NamingException {
         log.info("Running test checkFireAllRulesAMQ");
         log.info("Trying to connect to AMQ HOST: " + AMQ_HOST);
 
@@ -236,6 +236,9 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         Assert.assertTrue(serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer"));
     }
 
+
+    //Multiple Container Tests
+
     /*
     * Verifies the KieContainer ID, it should be decisionserver-hellorules
     * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
@@ -243,31 +246,23 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
     public void checkDecisionServerContainerAMQ() throws NamingException {
         log.info("Running test checkDecisionServerContainerAMQ");
         log.info("Trying to connect to AMQ HOST: " + AMQ_HOST);
-        List<KieContainerResource> kieContainers = getKieJmsServiceClient().listContainers().getResult().getContainers();
-
-        //When the multicontainer test is running, the decisionserver-hellorules will not be the first anymore
-        int pos = 0;
-        if (kieContainers.size() > 1) {
-            pos = 1;
+        for (KieContainerResource container : getKieJmsServiceClient().listContainers().getResult().getContainers()) {
+            String containerAliasToID = new SumCoder.MD5().encode(container.getResolvedReleaseId().getArtifactId() + "=" + container.getReleaseId());
+            //Make sure the second container name is AnotherContainer
+            if (!containerAliasToID.equals(container.getContainerId())) {
+                containerAliasToID = new SumCoder.MD5().encode("AnotherContainer=" + container.getReleaseId());
+            }
+            Assert.assertTrue(container.getContainerId().equals(containerAliasToID));
+            Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, container.getStatus());
         }
-
-        // Sorting kieContainerList
-        Collections.sort(kieContainers, ALPHABETICAL_ORDER);
-        // verify the KieContainer Name
-        Assert.assertTrue(kieContainers.get(pos).getContainerId().startsWith("decisionserver-hellorules_"));
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(pos).getStatus());
     }
-
-
-    //Multiple Container Tests
 
     /*
     * Tests a decision server with 2 containers:
     * Verifies the KieContainer ID, it should be AnotherContainer
     * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
     */
-    public void checkSecondDecisionServerContainer() throws Exception {
+    public void checkSecondDecisionServerContainer() throws MalformedURLException, UnsupportedEncodingException, NoSuchAlgorithmException {
         log.info("Running test checkSecondDecisionServerContainer");
         // for untrusted connections
         prepareClientInvocation();
@@ -279,24 +274,27 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         //kieContainers size should be 2
         Assert.assertEquals(2, kieContainers.size());
 
+        //Convert the KIE_CONTAINER_DEPLOYMENT into md5 hash
+        String containerAliasToID = convertKieContainerId("AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final");
+
         // verify the KieContainer Name
-        Assert.assertEquals("AnotherContainer", kieContainers.get(0).getContainerId());
+        Assert.assertEquals(containerAliasToID, kieContainers.get(1).getContainerId());
         // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
+        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(1).getStatus());
     }
 
     /*
     * Test the rule deployed on Openshift, the template used to register the HelloRules container with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
-    public void checkFireAllRulesInSecondContainer() throws Exception {
+    public void checkFireAllRulesInSecondContainer() throws MalformedURLException {
         log.info("Running test checkFireAllRulesInSecondContainer");
         // for untrusted connections
         prepareClientInvocation();
         KieServicesClient client = getKieRestServiceClient(getRouteURL());
 
         ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("AnotherContainer", batchCommand());
-        
+
         Assert.assertTrue(response.getResult() != null && response.getResult().length() > 0);
 
         Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
@@ -319,7 +317,7 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
     * Verifies the Second KieContainer ID using AMQ client, it should be AnotherContainer
     * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
     */
-    public void checkDecisionServerSecondContainerAMQ() throws NamingException {
+    public void checkDecisionServerSecondContainerAMQ() throws NamingException, UnsupportedEncodingException, NoSuchAlgorithmException {
         log.info("Running test checkDecisionServerSecondContainerAMQ");
         List<KieContainerResource> kieContainers = getKieJmsServiceClient().listContainers().getResult().getContainers();
 
@@ -330,16 +328,16 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         Assert.assertEquals(2, kieContainers.size());
 
         // verify the KieContainer Name
-        Assert.assertEquals("AnotherContainer", kieContainers.get(0).getContainerId());
+        Assert.assertEquals(convertKieContainerId("AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final"), kieContainers.get(1).getContainerId());
         // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
+        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(1).getStatus());
     }
 
     /*
     * Test the rule deployed on Openshift using AMQ client, this test case register a new template called AnotherContainer with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
     */
-    public void checkFireAllRulesInSecondContainerAMQ() throws Exception {
+    public void checkFireAllRulesInSecondContainerAMQ() throws NamingException {
         log.info("Running test checkFireAllRulesInSecondContainerAMQ");
         log.info("Trying to connect to AMQ HOST: " + AMQ_HOST);
 
@@ -367,6 +365,7 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
 
     /*
      * Returns httpClient client
+     * @throws Exception, inherited from org.jboss.arquillian.ce.httpclient.untrustedConnectionClient()
      */
     private HttpClient getClient() throws Exception {
         return HttpClientBuilder.untrustedConnectionClient();
@@ -388,6 +387,7 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
 
     /*
     * Return the HttpPost response for fire-all-rules using httpClient
+    * @throws Exception - see getClient()
     */
     private HttpResponse responseFireAllRules(String host, String containerId) throws Exception {
 
@@ -410,11 +410,10 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         return client.execute(request);
     }
 
-
     /*
     * Return the HttpGet response for generic requests using httpClient
     */
-    private HttpResponse genericResponse(String host, String uri) throws Exception {
+    private HttpResponse genericResponse(String host, String uri) {
         //request
         HttpRequest request = HttpClientBuilder.doGET(host + uri);
         try {
@@ -431,7 +430,7 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
     /* Verifies the server capabilities using httpClient, for decisionserver-openshift:6.2 it
     * should be KieServer BRM
     */
-    public void checkDecisionServerCapabilitiesHttpClient() throws Exception {
+    public void checkDecisionServerCapabilitiesHttpClient() {
 
         String HOST = "https://" + System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
         String URI = "/kie-server/services/rest/server";
@@ -443,23 +442,30 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         Assert.assertEquals(200, response.getResponseCode());
 
         // retrieving output response
-        String output = response.getResponseBodyAsString();
-        System.out.println(output);
+        String output = null;
+        try {
+            output = response.getResponseBodyAsString();
 
-        //converting response in a object (org.kie.server.api.model.ServiceResponse)
-        JAXBContext jaxbContent = JAXBContext.newInstance(ServiceResponse.class);
-        Unmarshaller unmarshaller = jaxbContent.createUnmarshaller();
+            //converting response in a object (org.kie.server.api.model.ServiceResponse)
+            JAXBContext jaxbContent = JAXBContext.newInstance(ServiceResponse.class);
+            Unmarshaller unmarshaller = jaxbContent.createUnmarshaller();
 
-        ServiceResponse serviceResponse = (ServiceResponse) unmarshaller.unmarshal(new StringReader(output));
-        KieServerInfo serverInfo = (KieServerInfo) serviceResponse.getResult();
+            ServiceResponse serviceResponse = (ServiceResponse) unmarshaller.unmarshal(new StringReader(output));
+            KieServerInfo serverInfo = (KieServerInfo) serviceResponse.getResult();
 
-        // Reading Server capabilities
-        String serverCapabilitiesResult = "";
-        for (String capability : serverInfo.getCapabilities()) {
-            serverCapabilitiesResult += (capability);
+            // Reading Server capabilities
+            String serverCapabilitiesResult = "";
+            for (String capability : serverInfo.getCapabilities()) {
+                serverCapabilitiesResult += (capability);
+            }
+
+            Assert.assertTrue(serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JAXBException e) {
+            e.printStackTrace();
         }
-
-        Assert.assertTrue(serverCapabilitiesResult.equals("KieServerBRM") || serverCapabilitiesResult.equals("BRMKieServer"));
     }
 
     /*
@@ -467,7 +473,7 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
     * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
     * test using httpClient
     */
-    public void checkDecisionServerSecureMultiContainerHttpClient() throws Exception {
+    public void checkDecisionServerSecureMultiContainerHttpClient() {
 
         String HOST = "https://" + System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
         String URI = "/kie-server/services/rest/server/containers";
@@ -479,37 +485,40 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         Assert.assertEquals(200, response.getResponseCode());
 
         // retrieving output response
-        String output = response.getResponseBodyAsString();
-
-        //converting response in a object (org.kie.server.api.model.ServiceResponse)
-        JAXBContext jaxbContent = JAXBContext.newInstance(ServiceResponse.class);
-        Unmarshaller unmarshaller = jaxbContent.createUnmarshaller();
-
-        ServiceResponse serviceResponse = (ServiceResponse) unmarshaller.unmarshal(new StringReader(output));
-        KieContainerResourceList kieContainers = (KieContainerResourceList) serviceResponse.getResult();
-
-        List<KieContainerResource> containers = kieContainers.getContainers();
-
-        // Sorting kieContainerList
-        Collections.sort(containers, ALPHABETICAL_ORDER);
-
-        //kieContainers's should be 2
-        Assert.assertEquals(2, kieContainers.getContainers().size());
+        String output = null;
+        try {
+            output = response.getResponseBodyAsString();
 
 
-        // verify the first KieContainer Name
-        Assert.assertEquals("AnotherContainer", kieContainers.getContainers().get(0).getContainerId());
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.getContainers().get(0).getStatus());
-        // verify the second KieContainer Name
-        Assert.assertEquals("decisionserver-hellorules", kieContainers.getContainers().get(1).getContainerId());
-        // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.getContainers().get(1).getStatus());
+            //converting response in a object (org.kie.server.api.model.ServiceResponse)
+            JAXBContext jaxbContent = JAXBContext.newInstance(ServiceResponse.class);
+            Unmarshaller unmarshaller = jaxbContent.createUnmarshaller();
+
+            ServiceResponse serviceResponse = (ServiceResponse) unmarshaller.unmarshal(new StringReader(output));
+            KieContainerResourceList kieContainers = (KieContainerResourceList) serviceResponse.getResult();
+
+            //kieContainers's should be 2
+            Assert.assertEquals(2, kieContainers.getContainers().size());
+            for (KieContainerResource container : kieContainers.getContainers()) {
+                String containerAliasToID = new SumCoder.MD5().encode(container.getResolvedReleaseId().getArtifactId() + "=" + container.getReleaseId());
+                //Make sure the second container name is AnotherContainer
+                if (!containerAliasToID.equals(container.getContainerId())) {
+                    containerAliasToID = new SumCoder.MD5().encode("AnotherContainer=" + container.getReleaseId());
+                }
+                Assert.assertEquals(container.getContainerId(), containerAliasToID);
+                Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, container.getStatus());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
     * Test the rule deployed on Openshift using httpClient, the template used register the decisionserver-hellorules with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
+    * @throwns Exception, see responseFireAllRules
     */
     public void checkFireAllRulesSecureHttpClient() throws Exception {
 
@@ -543,14 +552,16 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
 
     /*
     * Test the rule deployed on Openshift using httpClient and multicontainer feature, the template used register the
-     * AnotherContainer with the Kie jar:
+    * AnotherContainer with the Kie jar:
     * https://github.com/jboss-openshift/openshift-quickstarts/tree/master/decisionserver
+    * @throwns Exception, see responseFireAllRules
     */
     public void checkFireAllRulesSecureSecondContainerHttpClient() throws Exception {
 
         String HOST = "https://" + System.getenv("SECURE_KIE_APP_SERVICE_HOST") + ":" + System.getenv("SECURE_KIE_APP_SERVICE_PORT");
 
-        HttpResponse response = responseFireAllRules(HOST, "AnotherContainer");
+        //The value used here should be the same on the template definition
+        HttpResponse response = responseFireAllRules(HOST, convertKieContainerId("AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final"));
 
         //response code should be 200
         Assert.assertEquals(200, response.getResponseCode());
@@ -560,11 +571,12 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         Assert.assertTrue(output != null && output.length() > 0);
 
         Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ServiceResponse serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
+        ServiceResponse<ExecutionResults> serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
 
         Assert.assertTrue(serviceResponse.getType() == ServiceResponse.ResponseType.SUCCESS);
 
-        ExecutionResults execResults = marshaller.unmarshall(String.valueOf(serviceResponse.getResult()), ExecutionResults.class);
+        //ExecutionResults execResults = marshaller.unmarshall(String.valueOf(serviceResponse.getResult()), ExecutionResults.class);
+        ExecutionResults execResults = serviceResponse.getResult();
 
         QueryResults queryResults = (QueryResults) execResults.getValue("greetings");
 

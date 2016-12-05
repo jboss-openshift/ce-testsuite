@@ -23,6 +23,7 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.naming.NamingException;
@@ -43,9 +44,8 @@ import org.junit.runner.RunWith;
 /**
  * @author Filippe Spolti
  */
-
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/decisionserver/decisionserver63-amq-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver63-amq-s2i.json",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}"),
@@ -54,7 +54,7 @@ import org.junit.runner.RunWith;
         }
 )
 @OpenShiftResources({
-    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/kieserver-wip/secrets/decisionserver-app-secret.json")
+    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/decisionserver-app-secret.json")
 })
 public class DecisionServerAmqTest extends DecisionServerTestBase {
 
@@ -77,25 +77,24 @@ public class DecisionServerAmqTest extends DecisionServerTestBase {
 
     @Test
     @RunAsClient
-    public void testDecisionServerCapabilities() throws Exception {
-        //checkDecisionServerCapabilities(getRouteURL());
+    public void testDecisionServerCapabilities() throws MalformedURLException {
         checkKieServerCapabilities(getRouteURL(), "BRM");
     }
 
     @Test
     @RunAsClient
-    public void testDecisionServerContainer() throws Exception {
+    public void testDecisionServerContainer() throws MalformedURLException {
         checkDecisionServerContainer();
     }
 
     @Test
     @RunAsClient
-    public void testFireAllRules() throws Exception {
+    public void testFireAllRules() throws MalformedURLException {
         checkFireAllRules();
     }
 
     @Test
-    public void testFireAllRulesAMQ() throws Exception {
+    public void testFireAllRulesAMQ() throws NamingException {
         checkFireAllRulesAMQ();
     }
 

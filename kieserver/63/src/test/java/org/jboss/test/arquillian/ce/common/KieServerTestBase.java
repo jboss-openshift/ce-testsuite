@@ -23,9 +23,12 @@
 
 package org.jboss.test.arquillian.ce.common;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -91,6 +94,7 @@ public abstract class KieServerTestBase {
         war.addPackage(Person.class.getPackage());
         war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
         war.addAsLibraries(Libraries.transitive("org.jboss.arquillian.container", "arquillian-ce-httpclient"));
+        war.addAsLibraries(Libraries.transitive("org.openshift.kieserver","openshift-kieserver-common"));
         Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
         handle.addProperty("kie.username", KIE_USERNAME);
         handle.addProperty("kie.password", KIE_PASSWORD);
@@ -105,11 +109,11 @@ public abstract class KieServerTestBase {
 
     protected abstract URL getRouteURL();
 
-    protected void prepareClientInvocation() throws Exception {
+    protected void prepareClientInvocation() {
         // do nothing in basic
     }
 
-    protected KieServicesConfiguration configureRestClient(URL baseURL) throws Exception {
+    protected KieServicesConfiguration configureRestClient(URL baseURL) throws MalformedURLException {
         KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newRestConfiguration(new URL(baseURL,
                 "/kie-server/services/rest/server").toString(), KIE_USERNAME, KIE_PASSWORD);
         kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
@@ -137,7 +141,7 @@ public abstract class KieServerTestBase {
     * @param URL url - KieServer address
     * @throwns Exception for any issue
     */
-    protected KieServicesClient getKieRestServiceClient(URL baseURL) throws Exception {
+    protected KieServicesClient getKieRestServiceClient(URL baseURL) throws MalformedURLException {
         return KieServicesFactory.newKieServicesClient(configureRestClient(baseURL));
     }
 
@@ -149,7 +153,7 @@ public abstract class KieServerTestBase {
     *         String cap - capability to test
     * @throws Exception for all issues
     */
-    public void checkKieServerCapabilities(URL url, String cap) throws Exception {
+    public void checkKieServerCapabilities(URL url, String cap) throws MalformedURLException {
         log.info("Running test checkKieServerCapabilities");
         // for untrusted connections
         prepareClientInvocation();
@@ -216,22 +220,21 @@ public abstract class KieServerTestBase {
     * @returns the MD5 hash of the given container.
     * @throws Exception for any kind of error.
     */
-    private String convertKieContainerId(String kieContainer) throws Exception {
-
+    public String convertKieContainerId(String kieContainer) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         //validate the container name received:
         final Pattern PATTERN = Pattern.compile("(^\\w*=*)(\\w:*)(\\w*:*)");
 
         if (!PATTERN.matcher(kieContainer).find()) {
             throw new InvalidParameterException("Please use the following format: ContainerName=G:A:V");
         }
-
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             byte[] digest = md5.digest(kieContainer.getBytes("UTF-8"));
             return DatatypeConverter.printHexBinary(digest).toLowerCase();
-
-        } catch (Exception e) {
-            throw new Exception("Failed to generate the MD5 hash of " + kieContainer);
+        } catch (NoSuchAlgorithmException e) {
+            throw new NoSuchAlgorithmException("Failed to generate the MD5 hash of " + kieContainer);
+        } catch (UnsupportedEncodingException e) {
+            throw new UnsupportedEncodingException("Failed to generate the MD5 hash of " + kieContainer);
         }
     }
 }
