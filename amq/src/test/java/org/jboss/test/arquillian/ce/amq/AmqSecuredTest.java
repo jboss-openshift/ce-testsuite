@@ -60,7 +60,7 @@ import org.junit.runner.RunWith;
 		@TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/amq-app-secret.json"),
+	@OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/amq-app-secret.json"),
     @OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqSecuredTest extends AmqSslTestBase {

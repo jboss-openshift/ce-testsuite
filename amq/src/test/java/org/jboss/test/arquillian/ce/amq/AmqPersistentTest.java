@@ -165,7 +165,7 @@ public class AmqPersistentTest extends AmqTestBase {
 
     @Test
     @InSequence(9)
-    @Ignore("This test has a problem when disconnecting MQTT connection, probably related to MQTT Client used. Will be ignored until find the root cause.")
+    @Ignore("https://github.com/jboss-openshift/ce-testsuite/issues/121")
     public void testMqttConnection() throws Exception {
         Message msg = receiveConnection.receive(5, TimeUnit.SECONDS);
 

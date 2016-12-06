@@ -66,7 +66,7 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/amq-app-secret.json"),
+    @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/amq-app-secret.json"),
     @OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqPersistentSecuredTest extends AmqSslTestBase {
@@ -189,7 +189,7 @@ public class AmqPersistentSecuredTest extends AmqSslTestBase {
 
     @Test
     @InSequence(9)
-    @Ignore("This test has a problem when disconnecting MQTT connection, probably related to MQTT Client used. Will be ignored until find the root cause.")
+    @Ignore("https://github.com/jboss-openshift/ce-testsuite/issues/121")
     public void testMqttConnection() throws Exception {
         Message msg = receiveConnection.receive(5, TimeUnit.SECONDS);
 
