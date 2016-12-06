@@ -1,6 +1,7 @@
 package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
 
@@ -14,15 +15,10 @@ import org.junit.After;
 import org.junit.Before;
 
 public class AmqSslTestBase extends AmqTestBase {
+	
+	static Logger LOG = Logger.getLogger(AmqSslTestBase.class.getName());
 
-	static {
-        System.setProperty("javax.net.ssl.trustStore", "/etc/eap-certs/broker.ts");
-        System.setProperty("javax.net.ssl.trustStorePassword", "password");
-        System.setProperty("javax.net.ssl.keyStore", "/etc/eap-certs/broker.ks");
-        System.setProperty("javax.net.ssl.keyStorePassword", "password");
-    }
-
-    private BrokerService svc;
+	private BrokerService svc;
 
     private SslContext brokerContext;
 

@@ -56,14 +56,19 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
         @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
         @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
-        @TemplateParameter(name = "AMQ_TRUSTSTORE_PASSWORD", value = "password"),
-        @TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
+		@TemplateParameter(name = "AMQ_TRUSTSTORE_PASSWORD", value = "password"),
+		@TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-    @OpenShiftResource("classpath:amq-app-secret.json"),
+    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/amq-app-secret.json"),
     @OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqSecuredTest extends AmqSslTestBase {
+	
+	static {
+		System.setProperty("javax.net.ssl.trustStore", "/opt/eap/certs/broker.ts");
+		System.setProperty("javax.net.ssl.trustStorePassword", "password");
+	}
 
     private String openWireMessage = "Arquillian test - Secured OpenWire";
     private String amqpMessage = "Arquillian Test - Secured AMQP";
@@ -123,6 +128,10 @@ public class AmqSecuredTest extends AmqSslTestBase {
         Message msg = connection.receive(5, TimeUnit.SECONDS);
 
         String received = new String(msg.getPayload());
+        msg.ack();
+        
+        connection.disconnect();
+        
         assertEquals(mqttMessage, received);
     }
 
