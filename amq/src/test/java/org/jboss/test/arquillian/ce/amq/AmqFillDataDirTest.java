@@ -42,6 +42,7 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -66,6 +67,7 @@ import org.junit.runner.RunWith;
     @OpenShiftResource("classpath:amq-internal-imagestream.json") // custom dev imagestream; remove when multi repl image is in prod
 })
 @Replicas(1)
+@Ignore("https://github.com/jboss-openshift/ce-testsuite/issues/123")
 public class AmqFillDataDirTest extends AmqMigrationTestBase {
 
     private static final String QUEUE_OBJECT_NAME = "org.apache.activemq:brokerName=%s,destinationName=QUEUES.FOO,destinationType=Queue,type=Broker";

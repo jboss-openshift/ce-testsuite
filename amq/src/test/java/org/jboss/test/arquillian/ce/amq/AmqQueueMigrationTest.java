@@ -42,6 +42,7 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -65,10 +66,11 @@ import org.junit.runner.RunWith;
     @OpenShiftResource("classpath:amq-internal-imagestream.json") // custom dev imagestream; remove when multi repl image is in prod
 })
 @Replicas(1)
+@Ignore("https://github.com/jboss-openshift/ce-testsuite/issues/123")
 public class AmqQueueMigrationTest extends AmqMigrationTestBase {
 
     private static final String QUEUE_OBJECT_NAME = "org.apache.activemq:brokerName=%s,destinationName=QUEUES.FOO,destinationType=Queue,type=Broker";
-    private static final String HANDLED_MSGS = "Handled %s messages for queue 'QUEUES.FOO'";
+    private static final String HANDLED_MSGS = "Processing stats: 'QUEUES.FOO' -> [%s / %s]";
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
@@ -112,7 +114,7 @@ public class AmqQueueMigrationTest extends AmqMigrationTestBase {
 
         if (distributed) {
             // msgs were distributed, hence should be migrated
-            waitForDrain(adapter, 0, String.format(HANDLED_MSGS, sizes[0]), String.format(HANDLED_MSGS, sizes[1]));
+            waitForDrain(adapter, 0, String.format(HANDLED_MSGS, sizes[0], sizes[0]));
         }
 
         // drain should kick-in in any case

@@ -38,6 +38,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,17 +52,16 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
         @TemplateParameter(name = "MQ_TOPICS", value = "topics.mqtt"),
         @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
+        @TemplateParameter(name = "AMQ_SPLIT", value = "true"),
         @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
         @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
-        @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
-        @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value = "${kubernetes.namespace}")})
-// remove when amq-internal-is is removed
+        @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
     @OpenShiftResource("classpath:testrunner-secret.json"),
-    @OpenShiftResource("classpath:amq-internal-imagestream.json") // custom dev imagestream; remove when multi repl image is in prod
 })
 @Replicas(1)
+@Ignore("https://github.com/jboss-openshift/ce-testsuite/issues/123")
 public class AmqRollingUpgradeTest extends AmqMigrationTestBase {
     private static final int N = 5;
 
