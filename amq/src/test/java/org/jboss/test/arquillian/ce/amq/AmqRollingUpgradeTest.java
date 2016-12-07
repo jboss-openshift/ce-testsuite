@@ -87,7 +87,7 @@ public class AmqRollingUpgradeTest extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(3)
     public void testRollingUpdate(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.rollingUpgrade("amq-test-amq", true);
+        adapter.triggerDeploymentConfigUpdate("amq-test-amq", true);
     }
 
     @Test
