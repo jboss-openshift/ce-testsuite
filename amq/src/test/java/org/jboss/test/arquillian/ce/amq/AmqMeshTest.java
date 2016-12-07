@@ -62,12 +62,11 @@ import org.junit.runner.RunWith;
 	@OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqMeshTest extends AmqTestBase {
+	private static final int NUMBER_OF_MESSAGES = 40;
+
 	private static final Logger log = Logger.getLogger(AmqMeshTest.class.getName());
 
 	static List<String> pods = new ArrayList<>();
-
-	@ArquillianResource
-    OpenShiftHandle adapter;
 
 	@Deployment
 	public static WebArchive getDeployment() throws IOException {
@@ -77,7 +76,7 @@ public class AmqMeshTest extends AmqTestBase {
 	@Test
 	@RunAsClient
 	@InSequence(1)
-    public void scaleUpResources() throws Exception {
+    public void scaleUpResources(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         adapter.scaleDeployment("amq-test", 2);
         pods.addAll(adapter.getPods());
 
@@ -87,7 +86,7 @@ public class AmqMeshTest extends AmqTestBase {
 	@Test
 	@InSequence(2)
 	public void sendMessages() throws Exception {
-		for (int i = 0; i < 40; i++) {
+		for (int i = 0; i < NUMBER_OF_MESSAGES; i++) {
 			AmqClient client = createAmqClient("tcp://" + System.getenv("AMQ_TEST_AMQ_TCP_SERVICE_HOST") + ":61616");
 
 			client.produceOpenWireJms("Hello! I sent this message " + i + " times.", false);
@@ -97,20 +96,23 @@ public class AmqMeshTest extends AmqTestBase {
 	@Test
 	@RunAsClient
 	@InSequence(3)
-	public void checkMessages() throws Exception {
+	public void checkMessages(@ArquillianResource OpenShiftHandle adapter) throws Exception {
 		Tools.trustAllCertificates();
 
+		int totalMessages = 0;
 		for (String podName : pods) {
 			if(!podName.equals("testrunner")) {
                 final String queueSizeQuery = "org.apache.activemq:type=Broker,brokerName=" + podName + ",destinationType=Queue,destinationName=QUEUES.FOO/QueueSize";
-                String path = "jolokia/read/" + queueSizeQuery;
-                try (InputStream inputStream = adapter.execute(podName, 8778, path)) {
+                String path = "/jolokia/read/" + queueSizeQuery;
+                log.info(path);
+                try (InputStream inputStream = adapter.execute("https:" + podName, 8778, path)) {
                     JSONTokener tokener = new JSONTokener(inputStream);
                     JSONObject jsonObject = new JSONObject(tokener);
-                    assertEquals(20, jsonObject.get("value"));
+                    totalMessages += Integer.parseInt(jsonObject.get("value").toString());
                 }
             }
 		}
+		assertEquals(NUMBER_OF_MESSAGES, totalMessages);
 	}
 
 }
