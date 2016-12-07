@@ -20,9 +20,9 @@
 
     <modules>
         <module>62</module>
-        <!-- <module>63</module> -->
+        <module>63</module>
     </modules>
-    
+
     <properties>
         <version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
         <version.org.kie>6.2.0.Final-redhat-14</version.org.kie>
