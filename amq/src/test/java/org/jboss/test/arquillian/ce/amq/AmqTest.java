@@ -110,6 +110,10 @@ public class AmqTest extends AmqTestBase {
         Message msg = connection.receive(5, TimeUnit.SECONDS);
 
         String received = new String(msg.getPayload());
+        msg.ack();
+        
+        connection.disconnect();
+        
         assertEquals(mqttMessage, received);
     }
 

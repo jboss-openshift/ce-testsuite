@@ -46,6 +46,7 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -65,10 +66,15 @@ import org.junit.runner.RunWith;
         @TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-    @OpenShiftResource("classpath:amq-app-secret.json"),
+    @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/amq-app-secret.json"),
     @OpenShiftResource("classpath:testrunner-secret.json")
 })
 public class AmqPersistentSecuredTest extends AmqSslTestBase {
+	
+	static {
+		System.setProperty("javax.net.ssl.trustStore", "/opt/eap/certs/broker.ts");
+		System.setProperty("javax.net.ssl.trustStorePassword", "password");
+	}
 
     private String openWireMessage = "Arquillian test - Persistent Secured OpenWire";
     private String amqpMessage = "Arquillian Test - Persistent Secured AMQP";
@@ -183,6 +189,7 @@ public class AmqPersistentSecuredTest extends AmqSslTestBase {
 
     @Test
     @InSequence(9)
+    @Ignore("https://github.com/jboss-openshift/ce-testsuite/issues/121")
     public void testMqttConnection() throws Exception {
         Message msg = receiveConnection.receive(5, TimeUnit.SECONDS);
 

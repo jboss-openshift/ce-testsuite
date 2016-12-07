@@ -43,6 +43,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -66,6 +67,7 @@ import org.junit.runner.RunWith;
     @OpenShiftResource("classpath:testrunner-secret.json")
 })
 @Replicas(1)
+@Ignore("https://github.com/jboss-openshift/ce-testsuite/issues/123")
 public class AmqDurableTopicSubscriberMigrationTest extends AmqMigrationTestBase {
 
     private static final int N = 10;
