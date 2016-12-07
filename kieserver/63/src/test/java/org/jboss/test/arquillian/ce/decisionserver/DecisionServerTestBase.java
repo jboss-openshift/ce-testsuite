@@ -167,15 +167,12 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
 
         KieServicesClient client = getKieRestServiceClient(getRouteURL());
 
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("decisionserver-hellorules", batchCommand());
+        ServiceResponse<ExecutionResults> response = getRuleServicesClient(client).executeCommandsWithResults("decisionserver-hellorules", batchCommand());
 
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
+        // response cannot be null
+        Assert.assertNotNull(response);
 
-        // results cannot be null
-        Assert.assertNotNull(results);
-
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
+        QueryResults queryResults = (QueryResults) response.getResult().getValue("greetings");
         Greeting greeting = new Greeting();
         for (QueryResultsRow queryResult : queryResults) {
             greeting = (Greeting) queryResult.get("greeting");
@@ -195,14 +192,12 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
 
         KieServicesClient client = getKieJmsServiceClient();
 
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("decisionserver-hellorules", batchCommand());
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
+        ServiceResponse<ExecutionResults> response = getRuleServicesClient(client).executeCommandsWithResults("decisionserver-hellorules", batchCommand());
 
         // results cannot be null
-        Assert.assertNotNull(results);
+        Assert.assertNotNull(response);
 
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
+        QueryResults queryResults = (QueryResults) response.getResult().getValue("greetings");
         Greeting greeting = new Greeting();
         for (QueryResultsRow queryResult : queryResults) {
             greeting = (Greeting) queryResult.get("greeting");
@@ -293,17 +288,14 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         prepareClientInvocation();
         KieServicesClient client = getKieRestServiceClient(getRouteURL());
 
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("AnotherContainer", batchCommand());
+        ServiceResponse<ExecutionResults> response = getRuleServicesClient(client).executeCommandsWithResults("AnotherContainer", batchCommand());
 
-        Assert.assertTrue(response.getResult() != null && response.getResult().length() > 0);
-
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
+        Assert.assertTrue(response.getResult() != null && response.getResult().getIdentifiers().size() > 0);
 
         // results cannot be null
-        Assert.assertNotNull(results);
+        Assert.assertNotNull(response);
 
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
+        QueryResults queryResults = (QueryResults) response.getResult().getValue("greetings");
         Greeting greeting = new Greeting();
         for (QueryResultsRow queryResult : queryResults) {
             greeting = (Greeting) queryResult.get("greeting");
@@ -343,17 +335,14 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
 
         KieServicesClient client = getKieJmsServiceClient();
 
-        ServiceResponse<String> response = getRuleServicesClient(client).executeCommands("AnotherContainer", batchCommand());
+        ServiceResponse<ExecutionResults> response = getRuleServicesClient(client).executeCommandsWithResults("AnotherContainer", batchCommand());
 
-        Assert.assertTrue(response.getResult() != null && response.getResult().length() > 0);
-
-        Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ExecutionResults results = marshaller.unmarshall(response.getResult(), ExecutionResults.class);
+        Assert.assertTrue(response.getResult() != null && response.getResult().getIdentifiers().size() > 0);
 
         // results cannot be null
-        Assert.assertNotNull(results);
+        Assert.assertNotNull(response);
 
-        QueryResults queryResults = (QueryResults) results.getValue("greetings");
+        QueryResults queryResults = (QueryResults) response.getResult().getValue("greetings");
         Greeting greeting = new Greeting();
         for (QueryResultsRow queryResult : queryResults) {
             greeting = (Greeting) queryResult.get("greeting");
@@ -534,13 +523,11 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         Assert.assertTrue(output != null && output.length() > 0);
 
         Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ServiceResponse<ExecutionResults> serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
+        ServiceResponse<ExecutionResults> serviceResponse = marshaller.unmarshall(output, null);
 
         Assert.assertTrue(serviceResponse.getType() == ServiceResponse.ResponseType.SUCCESS);
 
-        ExecutionResults execResults = serviceResponse.getResult();
-
-        QueryResults queryResults = (QueryResults) execResults.getValue("greetings");
+        QueryResults queryResults = (QueryResults) serviceResponse.getResult().getValue("greetings");
         Greeting greeting = new Greeting();
         for (QueryResultsRow queryResult : queryResults) {
             greeting = (Greeting) queryResult.get("greeting");
@@ -571,14 +558,10 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
         Assert.assertTrue(output != null && output.length() > 0);
 
         Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ServiceResponse<ExecutionResults> serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
+        ServiceResponse<ExecutionResults> serviceResponse = marshaller.unmarshall(output, null);
 
         Assert.assertTrue(serviceResponse.getType() == ServiceResponse.ResponseType.SUCCESS);
-
-        //ExecutionResults execResults = marshaller.unmarshall(String.valueOf(serviceResponse.getResult()), ExecutionResults.class);
-        ExecutionResults execResults = serviceResponse.getResult();
-
-        QueryResults queryResults = (QueryResults) execResults.getValue("greetings");
+        QueryResults queryResults = (QueryResults) serviceResponse.getResult().getValue("greetings");
 
         Greeting greeting = new Greeting();
         for (QueryResultsRow queryResult : queryResults) {
