@@ -779,7 +779,11 @@
                         -Djboss.qualified.host.name=testrunner
                         -Dorg.jboss.as.test.integration.remote=true
                         -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+                        -D
                     </argLine>
+                    <systemPropertyVariables>
+                        <portForwardBindAddress>${portForwardBindAddress}</portForwardBindAddress>
+                    </systemPropertyVariables>
                     <runOrder>alphabetical</runOrder>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <trimStackTrace>false</trimStackTrace>

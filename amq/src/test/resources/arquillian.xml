@@ -43,6 +43,8 @@
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <!-- Ports to be proxied locally, <container>:<port> -->
         <property name="proxiedContainerPorts">testrunner:9999,testrunner:9990,testrunner:8080</property>
+        <!-- Specifies the port forwarder bind address, it allows you to run more than one test at the same time -->
+        <property name="portForwardBindAddress">${portForwardBindAddress}</property>
     </extension>
 
     <!--

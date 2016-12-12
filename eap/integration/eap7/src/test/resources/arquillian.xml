@@ -41,6 +41,8 @@
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <!-- Ports to be proxied locally, <container>:<port> or <container>:0:<port>, to map the same port than container use <container>::<port> or <container>:<port>:<port> -->
         <property name="proxiedContainerPorts">testrunner-eap7::9990,testrunner-eap7::8080,testrunner-eap7::8443,testrunner-eap7::3528,testrunner-eap7::3529,testrunner-eap7::2020,testrunner-eap7::8181,testrunner-eap7::11090</property>
+        <!-- Specifies the port forwarder bind address, it allows you to run more than one test at the same time -->
+        <property name="portForwardBindAddress">${portForwardBindAddress}</property>
     </extension>
 
     <!--
