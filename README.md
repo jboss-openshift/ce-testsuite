@@ -37,6 +37,14 @@ used is being used by another process. To solve this issue you can easily use th
 
 *Note that the default bind address is **localhost**.*
 
+# Persistent Volumes and Persistent Volume Claims
+
+Some tests make use of the Persistent Volumes feature of Kubernetes/OpenShift. It is out of the tests' scope, however, to setup such PV's. This is left to the cluster administrator as a requirement for running the whole suite of tests.
+
+Those tests just use the PersistentVolumeClaims to claim for some volumes. [Check the docs](https://docs.openshift.org/latest/dev_guide/persistent_volumes.html) for more information on how to configure Persistent Volumes.
+
+You can, if you prefer, disable such tests temporarily, by [excluding them within pom.xml](http://maven.apache.org/surefire/maven-surefire-plugin/examples/inclusion-exclusion.html). Those tests have the word `Persistent` into their names, like, for instance: `Eap70MysqlPersistentTest.java`.
+
 For more details about each component of this testsuite, please verify their docs:
 
  - [AMQ](https://github.com/jboss-openshift/ce-testsuite/blob/master/amq/README.md)
