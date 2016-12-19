@@ -18,7 +18,7 @@
 						"command": [
 							"/bin/bash",
 							"-c",
-							"curl -s --digest -L http://localhost:9990/management --header \"Content-Type: application/json\" -d '{\"operation\":\"read-attribute\",\"name\":\"server-state\",\"json.pretty\":1}' | grep -iq running"
+							"/opt/eap/bin/readinessProbe.sh"
 						]
 					}
 				},
@@ -30,7 +30,7 @@
 					}
 				],
 
-				"image": "jboss-eap-6/eap64-openshift:1.2",
+				"image": "jboss-eap-6/eap64-openshift:1.4",
 				"ports": [
 					{
 						"containerPort": 8080,
