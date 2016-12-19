@@ -38,7 +38,6 @@ import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 
-import junit.framework.Assert;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
@@ -47,6 +46,7 @@ import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 
 /**
  * @author fspolti
