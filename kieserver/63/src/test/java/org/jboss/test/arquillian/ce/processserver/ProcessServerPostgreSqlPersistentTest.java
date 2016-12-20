@@ -70,11 +70,6 @@ public class ProcessServerPostgreSqlPersistentTest extends LibraryProcessTestBas
                 return routeURL;
         }
 
-        @Override
-        public void testLibraryAMQ() throws Exception {
-                // do nothing on non amq templates
-        }
-
         @Test
         @RunAsClient
         public void testProcessServerCapabilities() throws Exception {
