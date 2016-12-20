@@ -61,11 +61,6 @@ public abstract class LibraryProcessTestBase extends KieServerTestBase {
     }
 
     @Test
-    public void testLibraryAMQ() throws Exception {
-        runLibraryTest(configureAmqClient());
-    }
-
-    @Test
     public void testLibraryREST() throws Exception {
         runLibraryTest(configureRestClient(new URL("http://" + System.getenv("KIE_APP_SERVICE_HOST") + ":" + System.getenv("KIE_APP_SERVICE_PORT") + "/")));
     }
