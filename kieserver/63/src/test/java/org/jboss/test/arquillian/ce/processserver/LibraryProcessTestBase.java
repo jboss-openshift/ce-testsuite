@@ -40,7 +40,6 @@ import org.openshift.quickstarts.processserver.library.types.Suggestion;
 /**
  * @author Filippe Spolti
  */
-
 public abstract class LibraryProcessTestBase extends KieServerTestBase {
 
     @RouteURL("kie-app")

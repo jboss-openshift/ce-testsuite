@@ -54,6 +54,7 @@ import org.kie.server.api.model.KieServerInfo;
 import org.kie.server.client.KieServicesClient;
 import org.kie.server.client.KieServicesConfiguration;
 import org.kie.server.client.KieServicesFactory;
+import org.openshift.kieserver.common.coder.SumCoder;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
 /**
@@ -183,8 +184,10 @@ public abstract class KieServerTestBase {
     }
 
     /*
-    * Verifies the KieContainer ID, it should be decisionserver-hellorules
+    * Verifies a single container
+    * Verifies the KieContainer ID
     * Verifies the KieContainer Status, it should be org.kie.server.api.model.KieContainerStatus.STARTED
+    * @param String containerId
     */
     public void checkKieServerContainer(String containerId) throws Exception {
         log.info("Running test checkKieServerContainer");
@@ -193,23 +196,12 @@ public abstract class KieServerTestBase {
 
         List<KieContainerResource> kieContainers = getKieRestServiceClient(getRouteURL()).listContainers().getResult().getContainers();
 
-        // Sorting kieContainerList
-        Collections.sort(kieContainers, ALPHABETICAL_ORDER);
-        // verify the KieContainer Name
+        log.info("Container ID: " + kieContainers.get(0).getContainerId());
+        log.info("Container Status: " + kieContainers.get(0).getStatus());
 
-        //When the multicontainer test is running, the decisionserver-hellorules will not be the first anymore
-        int pos = 0;
-        if (kieContainers.size() > 1) {
-            pos = 1;
-        }
-
-        log.info("Container ID: " + kieContainers.get(pos).getContainerId());
-        log.info("Container Status: " + kieContainers.get(pos).getStatus());
-
-        Assert.assertTrue(kieContainers.get(pos).getContainerId().equals(convertKieContainerId(containerId)));
+        Assert.assertTrue(kieContainers.get(0).getContainerId().equals(convertKieContainerId(containerId)));
         // verify the KieContainer Status
-        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(pos).getStatus());
-
+        Assert.assertEquals(org.kie.server.api.model.KieContainerStatus.STARTED, kieContainers.get(0).getStatus());
     }
 
     /*
