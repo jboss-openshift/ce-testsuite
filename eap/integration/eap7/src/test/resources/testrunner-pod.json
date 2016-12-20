@@ -40,10 +40,6 @@
             "protocol": "TCP"
           },
           {
-            "containerPort": 8443,
-            "protocol": "TCP"
-          },
-          {
             "containerPort": 8181,
             "protocol": "TCP"
           },
