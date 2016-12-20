@@ -43,7 +43,7 @@ import java.net.URL;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository}/application-templates/${template.branch}p/processserver/processserver63-mysql-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository}/application-templates/${template.branch}/processserver/processserver63-mysql-s2i.json",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
