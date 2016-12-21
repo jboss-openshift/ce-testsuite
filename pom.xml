@@ -51,7 +51,7 @@
     </properties>
 
     <modules>
-        <!-- <module>amq</module> -->
+        <module>amq</module>
         <module>eap</module>
         <module>jdg</module>
         <module>kieserver</module>

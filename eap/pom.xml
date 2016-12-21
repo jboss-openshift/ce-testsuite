@@ -24,9 +24,9 @@
     <modules>
         <module>common</module>
         <module>eap64</module>
-        <!-- <module>eap70</module> -->
+        <module>eap70</module>
         <!-- <module>compat</module> -->
-        <!-- <module>integration/eap6</module> -->
+        <module>integration/eap6</module>
         <!-- <module>integration/eap7</module> -->
     </modules>
 </project>
