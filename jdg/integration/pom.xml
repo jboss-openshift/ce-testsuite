@@ -252,7 +252,6 @@
                     <runOrder>alphabetical</runOrder>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <trimStackTrace>false</trimStackTrace>
-                    <failIfNoTests>true</failIfNoTests>
                     <excludedGroups>${groups.unstable}</excludedGroups>
                     <includes>
                         <include>**/*IT.java</include>
