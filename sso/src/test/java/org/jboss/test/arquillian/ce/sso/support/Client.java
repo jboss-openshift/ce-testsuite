@@ -16,6 +16,10 @@
  */
 package org.jboss.test.arquillian.ce.sso.support;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -25,6 +29,8 @@ import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 
 public class Client {
@@ -129,10 +135,35 @@ public class Client {
                 }
             }
 
-            return response.getResponseBodyAsString();
+            if (statusCode != 200)
+            	return statusCode + " " + response.getResponseBodyAsString();
+            else 
+            	return response.getResponseBodyAsString();
         } catch (Exception e) {
         	e.printStackTrace();
             throw new RuntimeException(e);
         } 
+    }
+    
+    public String getToken(String username, String password) throws Exception {
+		Map<String, String> params = new HashMap<>();
+        params.put("username", username);
+        params.put("password", password);
+        params.put("grant_type", "password");
+        params.put("client_id", "admin-cli");
+
+        setParams(params);
+        String result = post("auth/realms/master/protocol/openid-connect/token");
+
+        assertFalse(result.contains("error_description"));
+        assertTrue(result.contains("access_token"));
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+        String accessToken = (String) jsonObject.get("access_token");
+        
+        setParams(null);
+        
+        return accessToken;
     }
 }

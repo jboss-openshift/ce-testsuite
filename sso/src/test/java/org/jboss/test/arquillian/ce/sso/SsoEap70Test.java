@@ -35,16 +35,21 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/eap/eap64-sso-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap70-sso-s2i.json",
 		labels = "application=eap-app",
 		parameters = {
-			@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "master"),
+			@TemplateParameter(name = "HTTPS_NAME", value = "jboss"),
+			@TemplateParameter(name = "HTTPS_PASSWORD", value = "mykeystorepass"),	
+			@TemplateParameter(name = "SSO_URL", value = "http://sso.cloudapps.example.com/auth"),
+			@TemplateParameter(name = "HOSTNAME_HTTP", value = "eap-app.cloudapps.example.com"),
+			@TemplateParameter(name = "HOSTNAME_HTTPS", value = "secure-eap-app.cloudapps.example.com"),
+			@TemplateParameter(name = "SSO_REALM", value = "demo"),
         	@TemplateParameter(name = "SSO_PUBLIC_KEY", value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiLezsNQtZSaJvNZXTmjhlpIJnnwgGL5R1vkPLdt7odMgDzLHQ1h4DlfJPuPI4aI8uo8VkSGYQXWaOGUh3YJXtdO1vcym1SuP8ep6YnDy9vbUibA/o8RW6Wnj3Y4tqShIfuWf3MEsiH+KizoIJm6Av7DTGZSGFQnZWxBEZ2WUyFt297aLWuVM0k9vHMWSraXQo78XuU3pxrYzkI+A4QpeShg8xE7mNrs8g3uTmc53KR45+wW1icclzdix/JcT6YaSgLEVrIR9WkkYfEGj3vSrOzYA46pQe6WQoenLKtIDFmFDPjhcPoi989px9f+1HCIYP0txBS/hnJZaPdn5/lEUKQIDAQAB")
         })
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap7-app-secret.json")
 })
-public class SsoEapTest extends SsoEapTestBase
+public class SsoEap70Test extends SsoEapTestBase
 {
 	@RouteURL("eap-app")
     private URL routeURL;

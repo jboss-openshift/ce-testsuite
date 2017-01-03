@@ -33,17 +33,21 @@ import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
+import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template( url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/sso/sso70-basic.json",
-		labels = "application=sso")
+@Template( url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/sso/sso70-https.json",
+labels = "application=sso",
+parameters = {
+        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
+        @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
+        })
 @OpenShiftResources({
         @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
         @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
@@ -73,14 +77,15 @@ public class SsoServerLogTest extends SsoTestBase
 	@Test
     @RunAsClient
     public void testLogs() throws Exception {
-        Map<String, String> labels = Collections.singletonMap("application", "sso");
-        adapter.exec(labels, 10, "curl", "-s", "https://raw.githubusercontent.com/bdecoste/log-access/master/logaccess-jaxrs/logaccess-jaxrs.war", "-o", "/opt/eap/standalone/deployments/logaccess-jaxrs.war");
-
-        Client client = new Client(getRouteURL().toString());
-        String result = client.get("logging/podlog");
-    
-        assertTrue(result.contains("Deployed \"keycloak-server.war\""));
-        assertTrue(result.contains("Deployed \"logaccess-jaxrs.war\""));
+		try {
+	        Map<String, String> labels = Collections.singletonMap("application", "sso");
+	        String result = adapter.getLog(null, labels);
+	    
+	        assertTrue(result.contains("Deployed \"keycloak-server.war\""));
+		} catch (Exception e){
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
 	
