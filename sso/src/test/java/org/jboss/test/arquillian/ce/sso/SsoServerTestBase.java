@@ -29,11 +29,21 @@ import static junit.framework.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.ce.httpclient.HttpClient;
+import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
+import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
+import org.jboss.arquillian.ce.httpclient.HttpRequest;
+import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.test.arquillian.ce.sso.support.Client;
+import org.jboss.arquillian.junit.InSequence;
+import org.json.simple.JSONObject;
 import org.junit.Test;
 
 public abstract class SsoServerTestBase extends SsoTestBase {
+	
+	private final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
+            .desiredStatusCode(200).delay(10).build();
 
     @Test
     @RunAsClient
@@ -48,9 +58,12 @@ public abstract class SsoServerTestBase extends SsoTestBase {
     }
         
     protected void consoleRoute(String host) throws Exception {
-        Client client = new Client(host);
-        String result = client.get("auth/admin/master/console/#/realms/master");
-        assertTrue(result.contains("realm.js"));
+    	HttpClient client = HttpClientBuilder.untrustedConnectionClient();
+        HttpRequest request = HttpClientBuilder.doGET(host + "auth/realms/master/protocol/openid-connect/auth?client_id=security-admin-console&redirect_uri=" + host + "auth/admin/master/console&state=5200ac38-a9fc-40af-88b9-f0291b7b097e&nonce=9adb148a-4575-4c8f-87fa-2e667fdff767&response_mode=fragment&response_type=code");
+        HttpResponse response = client.execute(request, execOptions);
+        
+        String result = response.getResponseBodyAsString();
+        assertTrue(result.contains("<input id=\"username\""));
     }
     
     @Test
@@ -66,15 +79,21 @@ public abstract class SsoServerTestBase extends SsoTestBase {
     }
                
     protected void restRoute(String host) throws Exception {
-        Map<String, String> params = new HashMap<>();
+      
+        
+        HttpClient client = HttpClientBuilder.untrustedConnectionClient();
+        HttpRequest request = HttpClientBuilder.doPOST(host + "auth/realms/master/protocol/openid-connect/token");
+
+        Map<String,String> params = new HashMap();
         params.put("username", "admin");
         params.put("password", "admin");
         params.put("grant_type", "password");
         params.put("client_id", "admin-cli");
+        request.setEntity(params);
         
-        Client client = new Client(host);
-        client.setParams(params);
-        String result = client.post("auth/realms/master/protocol/openid-connect/token");
+        HttpResponse response = client.execute(request, execOptions);
+        
+        String result = response.getResponseBodyAsString();
         
         assertFalse(result.contains("error_description"));
         assertTrue(result.contains("access_token"));
@@ -93,16 +112,17 @@ public abstract class SsoServerTestBase extends SsoTestBase {
 	}
         
     protected void login(String host) throws Exception {
-        Client client = new Client(host);
-
-        Map<String, String> params = new HashMap<>();
+    	HttpClient client = HttpClientBuilder.untrustedConnectionClient();
+        HttpRequest request = HttpClientBuilder.doPOST(host + "auth");
+        
+        Map<String,String> params = new HashMap();
         params.put("username", "admin");
         params.put("password", "admin");
         params.put("login", "submit");
-        client.setParams(params);
+        request.setEntity(params);
         
-        String result = client.post("auth");
-        assertTrue(result.contains("Welcome to Red Hat Single Sign-On"));
+        HttpResponse response = client.execute(request, execOptions);
+        
+        assertTrue(response.getResponseBodyAsString().contains("Welcome to Red Hat Single Sign-On"));
     }
-
 }

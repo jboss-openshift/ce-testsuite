@@ -79,14 +79,14 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     protected void testLogin(String host) throws Exception {
         Client client = new Client(host);
 
-        String result = client.get("app-profile-jee/profile.jsp");
+        String result = client.get("app-profile-jsp/profile.jsp");
         assertTrue(result.contains("kc-form-login"));
     }
 
     @Test
     @RunAsClient
     public void testOidcLogin() throws Exception {
-        Client client = login(getRouteURL().toString(), "app-profile-jee/profile.jsp");
+        Client client = login(getRouteURL().toString(), "app-profile-jsp/profile.jsp");
         
         String result = client.get();
         
@@ -99,7 +99,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testSecureOidcLogin() throws Exception {
-    	Client client = login(getSecureRouteURL().toString(), "app-profile-jee/profile.jsp");
+    	Client client = login(getSecureRouteURL().toString(), "app-profile-jsp/profile.jsp");
     	
     	String result = client.get();
     	
@@ -142,48 +142,35 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testAccessType() throws Exception {
-        String host = "sso" + System.getProperty("openshift.domain");
-
+        Client client = new Client("https://secure-sso.cloudapps.example.com");
+        String accessToken = client.getToken("admin", "admin");
+        
         Map<String, String> params = new HashMap<>();
-        params.put("username", "admin");
-        params.put("password", "admin");
-        params.put("grant_type", "password");
-        params.put("client_id", "admin-cli");
-
-        Client client = new Client("http://" + host + "/auth");
-        client.setParams(params);
-        String result = client.post("realms/master/protocol/openid-connect/token");
-
-        assertFalse(result.contains("error_description"));
-        assertTrue(result.contains("access_token"));
-
-        JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
-        String accessToken = (String) jsonObject.get("access_token");
-
-        params = new HashMap<>();
         params.put("Accept", "application/json");
         params.put("Authorization", "Bearer " + accessToken);
 
-        result = client.get("admin/realms/demo/clients", params);
+        String result = client.get("/auth/admin/realms/demo/clients", params);
+        
+        
+        JSONParser jsonParser = new JSONParser();
         Iterator clients = ((JSONArray) jsonParser.parse(result)).iterator();
         while (clients.hasNext()) {
-            jsonObject = (JSONObject) clients.next();
-            if ((jsonObject.get("clientId")).equals("app-jee")) {
+        	JSONObject jsonObject = (JSONObject) clients.next();
+            if ((jsonObject.get("clientId")).equals("app-jsp")) {
                 assertEquals(jsonObject.get("publicClient"), Boolean.FALSE);
                 assertEquals(jsonObject.get("bearerOnly"), Boolean.FALSE);
                 return;
             }
         }
 
-        fail("ClientId app-jee not found");
+        fail("ClientId app-jsp not found");
     }
     
     @Test
     @RunAsClient
-    public void testSecureAppJeeButtonsNoLogin() throws Exception {
+    public void testSecureAppJspButtonsNoLogin() throws Exception {
     	Client client = new Client(getSecureRouteURL().toString());
-        String result = client.get("app-jee/index.jsp");
+        String result = client.get("app-jsp/index.jsp");
          
         assertTrue(result.contains("Public"));
         assertTrue(result.contains("Secured"));
@@ -193,22 +180,22 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
         params.put("action", "public");
         client.setParams(params);
         
-        result = client.post("app-jee/index.jsp");
-      
-        assertTrue(result.contains("MESSAGE: PUBLIC"));
+        result = client.post("app-jsp/index.jsp");
+        
+        assertTrue(result.contains("Message: public"));
         
         params.put("action", "secured");
         client.setParams(params);
         
-        result = client.post("app-jee/index.jsp");
-        
-        assertTrue(result.contains("500 Internal Server Error"));
+        result = client.post("app-jsp/index.jsp");
+           
+        assertTrue(result.contains("Internal Server Error") && result.contains("500") || result.contains("HTTP Status 500"));
     }
     
     @Test
     @RunAsClient
-    public void testSecureAppJeeButtonsLogin() throws Exception {
-    	Client client = login(getSecureRouteURL().toString(), "app-jee/protected.jsp");
+    public void testSecureAppJspButtonsLogin() throws Exception {
+    	Client client = login(getSecureRouteURL().toString(), "app-jsp/protected.jsp");
        
         String result = client.get();
         
@@ -223,16 +210,16 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
         client.setParams(params);
         client.setBasicUrl(getSecureRouteURL().toString());
         
-        result = client.post("app-jee/index.jsp");
-        
-        assertTrue(result.contains("MESSAGE: PUBLIC"));
+        result = client.post("app-jsp/index.jsp");
+          
+        assertTrue(result.contains("Message: public"));
         
         params.put("action", "secured");
         client.setParams(params);
         
-        result = client.post("app-jee/index.jsp");
+        result = client.post("app-jsp/index.jsp");
         
-        assertTrue(result.contains("MESSAGE: SECURED"));
+        assertTrue(result.contains("Message: secured"));
         
         printCookieStore(client);
     }

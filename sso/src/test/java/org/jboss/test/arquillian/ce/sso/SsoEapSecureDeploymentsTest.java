@@ -24,19 +24,25 @@
 package org.jboss.test.arquillian.ce.sso;
 
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
-import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
+import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.test.arquillian.ce.sso.support.Client;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Test;
 
-public abstract class SsoEapTestBase extends SsoTestBase {
+public abstract class SsoEapSecureDeploymentsTest extends SsoTestBase
+{
+	@ArquillianResource
+	OpenShiftHandle adapter;
 	
 	private final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
             .desiredStatusCode(200).delay(10).build();
@@ -44,25 +50,25 @@ public abstract class SsoEapTestBase extends SsoTestBase {
     @Test
     @RunAsClient
     public void testAppProfileJeeRoute() throws Exception {
-        appRoute(getRouteURL().toString(), "app-profile-jsp", "profile.jsp", "Please login");
+        appRoute(getRouteURL().toString(), "app-profile-jee", "profile.jsp", "Please login");
     }
 
     @Test
     @RunAsClient
     public void testSecureAppProfileJeeRoute() throws Exception { 	
-    	appRoute(getSecureRouteURL().toString(), "app-profile-jsp", "profile.jsp", "Please login");
+    	appRoute(getSecureRouteURL().toString(), "app-profile-jee", "profile.jsp", "Please login");
     }
     
     @Test
     @RunAsClient
     public void testAppProfileJeeSamlRoute() throws Exception {
-        appRoute(getRouteURL().toString(), "app-profile-saml", "profile.jsp", "Please login");
+        appRoute(getRouteURL().toString(), "app-profile-jee-saml", "profile.jsp", "Please login");
     }
 
     @Test
     @RunAsClient
     public void testSecureAppProfileJeeSamlRoute() throws Exception { 	
-    	appRoute(getSecureRouteURL().toString(), "app-profile-saml", "profile.jsp", "Please login");
+    	appRoute(getSecureRouteURL().toString(), "app-profile-jee-saml", "profile.jsp", "Please login");
     }
         
     protected void appRoute(String host, String app, String... expecteds) throws Exception {
@@ -76,6 +82,17 @@ public abstract class SsoEapTestBase extends SsoTestBase {
         
         for (String expected: expecteds)
         	assertTrue(result.contains(expected));
+    }
+    
+    @Test
+    @RunAsClient
+    public void testLogs() throws Exception {
+        Map<String, String> labels = Collections.singletonMap("application", "eap-app");
+        String result = adapter.getLog(null, labels);
+        
+        assertFalse(result.contains("Failure"));
+        assertTrue(result.contains("Deployed \"app-profile-jee.war\""));
+        assertTrue(result.contains("Deployed \"app-profile-jee-saml.war\""));
     }
 
 }

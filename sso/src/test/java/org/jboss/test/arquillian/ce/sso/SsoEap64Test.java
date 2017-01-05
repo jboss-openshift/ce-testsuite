@@ -23,28 +23,19 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-
 import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
 
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
+import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.test.arquillian.ce.sso.support.Client;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap70-sso-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-sso-s2i.json",
 		labels = "application=eap-app",
 		parameters = {
 			@TemplateParameter(name = "HTTPS_NAME", value = "jboss"),
@@ -56,19 +47,15 @@ import org.junit.runner.RunWith;
         	@TemplateParameter(name = "SSO_PUBLIC_KEY", value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiLezsNQtZSaJvNZXTmjhlpIJnnwgGL5R1vkPLdt7odMgDzLHQ1h4DlfJPuPI4aI8uo8VkSGYQXWaOGUh3YJXtdO1vcym1SuP8ep6YnDy9vbUibA/o8RW6Wnj3Y4tqShIfuWf3MEsiH+KizoIJm6Av7DTGZSGFQnZWxBEZ2WUyFt297aLWuVM0k9vHMWSraXQo78XuU3pxrYzkI+A4QpeShg8xE7mNrs8g3uTmc53KR45+wW1icclzdix/JcT6YaSgLEVrIR9WkkYfEGj3vSrOzYA46pQe6WQoenLKtIDFmFDPjhcPoi989px9f+1HCIYP0txBS/hnJZaPdn5/lEUKQIDAQAB")
         })
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap7-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
 })
-public class SsoEap70LogTest extends SsoTestBase
+public class SsoEap64Test extends SsoEapTestBase
 {
-	
 	@RouteURL("eap-app")
     private URL routeURL;
 	
 	@RouteURL("secure-eap-app")
     private URL secureRouteURL;
-	
-	@ArquillianResource
-	OpenShiftHandle adapter;
 	
 	@Override
     protected URL getRouteURL() {
@@ -78,24 +65,6 @@ public class SsoEap70LogTest extends SsoTestBase
 	@Override
     protected URL getSecureRouteURL() {
         return secureRouteURL;
-    }
-	
-    @Test
-    @RunAsClient
-    public void testLogs() throws Exception {
-		try {
-	        Map<String, String> labels = Collections.singletonMap("application", "eap-app");
-	        String result = adapter.getLog(null, labels);
-	    
-	        assertFalse(result.contains("Failure"));
-	        assertTrue(result.contains("Deployed \"app-profile-saml.war\""));
-	        assertTrue(result.contains("Deployed \"app-profile-jsp.war\""));
-	        assertTrue(result.contains("Deployed \"app-jsp.war\""));
-	        assertTrue(result.contains("Deployed \"service.war\""));
-		} catch (Exception e){
-			e.printStackTrace();
-			throw e;
-		}
     }
 
 }

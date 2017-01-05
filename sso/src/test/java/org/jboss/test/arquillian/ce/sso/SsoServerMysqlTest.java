@@ -35,8 +35,12 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/sso/sso70-mysql.json",
-		labels = "application=sso,component=server")
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/sso/sso70-mysql.json",
+labels = "application=sso,component=server",
+parameters = {
+        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
+        @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
+        })
 @OpenShiftResources({
     @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
     @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")

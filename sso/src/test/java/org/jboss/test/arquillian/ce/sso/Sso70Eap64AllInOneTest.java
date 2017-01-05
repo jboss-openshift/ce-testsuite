@@ -31,15 +31,18 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/bdecoste/application-templates/adminUser/demos/sso70-eap64-all-in-one-demo.json",
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/openshift-examples/master/demos/sso/sso70-eap64-all-in-one-demo.json",
     labels = "application=helloworld,component=eap",
 	parameters = {
-		@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "master")
-	}
+			@TemplateParameter(name = "SSO_HOSTNAME_HTTP", value = "sso.cloudapps.example.com"),
+			@TemplateParameter(name = "SSO_HOSTNAME_HTTPS", value = "secure-sso.cloudapps.example.com"),
+			@TemplateParameter(name = "HOSTNAME_HTTP", value = "helloworld.cloudapps.example.com"),
+			@TemplateParameter(name = "HOSTNAME_HTTPS", value = "secure-helloworld.cloudapps.example.com")
+		}
 )
 @OpenShiftResources({
     @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
-    @OpenShiftResource("classpath:sso-demo-secret.json"),
+    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/openshift-examples/master/demos/sso/sso-demo-secret.json"),
     @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
 })
 public class Sso70Eap64AllInOneTest extends SsoAllInOneTestBase {
