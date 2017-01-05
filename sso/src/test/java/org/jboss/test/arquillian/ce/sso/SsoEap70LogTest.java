@@ -23,8 +23,8 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 import java.util.Collections;
@@ -39,7 +39,6 @@ import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

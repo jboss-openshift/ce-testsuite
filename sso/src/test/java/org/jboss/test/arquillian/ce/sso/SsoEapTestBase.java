@@ -23,9 +23,7 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static junit.framework.Assert.assertTrue;
-
-import java.net.URL;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
@@ -33,7 +31,6 @@ import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.junit.Test;
 
 public abstract class SsoEapTestBase extends SsoTestBase {

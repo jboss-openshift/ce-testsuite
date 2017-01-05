@@ -23,21 +23,18 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.InSequence;
-import org.json.simple.JSONObject;
 import org.junit.Test;
 
 public abstract class SsoServerTestBase extends SsoTestBase {
@@ -84,7 +81,7 @@ public abstract class SsoServerTestBase extends SsoTestBase {
         HttpClient client = HttpClientBuilder.untrustedConnectionClient();
         HttpRequest request = HttpClientBuilder.doPOST(host + "auth/realms/master/protocol/openid-connect/token");
 
-        Map<String,String> params = new HashMap();
+        Map<String,String> params = new HashMap<String,String>();
         params.put("username", "admin");
         params.put("password", "admin");
         params.put("grant_type", "password");
@@ -115,7 +112,7 @@ public abstract class SsoServerTestBase extends SsoTestBase {
     	HttpClient client = HttpClientBuilder.untrustedConnectionClient();
         HttpRequest request = HttpClientBuilder.doPOST(host + "auth");
         
-        Map<String,String> params = new HashMap();
+        Map<String,String> params = new HashMap<String,String>();
         params.put("username", "admin");
         params.put("password", "admin");
         params.put("login", "submit");
