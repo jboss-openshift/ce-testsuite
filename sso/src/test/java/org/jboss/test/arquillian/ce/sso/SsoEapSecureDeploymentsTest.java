@@ -23,8 +23,8 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.Map;
