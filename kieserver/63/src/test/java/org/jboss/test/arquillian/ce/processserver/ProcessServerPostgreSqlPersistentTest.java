@@ -23,6 +23,8 @@
 
 package org.jboss.test.arquillian.ce.processserver;
 
+import java.net.URL;
+
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
@@ -35,21 +37,19 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.net.URL;
-
 /**
  * @author Filippe Spolti
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository}/application-templates/${template.branch}/processserver/processserver63-postgresql-persistent-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/processserver/processserver63-postgresql-persistent-s2i.json",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository}/application-templates/${template.branch}/secrets/processserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/processserver-app-secret.json")
 })
 public class ProcessServerPostgreSqlPersistentTest extends LibraryProcessTestBase {
 

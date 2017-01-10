@@ -25,6 +25,8 @@ package org.jboss.test.arquillian.ce.decisionserver;
 
 import java.net.URL;
 
+import org.jboss.arquillian.ce.api.OpenShiftResource;
+import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
@@ -47,7 +49,10 @@ import org.junit.runner.RunWith;
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
-public class DecisionServerBasicMulltiContainerTest extends DecisionServerBasicTest {
+@OpenShiftResources({
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
+})
+public class DecisionServerBasicMulltiContainerTest extends DecisionServerTestBase {
 
     @RouteURL("kie-app")
     private URL routeURL;
@@ -55,6 +60,24 @@ public class DecisionServerBasicMulltiContainerTest extends DecisionServerBasicT
     @Override
     protected URL getRouteURL() {
         return routeURL;
+    }
+
+    @Test
+    @RunAsClient
+    public void testDecisionServerCapabilities() throws Exception {
+        checkDecisionServerCapabilities(getRouteURL());
+    }
+
+    @Test
+    @RunAsClient
+    public void testDecisionServerContainer() throws Exception {
+        checkDecisionServerContainer();
+    }
+
+    @Test
+    @RunAsClient
+    public void testFireAllRules() throws Exception {
+        checkFireAllRules();
     }
 
     @Test

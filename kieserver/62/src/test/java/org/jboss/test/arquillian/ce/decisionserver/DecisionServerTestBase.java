@@ -23,7 +23,24 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import io.fabric8.utils.Base64Encoder;
+import java.io.StringReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.jms.ConnectionFactory;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
@@ -56,16 +73,7 @@ import org.kie.server.client.RuleServicesClient;
 import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
-import javax.jms.ConnectionFactory;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.Logger;
+import io.fabric8.utils.Base64Encoder;
 
 
 /**
@@ -523,7 +531,7 @@ public abstract class DecisionServerTestBase {
         JAXBContext jaxbContent = JAXBContext.newInstance(ServiceResponse.class);
         Unmarshaller unmarshaller = jaxbContent.createUnmarshaller();
 
-        ServiceResponse serviceResponse = (ServiceResponse) unmarshaller.unmarshal(new StringReader(output));
+        ServiceResponse<?> serviceResponse = (ServiceResponse<?>) unmarshaller.unmarshal(new StringReader(output));
         KieServerInfo serverInfo = (KieServerInfo) serviceResponse.getResult();
 
         // Reading Server capabilities
@@ -558,7 +566,7 @@ public abstract class DecisionServerTestBase {
         JAXBContext jaxbContent = JAXBContext.newInstance(ServiceResponse.class);
         Unmarshaller unmarshaller = jaxbContent.createUnmarshaller();
 
-        ServiceResponse serviceResponse = (ServiceResponse) unmarshaller.unmarshal(new StringReader(output));
+        ServiceResponse<?> serviceResponse = (ServiceResponse<?>) unmarshaller.unmarshal(new StringReader(output));
         KieContainerResourceList kieContainers = (KieContainerResourceList) serviceResponse.getResult();
 
         List<KieContainerResource> containers = kieContainers.getContainers();
@@ -597,7 +605,7 @@ public abstract class DecisionServerTestBase {
         String output = response.getResponseBodyAsString();
 
         Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ServiceResponse serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
+        ServiceResponse<?> serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
 
         ExecutionResults execResults = marshaller.unmarshall(String.valueOf(serviceResponse.getResult()), ExecutionResults.class);
 
@@ -629,7 +637,7 @@ public abstract class DecisionServerTestBase {
         String output = response.getResponseBodyAsString();
 
         Marshaller marshaller = MarshallerFactory.getMarshaller(getClasses(), MarshallingFormat.XSTREAM, Person.class.getClassLoader());
-        ServiceResponse serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
+        ServiceResponse<?> serviceResponse = marshaller.unmarshall(output, ServiceResponse.class);
 
         ExecutionResults execResults = marshaller.unmarshall(String.valueOf(serviceResponse.getResult()), ExecutionResults.class);
 

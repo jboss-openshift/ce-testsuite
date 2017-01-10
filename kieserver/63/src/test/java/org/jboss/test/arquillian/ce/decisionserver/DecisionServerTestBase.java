@@ -23,7 +23,27 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import io.fabric8.utils.Base64Encoder;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.jms.ConnectionFactory;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
@@ -54,25 +74,7 @@ import org.openshift.kieserver.common.coder.SumCoder;
 import org.openshift.quickstarts.decisionserver.hellorules.Greeting;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
-import javax.jms.ConnectionFactory;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Logger;
+import io.fabric8.utils.Base64Encoder;
 
 /**
  * @author Filippe Spolti
@@ -439,7 +441,7 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
             JAXBContext jaxbContent = JAXBContext.newInstance(ServiceResponse.class);
             Unmarshaller unmarshaller = jaxbContent.createUnmarshaller();
 
-            ServiceResponse serviceResponse = (ServiceResponse) unmarshaller.unmarshal(new StringReader(output));
+            ServiceResponse<?> serviceResponse = (ServiceResponse<?>) unmarshaller.unmarshal(new StringReader(output));
             KieServerInfo serverInfo = (KieServerInfo) serviceResponse.getResult();
 
             // Reading Server capabilities
@@ -483,7 +485,7 @@ public abstract class DecisionServerTestBase extends KieServerTestBase {
             JAXBContext jaxbContent = JAXBContext.newInstance(ServiceResponse.class);
             Unmarshaller unmarshaller = jaxbContent.createUnmarshaller();
 
-            ServiceResponse serviceResponse = (ServiceResponse) unmarshaller.unmarshal(new StringReader(output));
+            ServiceResponse<?> serviceResponse = (ServiceResponse<?>) unmarshaller.unmarshal(new StringReader(output));
             KieContainerResourceList kieContainers = (KieContainerResourceList) serviceResponse.getResult();
 
             //kieContainers's should be 2

@@ -54,21 +54,20 @@ import org.junit.runner.RunWith;
         }
 )
 @OpenShiftResources({
-    @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
 })
 public class DecisionServerAmqTest extends DecisionServerTestBase {
-
-    @RouteURL("kie-app")
-    private URL routeURL;
 
     @Deployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
         war.addAsLibraries(Libraries.transitive("org.apache.activemq","activemq-all"));
         war.addClass(DecisionServerAmqTest.class);
-        war.addClass(DecisionServerMultiContainerAmqTest.class);
         return war;
     }
+
+    @RouteURL("kie-app")
+    private URL routeURL;
 
     @Override
     protected URL getRouteURL() {

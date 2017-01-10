@@ -27,14 +27,18 @@ import java.net.URL;
 
 import javax.naming.NamingException;
 
+import org.jboss.arquillian.ce.api.OpenShiftResource;
+import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 
 /**
  * @author Filippe Spolti
@@ -52,7 +56,18 @@ import org.junit.runner.RunWith;
                 @TemplateParameter(name = "MQ_PASSWORD", value = "${mq.password:Redhat@123}")
         }
 )
-public class DecisionServerMultiContainerAmqTest extends DecisionServerAmqTest {
+@OpenShiftResources({
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
+})
+public class DecisionServerMultiContainerAmqTest extends DecisionServerTestBase {
+
+    @Deployment
+    public static WebArchive getDeployment() throws Exception {
+        WebArchive war = getDeploymentInternal();
+        war.addAsLibraries(Libraries.transitive("org.apache.activemq","activemq-all"));
+        war.addClass(DecisionServerMultiContainerAmqTest.class);
+        return war;
+    }
 
     @RouteURL("kie-app")
     private URL routeURL;
@@ -60,6 +75,39 @@ public class DecisionServerMultiContainerAmqTest extends DecisionServerAmqTest {
     @Override
     protected URL getRouteURL() {
         return routeURL;
+    }
+
+    @Test
+    @RunAsClient
+    public void testDecisionServerCapabilities() throws Exception {
+        checkDecisionServerCapabilities(getRouteURL());
+    }
+
+    @Test
+    @RunAsClient
+    public void testDecisionServerContainer() throws Exception {
+        checkDecisionServerContainer();
+    }
+
+    @Test
+    @RunAsClient
+    public void testFireAllRules() throws Exception {
+        checkFireAllRules();
+    }
+
+    @Test
+    public void testFireAllRulesAMQ() throws Exception {
+        checkFireAllRulesAMQ();
+    }
+
+    @Test
+    public void testDecisionServerCapabilitiesAMQ() throws NamingException {
+        checkDecisionServerCapabilitiesAMQ();
+    }
+
+    @Test
+    public void testDecisionServerContainerAMQ() throws NamingException {
+        checkDecisionServerContainerAMQ();
     }
 
     @Test

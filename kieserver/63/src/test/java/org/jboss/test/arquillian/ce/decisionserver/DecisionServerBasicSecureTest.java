@@ -25,12 +25,17 @@ package org.jboss.test.arquillian.ce.decisionserver;
 
 import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.jboss.arquillian.ce.api.OpenShiftResource;
+import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -42,8 +47,12 @@ import org.junit.runner.RunWith;
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
-        })
-public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
+        }
+)
+@OpenShiftResources({
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
+})
+public class DecisionServerBasicSecureTest extends DecisionServerTestBase {
 
     @RouteURL("secure-kie-app")
     private URL routeURL;
@@ -51,6 +60,24 @@ public class DecisionServerBasicSecureTest extends DecisionServerBasicTest {
     @Override
     protected URL getRouteURL() {
         return routeURL;
+    }
+
+    @Test
+    @RunAsClient
+    public void testDecisionServerCapabilities() throws MalformedURLException {
+        checkKieServerCapabilities(getRouteURL(), "BRM");
+    }
+
+    @Test
+    @RunAsClient
+    public void testDecisionServerContainer() throws MalformedURLException {
+        checkDecisionServerContainer();
+    }
+
+    @Test
+    @RunAsClient
+    public void testFireAllRules() throws MalformedURLException {
+        checkFireAllRules();
     }
 
     /* only needed for non-production test scenarios
