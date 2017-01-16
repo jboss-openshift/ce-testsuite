@@ -49,7 +49,7 @@ import org.junit.runner.RunWith;
  * @author Ricardo Martinelli
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/amq/amq62-basic.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/amq/amq62-basic.json",
     parameters = {
         @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
         @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),

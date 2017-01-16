@@ -33,7 +33,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-basic.json")
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-basic.json")
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
         @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json")

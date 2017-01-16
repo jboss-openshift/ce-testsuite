@@ -45,7 +45,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-mysql-persistent.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-mysql-persistent.json",
           parameters = {
               @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
               @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")})

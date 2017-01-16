@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver63-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/decisionserver/decisionserver63-basic-s2i.json",
         parameters = {
                 //the Containers list will be sorted in alphabetical order
                 @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final|" +

@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat8-mongodb-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/webserver/jws30-tomcat8-mongodb-s2i.json",
         labels = "application=jws-app"
 )
 public class WebServerTomcat8MongoDbBasicTest extends WebServerTomcat7MongoDbBasicTest {

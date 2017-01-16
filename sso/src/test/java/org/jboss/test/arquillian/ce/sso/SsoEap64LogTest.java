@@ -43,7 +43,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-sso-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/eap/eap64-sso-s2i.json",
 		labels = "application=eap-app",
 		parameters = {
 			@TemplateParameter(name = "HTTPS_NAME", value = "jboss"),

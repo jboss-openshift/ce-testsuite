@@ -65,7 +65,7 @@ import org.junit.runner.RunWith;
  * @author Marko Luksa
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/datagrid/datagrid65-https.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-https.json",
         labels = "application=datagrid-app",
         parameters = {
                 @TemplateParameter(name="HTTPS_NAME", value="jboss"),

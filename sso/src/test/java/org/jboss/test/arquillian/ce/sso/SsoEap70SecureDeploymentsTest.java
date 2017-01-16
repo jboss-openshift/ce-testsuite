@@ -36,7 +36,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap70-sso-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/eap/eap70-sso-s2i.json",
 		labels = "application=eap-app",
 		parameters = {
 				@TemplateParameter(name = "SOURCE_REPOSITORY_URL", value="https://github.com/jboss-openshift/openshift-examples"),

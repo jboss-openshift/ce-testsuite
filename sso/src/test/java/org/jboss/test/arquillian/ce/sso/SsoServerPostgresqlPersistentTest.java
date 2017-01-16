@@ -35,7 +35,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/sso/sso70-postgresql-persistent.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/sso/sso70-postgresql-persistent.json",
 		labels = "application=sso,component=server",
 		parameters = {
 		        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),

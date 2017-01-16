@@ -41,14 +41,14 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver63-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/decisionserver/decisionserver63-basic-s2i.json",
         parameters = {
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/decisionserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
 })
 public class DecisionServerBasicTest extends DecisionServerTestBase {
 
