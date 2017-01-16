@@ -278,7 +278,7 @@
                         "from": {
                             "kind": "ImageStreamTag",
                             "namespace": "openshift",
-                            "name": "jboss-amq-62:1.4"
+                            "name": "jboss-amq-62:1.3"
                         }
                     }
                 },
