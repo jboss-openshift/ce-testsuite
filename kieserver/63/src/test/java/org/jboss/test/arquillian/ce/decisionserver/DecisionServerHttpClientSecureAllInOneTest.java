@@ -42,7 +42,7 @@ import java.net.URL;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/decisionserver/decisionserver63-https-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/decisionserver/decisionserver63-https-s2i.json",
         parameters = {
                 //the Containers list will be sorted in alphabetical order
                 @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final|" +
@@ -52,7 +52,7 @@ import java.net.URL;
         }
 )
 @OpenShiftResources({
-    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/decisionserver-app-secret.json")
+    @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
 })
 public class DecisionServerHttpClientSecureAllInOneTest extends DecisionServerTestBase {
 

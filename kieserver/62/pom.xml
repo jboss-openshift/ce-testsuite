@@ -140,6 +140,8 @@
                         <kubernetes.master>${kubernetes.master}</kubernetes.master>
                         <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
                         <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
+                        <template.repository>jboss-openshift</template.repository>
+                        <template.branch>master</template.branch>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

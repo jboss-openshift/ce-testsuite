@@ -37,7 +37,7 @@ import java.net.URL;
  * @author fspolti
  */
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/jboss-openshift/application-templates/master/webserver/jws30-tomcat7-https-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/webserver/jws30-tomcat7-https-s2i.json",
         labels = "application=jws-app"
 )
 @ClientEndpoint

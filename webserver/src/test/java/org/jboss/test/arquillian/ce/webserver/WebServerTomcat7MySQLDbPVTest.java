@@ -46,7 +46,7 @@ import java.util.List;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://github.com/jboss-openshift/application-templates/raw/master/webserver/jws30-tomcat7-mysql-persistent-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/webserver/jws30-tomcat7-mysql-persistent-s2i.json",
         labels = "application=jws-app"
 )
 @OpenShiftResources({
