@@ -25,6 +25,7 @@ package org.jboss.test.arquillian.ce.amq;
 
 import static org.junit.Assert.assertEquals;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import org.fusesource.mqtt.client.BlockingConnection;
@@ -38,6 +39,7 @@ import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.api.Tools;
+import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.test.arquillian.ce.amq.support.AmqClient;
@@ -69,11 +71,18 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
 		System.setProperty("javax.net.ssl.trustStore", AmqSslTestBase.class.getClassLoader().getResource("").getPath() + "/amq-test.ts");
 		System.setProperty("javax.net.ssl.trustStorePassword", "amq-test");
 	}
-
-    static final String STOMP_URL = "ssl://stomp-amq.router.default.svc.cluster.local:443";
-	static final String MQTT_URL = "tlsv1.2://mqtt-amq.router.default.svc.cluster.local:443";
-	static final String AMQP_URL = "amqps://amqp-amq.router.default.svc.cluster.local:443";
-	static final String OPENWIRE_URL = "ssl://tcp-amq.router.default.svc.cluster.local:443";
+	
+	@RouteURL("amq-test-stomp")
+	private URL stompUrl;
+	
+	@RouteURL("amq-test-mqtt")
+	private URL mqttUrl;
+	
+	@RouteURL("amq-test-amqp")
+	private URL amqpUrl;
+	
+	@RouteURL("amq-test-tcp")
+	private URL openwireUrl;
 
     private String openWireMessage = "Arquillian test - OpenWire";
     private String amqpMessage = "Arquillian Test - AMQP";
@@ -84,7 +93,7 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
 	@RunAsClient
     public void testOpenWireConnection() throws Exception {
 		Tools.trustAllCertificates();
-        AmqClient client = new AmqClient(OPENWIRE_URL, USERNAME, PASSWORD);
+        AmqClient client = new AmqClient(getRouteUrl(openwireUrl, "ssl"), USERNAME, PASSWORD);
 
         client.produceOpenWireJms(openWireMessage, true);
         String received = client.consumeOpenWireJms(true);
@@ -96,7 +105,7 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
     @RunAsClient
     public void testAmqpConnection() throws Exception {
     	StringBuilder connectionUrl = new StringBuilder();
-        connectionUrl.append(AMQP_URL);
+        connectionUrl.append(getRouteUrl(amqpUrl, "amqps"));
         connectionUrl.append("?transport.trustStoreLocation=");
         connectionUrl.append(System.getProperty("javax.net.ssl.trustStore"));
         connectionUrl.append("&transport.trustStorePassword=");
@@ -115,7 +124,7 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
     @Ignore
     public void testMqttConnection() throws Exception {
         MQTT mqtt = new MQTT();
-        mqtt.setHost(MQTT_URL);
+        mqtt.setHost(getRouteUrl(mqttUrl, "ssl"));
         mqtt.setUserName(USERNAME);
         mqtt.setPassword(PASSWORD);
 
@@ -136,7 +145,7 @@ public class AmqExternalAccessTest extends AmqSslTestBase {
     @Test
     @RunAsClient
     public void testStompConnection() throws Exception {
-        AmqClient client = new AmqClient(STOMP_URL, USERNAME, PASSWORD);
+        AmqClient client = new AmqClient(getRouteUrl(stompUrl, "ssl"), USERNAME, PASSWORD);
 
         client.produceStomp(stompMessage);
         String received = client.consumeStomp();
