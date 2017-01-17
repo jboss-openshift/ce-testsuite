@@ -1,6 +1,7 @@
 package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
@@ -48,4 +49,16 @@ public class AmqTestBase {
         handler.scaleDeployment("amq-test-amq", 0);
         handler.scaleDeployment("amq-test-amq", 1);
     }
+    
+    protected String getRouteUrl(URL routeUrl, String scheme) {
+    	StringBuilder routeString = new StringBuilder();
+    	routeString.append(scheme);
+    	routeString.append("://");
+    	routeString.append(routeUrl.getHost());
+    	routeString.append(":");
+    	routeString.append(routeUrl.getPort());
+    	
+    	return routeString.toString();
+    }
+    
 }
