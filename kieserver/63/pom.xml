@@ -100,6 +100,16 @@
             <artifactId>kie-server-client</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.kie.remote</groupId>
+            <artifactId>kie-remote-jaxb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.remote</groupId>
+            <artifactId>kie-remote-client</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.openshift.kieserver</groupId>
             <artifactId>openshift-kieserver-common</artifactId>

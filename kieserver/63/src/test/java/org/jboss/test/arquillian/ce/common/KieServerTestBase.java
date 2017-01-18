@@ -23,24 +23,6 @@
 
 package org.jboss.test.arquillian.ce.common;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.InvalidParameterException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Properties;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.Queue;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.xml.bind.DatatypeConverter;
-
 import org.jboss.arquillian.ce.shrinkwrap.Files;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -55,6 +37,24 @@ import org.kie.server.client.KieServicesConfiguration;
 import org.kie.server.client.KieServicesFactory;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
+import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.InvalidParameterException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
 /**
  * @author Filippe Spolti
  *         <p>
@@ -63,6 +63,8 @@ import org.openshift.quickstarts.decisionserver.hellorules.Person;
 public abstract class KieServerTestBase {
 
     protected static final String FILENAME = "kie.properties";
+    private KieServicesConfiguration kieServicesConfiguration;
+    private HashMap<URL, KieServicesConfiguration> clients = new HashMap<>();
 
     public String AMQ_HOST = "tcp://kie-app-amq-tcp:61616";
 
@@ -113,10 +115,19 @@ public abstract class KieServerTestBase {
     }
 
     protected KieServicesConfiguration configureRestClient(URL baseURL) throws MalformedURLException {
-        KieServicesConfiguration kieServicesConfiguration = KieServicesFactory.newRestConfiguration(new URL(baseURL,
-                "/kie-server/services/rest/server").toString(), KIE_USERNAME, KIE_PASSWORD);
-        kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
-        return kieServicesConfiguration;
+        log.info("Received a new client build request for url " + baseURL);
+        if (clients.containsKey(baseURL)) {
+            log.info("Returning cached Kie client for base url: " + baseURL);
+            return clients.get(baseURL);
+
+        } else {
+            log.info("Kie Service Client empty or configuration for base url " + baseURL + " not found, building a new one...");
+            kieServicesConfiguration = KieServicesFactory.newRestConfiguration(new URL(baseURL,
+                    "/kie-server/services/rest/server").toString(), KIE_USERNAME, KIE_PASSWORD);
+            kieServicesConfiguration.setMarshallingFormat(MarshallingFormat.XSTREAM);
+            clients.put(baseURL, kieServicesConfiguration);
+            return kieServicesConfiguration;
+        }
     }
 
     protected KieServicesConfiguration configureAmqClient() throws Exception {
