@@ -30,10 +30,6 @@ public class PreparePod {
             //disable the logging to do not overload the pod with I/O operations. Enable for debugging purposes
             //"/subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=OFF)",
 
-            // create a new io-thread-pool for remoting connections
-            "/subsystem=io/worker=remoting:add(io-threads=800, stack-size=64,task-max-threads=2000)",
-            "/subsystem=remoting/configuration=endpoint:write-attribute(name=worker, value=remoting)",
-
             // create a new io-thread-pool for ejb connections
             "/subsystem=io/worker=ejb-worker:add(io-threads=800, stack-size=64, task-max-threads=2000)",
             "/subsystem=ejb3/service=remote:write-attribute(name=thread-pool-name, value=ejb-worker)",
