@@ -23,19 +23,9 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.net.URL;
 
 /**
  * @author fspolti
@@ -45,46 +35,6 @@ import java.net.URL;
 @Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/webserver/jws30-tomcat7-postgresql-s2i.json",
         labels = "application=jws-app"
 )
-@OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/jws-app-secret.json")
-})
-public class WebServerTomcat7PostgresqlDbBasicTest extends WebserverTestBase {
+public class WebServerTomcat7PostgresqlDbBasicTest extends WebServerTomcatPostgresqlDbBasicTestBase {
 
-    private final String summary = "Testing PostgreSQL Todo list";
-    private final String summaryHttps = "Testing PostgreSQL Todo list HTTPS";
-    private final String description = "This todo was added by Arquillian Test using HTTP.";
-    private final String descriptionHttps = "This todo was added by Arquillian Test using HTTPS.";
-
-    @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return getDeploymentInternal();
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(1)
-    public void testPostgreSQLDBTodoListAddItems(@RouteURL("jws-app") URL url) throws Exception {
-        checkTodoListAddItems(url.toString(),summary, description);
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(2)
-    public void testPostgreSQLDBTodoListAddItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
-        checkTodoListAddItems(url.toString(),summaryHttps, descriptionHttps);
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(3)
-    public void testPostgreSQLDBTodoListAddedItems(@RouteURL("jws-app") URL url) throws Exception {
-        checkTodoListAddedItems(url.toString(),summary, description);
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(4)
-    public void testPostgreSQLDBTodoListAddedItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
-        checkTodoListAddedItems(url.toString(),summaryHttps, descriptionHttps);
-    }
 }

@@ -35,6 +35,6 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/webserver/jws30-tomcat8-mongodb-persistent-s2i.json",
         labels = "application=jws-app"
 )
-public class WebServerTomcat8MongoDbPVTest extends WebServerTomcat7MongoDbPVTest {
+public class WebServerTomcat8MongoDbPVTest extends WebServerTomcatMongoDbPVTestBase {
 
 }

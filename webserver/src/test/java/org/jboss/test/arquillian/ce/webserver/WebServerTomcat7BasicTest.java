@@ -23,19 +23,16 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.net.URL;
 
 import javax.websocket.ClientEndpoint;
-import java.net.URL;
+
+import org.jboss.arquillian.ce.api.Template;
+import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * @author fspolti
@@ -44,16 +41,8 @@ import java.net.URL;
 @Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/webserver/jws30-tomcat7-basic-s2i.json",
         labels = "application=jws-app"
 )
-@OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/jws-app-secret.json")
-})
 @ClientEndpoint
 public class WebServerTomcat7BasicTest extends WebserverTestBase {
-
-    @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return getDeploymentInternal();
-    }
 
     @Test
     @RunAsClient

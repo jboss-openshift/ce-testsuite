@@ -35,6 +35,6 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/webserver/jws30-tomcat8-mysql-s2i.json",
         labels = "application=jws-app"
 )
-public class WebServerTomcat8MySQLDbBasicTest extends WebServerTomcat7MySQLDbBasicTest {
+public class WebServerTomcat8MySQLDbBasicTest extends WebServerTomcatMySQLDbBasicTestBase {
 
 }

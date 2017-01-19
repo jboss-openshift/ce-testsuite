@@ -57,7 +57,7 @@
         <module>kieserver</module>
         <module>spark</module>
         <!-- <module>sso</module> -->
-        <!-- <module>webserver</module> -->
+        <module>webserver</module>
     </modules>
 
     <build>
