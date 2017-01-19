@@ -37,12 +37,12 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository}/application-templates/${template.branch}/processserver/processserver63-amq-postgresql-s2i.json", parameters = {
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/processserver/processserver63-amq-postgresql-s2i.json", parameters = {
         @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
         @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}"),
         @TemplateParameter(name = "MQ_USERNAME", value = "${mq.username:kieserver}"),
         @TemplateParameter(name = "MQ_PASSWORD", value = "${mq.password:Redhat@123}") })
-@OpenShiftResources({@OpenShiftResource("https://raw.githubusercontent.com/${template.repository}/application-templates/${template.branch}/secrets/processserver-app-secret.json") })
+@OpenShiftResources({@OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/processserver-app-secret.json") })
 public class ProcessServerAmqPostgresqlTest extends LibraryProcessAmqTestBase {
 
     @Deployment

@@ -23,7 +23,8 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import io.fabric8.utils.Base64Encoder;
+import java.net.URL;
+
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
@@ -35,7 +36,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.net.URL;
+import io.fabric8.utils.Base64Encoder;
 
 /**
  * @author fspolti

@@ -29,7 +29,6 @@ import java.net.URL;
 import java.security.InvalidParameterException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
@@ -54,7 +53,6 @@ import org.kie.server.api.model.KieServerInfo;
 import org.kie.server.client.KieServicesClient;
 import org.kie.server.client.KieServicesConfiguration;
 import org.kie.server.client.KieServicesFactory;
-import org.openshift.kieserver.common.coder.SumCoder;
 import org.openshift.quickstarts.decisionserver.hellorules.Person;
 
 /**

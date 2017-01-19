@@ -58,17 +58,16 @@ import org.junit.runner.RunWith;
 })
 public class DecisionServerAmqTest extends DecisionServerTestBase {
 
-    @RouteURL("kie-app")
-    private URL routeURL;
-
     @Deployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
         war.addAsLibraries(Libraries.transitive("org.apache.activemq","activemq-all"));
         war.addClass(DecisionServerAmqTest.class);
-        war.addClass(DecisionServerMultiContainerAmqTest.class);
         return war;
     }
+
+    @RouteURL("kie-app")
+    private URL routeURL;
 
     @Override
     protected URL getRouteURL() {
