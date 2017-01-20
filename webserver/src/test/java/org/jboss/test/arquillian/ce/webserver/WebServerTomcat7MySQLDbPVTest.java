@@ -23,23 +23,9 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author fspolti
@@ -49,76 +35,6 @@ import java.util.List;
 @Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/webserver/jws30-tomcat7-mysql-persistent-s2i.json",
         labels = "application=jws-app"
 )
-@OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/jws-app-secret.json")
-})
-public class WebServerTomcat7MySQLDbPVTest extends WebserverTestBase {
+public class WebServerTomcat7MySQLDbPVTest extends WebServerTomcatMySQLDbPVTestBase {
 
-    private final String summary = "Testing Persistent MySQL Todo list";
-    private final String summaryHttps = "Testing Persistent MySQL Todo list HTTPS";
-    private final String description = "This todo was added by Arquillian Test using HTTP using Persistent storage.";
-    private final String descriptionHttps = "This todo was added by Arquillian Test using HTTPS using Persistent storage.";
-
-    @ArquillianResource
-    private OpenShiftHandle adapter;
-
-    @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return getDeploymentInternal();
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(1)
-    public void testMySQLDBTodoListAddItems(@RouteURL("jws-app") URL url) throws Exception {
-        checkTodoListAddItems(url.toString(),summary, description);
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(2)
-    public void testMySQLDBTodoListAddItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
-        checkTodoListAddItems(url.toString(),summaryHttps, descriptionHttps);
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(3)
-    public void testMySQLDBTodoListAddedItems(@RouteURL("jws-app") URL url) throws Exception {
-        checkTodoListAddedItems(url.toString(),summary, description);
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(4)
-    public void testMySQLDBTodoListAddedItemsSecure(@RouteURL("secure-jws-app") URL url) throws Exception {
-        checkTodoListAddedItems(url.toString(),summaryHttps, descriptionHttps);
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(5)
-    public void restartDatabasePods() throws Exception {
-        List<String> pods = new ArrayList<>();
-        pods.add("jws-app-mysql");
-        pods.add("jws-app");
-        restartPods(adapter, pods);
-    }
-
-    /*
-    * After restart the pods we have to test it again to make sure the data stored before still there
-    */
-    @Test
-    @RunAsClient
-    @InSequence(6)
-    public void testMySQLDBTodoListAddedItemsAfterPodsRestart(@RouteURL("jws-app") URL url) throws Exception {
-        checkTodoListAddedItems(url.toString(),summary, description);
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(7)
-    public void testMySQLDBTodoListAddedItemsSecureAfterPodsRestart(@RouteURL("secure-jws-app") URL url) throws Exception {
-        checkTodoListAddedItems(url.toString(),summaryHttps, descriptionHttps);
-    }
 }
