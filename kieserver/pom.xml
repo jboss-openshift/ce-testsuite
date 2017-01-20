@@ -19,7 +19,7 @@
     <description>Decision Server Cloud Enablement Testsuite</description>
 
     <modules>
-        <module>62</module>
+	<!-- <module>62</module> -->
         <module>63</module>
     </modules>
 
