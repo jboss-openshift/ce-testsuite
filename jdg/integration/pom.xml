@@ -204,10 +204,6 @@
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-ce-utils</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.arquillian.cube</groupId>
-            <artifactId>arquillian-cube-openshift</artifactId>
-        </dependency>
     </dependencies>
 
     <properties>
