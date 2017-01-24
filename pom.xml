@@ -17,19 +17,25 @@
     <artifactId>parent-ce</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <name>CE Testsuite</name>
     <description>Cloud Enablement Testsuite</description>
+    <url>https://github.com/jboss-openshift/ce-testsuite</url>
+
+    <scm>
+        <developerConnection>scm:git:ssh://github.com/jboss-openshift/ce-testsuite.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
     <!-- Properties -->
     <properties>
-        <version.ce-arq>1.0.0-SNAPSHOT</version.ce-arq>
-        <version.arquillian.cube>1.0.0.Final-SNAPSHOT</version.arquillian.cube>
+        <version.ce-arq>1.0.0.Final</version.ce-arq>
         <version.meta-inf>1.6</version.meta-inf>
         <version.arquillian>1.1.11.Final</version.arquillian>
         <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
         <version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
         <version.eap6>7.5.11.Final-redhat-ce</version.eap6> <!--eap 6.4.x downstream -->
-        <version.eap7>7.0.3.GA-redhat-SNAPSHOT</version.eap7> <!-- eap-7 downstream-->
+        <version.eap7>7.0.3.GA-redhat-ce</version.eap7> <!-- eap-7 downstream-->
         <org.jboss.bom.version>7.0.0.GA</org.jboss.bom.version>
         <version.junit>4.12</version.junit>
         <version.javax.servlet.api>3.1.0</version.javax.servlet.api>
@@ -96,53 +102,18 @@
                     </includes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
-
-    <!-- Some artifacts, like infinispan-remote-query-client/6.3.1.Final-redhat-1/infinispan-remote-query-client-6.3.1.Final-redhat-1.pom
-        and so on, will need these. -->
-    <repositories>
-        <repository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Maven Repository Group</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>2rhat</id>
-            <url>https://maven.repository.redhat.com/techpreview/all/</url>
-        </repository>
-
-        <repository>
-            <id>3rhat</id>
-            <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
-        </repository>
-
-        <repository>
-            <id>5rhat</id>
-            <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
-        </repository>
-
-        <repository>
-            <id>6rhat</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-        </repository>
-
-        <repository>
-            <id>7rhat</id>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads/</url>
-        </repository>
-
-    </repositories>
 
     <dependencyManagement>
 
@@ -305,18 +276,6 @@
                 <artifactId>arquillian-ce-cube</artifactId>
                 <version>${version.ce-arq}</version>
                 <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.arquillian.cube</groupId>
-                <artifactId>arquillian-cube-core</artifactId>
-                <version>${version.arquillian.cube}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.arquillian.cube</groupId>
-                <artifactId>arquillian-cube-openshift</artifactId>
-                <version>${version.arquillian.cube}</version>
             </dependency>
 
             <dependency>
