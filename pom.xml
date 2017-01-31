@@ -58,11 +58,12 @@
 
     <modules>
         <module>amq</module>
+        <module>datavirt</module>
         <module>eap</module>
         <module>jdg</module>
         <module>kieserver</module>
         <module>spark</module>
-        <!-- <module>sso</module> -->
+        <module>sso</module>
         <module>webserver</module>
     </modules>
 
