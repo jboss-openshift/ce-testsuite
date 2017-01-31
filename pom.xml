@@ -62,7 +62,7 @@
         <module>jdg</module>
         <module>kieserver</module>
         <module>spark</module>
-        <!-- <module>sso</module> -->
+        <module>sso</module>
         <module>webserver</module>
     </modules>
 
