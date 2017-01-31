@@ -58,6 +58,7 @@
 
     <modules>
         <module>amq</module>
+        <module>datavirt</module>
         <module>eap</module>
         <module>jdg</module>
         <module>kieserver</module>
