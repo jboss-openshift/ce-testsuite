@@ -20,7 +20,7 @@
 					]
 				}
 			},
-			"image": "jboss-eap-6/eap64-openshift:1.2",
+			"image": "jboss-eap-6/eap64-openshift:1.4",
             "ports": [
                 {
                     "containerPort": 8080,
