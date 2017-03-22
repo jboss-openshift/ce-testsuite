@@ -16,7 +16,7 @@
 					"command": [
 					    "/bin/bash",
 					    "-c",
-					    "curl -s --digest -L http://localhost:9990/management --header \"Content-Type: application/json\" -d '{\"operation\":\"read-attribute\",\"name\":\"server-state\",\"json.pretty\":1}' | grep -iq running"
+					    "/opt/eap/bin/readinessProbe.sh"
 					]
 				}
 			},
