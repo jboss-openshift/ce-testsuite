@@ -35,19 +35,18 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/sso/sso70-postgresql-persistent.json",
-		labels = "application=sso,component=server",
-		parameters = {
-		        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-		        @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
-		        })
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/sso/sso70-mysql.json",
+labels = "application=sso,component=server",
+parameters = {
+        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
+        @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
+        })
 @OpenShiftResources({
     @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
     @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
 })
-public class SsoServerPostgresqlPersistentTest extends SsoServerTestBase
+public class Sso70ServerMysqlTest extends SsoServerTestBase
 {
-	
 	@RouteURL("sso")
     private URL routeURL;
 	
@@ -64,7 +63,6 @@ public class SsoServerPostgresqlPersistentTest extends SsoServerTestBase
         return secureRouteURL;
     }
 
-	public SsoServerPostgresqlPersistentTest() {
-	
+	public Sso70ServerMysqlTest() {
 	}
 }

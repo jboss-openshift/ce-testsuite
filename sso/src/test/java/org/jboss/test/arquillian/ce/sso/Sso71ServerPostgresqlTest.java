@@ -23,36 +23,29 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static org.junit.Assert.assertTrue;
-
 import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
 
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
+import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template( url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/sso/sso70-https.json",
-labels = "application=sso",
-parameters = {
-        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-        @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
-        })
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/sso/sso71-postgresql.json",
+		labels = "application=sso,component=server",
+		parameters = {
+		        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
+		        @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
+		        })
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
+    @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
+    @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
 })
-public class SsoServerLogTest extends SsoTestBase
+public class Sso71ServerPostgresqlTest extends SsoServerTestBase
 {
 	
 	@RouteURL("sso")
@@ -60,9 +53,6 @@ public class SsoServerLogTest extends SsoTestBase
 	
 	@RouteURL("secure-sso")
     private URL secureRouteURL;
-	
-	@ArquillianResource
-	OpenShiftHandle adapter;
 	
 	@Override
     protected URL getRouteURL() {
@@ -73,21 +63,8 @@ public class SsoServerLogTest extends SsoTestBase
     protected URL getSecureRouteURL() {
         return secureRouteURL;
     }
-	
-	@Test
-    @RunAsClient
-    public void testLogs() throws Exception {
-		try {
-	        Map<String, String> labels = Collections.singletonMap("application", "sso");
-	        String result = adapter.getLog(null, labels);
-	    
-	        assertTrue(result.contains("Deployed \"keycloak-server.war\""));
-		} catch (Exception e){
-			e.printStackTrace();
-			throw e;
-		}
-	}
-	
-	
 
+	public SsoServerPostgresqlTest() {
+	
+	}
 }

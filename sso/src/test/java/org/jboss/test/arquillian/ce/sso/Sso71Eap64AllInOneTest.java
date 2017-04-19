@@ -23,48 +23,31 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import java.net.URL;
-
-import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/sso/sso70-postgresql.json",
-		labels = "application=sso,component=server",
-		parameters = {
-		        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-		        @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
-		        })
+@Template(url = "https://raw.githubusercontent.com/jboss-openshift/openshift-examples/master/demos/sso/sso71-eap64-all-in-one-demo.json",
+    labels = "application=helloworld,component=eap",
+	parameters = {
+			@TemplateParameter(name = "SSO_HOSTNAME_HTTP", value = "sso.cloudapps.example.com"),
+			@TemplateParameter(name = "SSO_HOSTNAME_HTTPS", value = "secure-sso.cloudapps.example.com"),
+			@TemplateParameter(name = "HOSTNAME_HTTP", value = "helloworld.cloudapps.example.com"),
+			@TemplateParameter(name = "HOSTNAME_HTTPS", value = "secure-helloworld.cloudapps.example.com")
+		}
+)
 @OpenShiftResources({
     @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
+    @OpenShiftResource("https://raw.githubusercontent.com/jboss-openshift/openshift-examples/master/demos/sso/sso-demo-secret.json"),
     @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/eap-app-secret.json")
 })
-public class SsoServerPostgresqlTest extends SsoServerTestBase
-{
-	
-	@RouteURL("sso")
-    private URL routeURL;
-	
-	@RouteURL("secure-sso")
-    private URL secureRouteURL;
-	
-	@Override
-    protected URL getRouteURL() {
-        return routeURL;
-    }
-	
-	@Override
-    protected URL getSecureRouteURL() {
-        return secureRouteURL;
+public class Sso71Eap64AllInOneTest extends SsoAllInOneTestBase {
+
+    public Sso71Eap64AllInOneTest() {
     }
 
-	public SsoServerPostgresqlTest() {
-	
-	}
 }
