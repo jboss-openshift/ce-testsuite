@@ -75,10 +75,7 @@ public class SsoEap64EnvTest extends SsoTestBase {
 	public void testConfiguration() throws Exception {
 		Map<String, String> labels = Collections.singletonMap("application", "eap-app");
 		String result = adapter.exec(labels, 30, "cat", "/opt/eap/standalone/configuration/standalone-openshift.xml");
-		
-
-		System.out.println("!!!!! result " + result);
-
+	
 		assertTrue(result.contains("<enable-cors>true</enable-cors>"));
 		assertTrue(result.contains("logoutPage=\"profile.jsp\""));
 	}

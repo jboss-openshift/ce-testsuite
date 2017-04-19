@@ -46,29 +46,37 @@ public abstract class SsoEapSecureDeploymentsTest extends SsoTestBase
 	
 	private final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
             .desiredStatusCode(200).delay(10).build();
+	
+	protected String getRoute() {
+        return getRouteURL().toString().replace(":80", "");
+    }
+	
+    protected String getSecureRoute() {
+        return getSecureRouteURL().toString().replace(":443", "");
+    }
     
     @Test
     @RunAsClient
     public void testAppProfileJeeRoute() throws Exception {
-        appRoute(getRouteURL().toString(), "app-profile-jee", "profile.jsp", "Please login");
+        appRoute(getRoute(), "app-profile-jee", "profile.jsp", "Please login");
     }
 
     @Test
     @RunAsClient
     public void testSecureAppProfileJeeRoute() throws Exception { 	
-    	appRoute(getSecureRouteURL().toString(), "app-profile-jee", "profile.jsp", "Please login");
+    	appRoute(getSecureRoute(), "app-profile-jee", "profile.jsp", "Please login");
     }
     
     @Test
     @RunAsClient
     public void testAppProfileJeeSamlRoute() throws Exception {
-        appRoute(getRouteURL().toString(), "app-profile-jee-saml", "profile.jsp", "Please login");
+        appRoute(getRoute(), "app-profile-jee-saml", "profile.jsp", "Please login");
     }
 
     @Test
     @RunAsClient
     public void testSecureAppProfileJeeSamlRoute() throws Exception { 	
-    	appRoute(getSecureRouteURL().toString(), "app-profile-jee-saml", "profile.jsp", "Please login");
+    	appRoute(getSecureRoute(), "app-profile-jee-saml", "profile.jsp", "Please login");
     }
         
     protected void appRoute(String host, String app, String... expecteds) throws Exception {
@@ -77,9 +85,7 @@ public abstract class SsoEapSecureDeploymentsTest extends SsoTestBase
         HttpResponse response = client.execute(request, execOptions);
         
         String result = response.getResponseBodyAsString();
-        
-        System.out.println("!!!!! result " + host + app + " " + result);
-        
+         
         for (String expected: expecteds)
         	assertTrue(result.contains(expected));
     }

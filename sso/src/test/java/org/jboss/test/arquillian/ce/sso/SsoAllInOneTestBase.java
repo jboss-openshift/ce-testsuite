@@ -62,17 +62,25 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     protected URL getSecureRouteURL() {
         return secureRouteURL;
     }
+    
+    protected String getRoute() {
+        return getRouteURL().toString().replace(":80", "");
+    }
+	
+    protected String getSecureRoute() {
+        return getSecureRouteURL().toString().replace(":443", "");
+    }
 
     @Test
     @RunAsClient
     public void testLogin() throws Exception {
-        testLogin(getRouteURL().toString());
+        testLogin(getRoute());
     }
 
     @Test
     @RunAsClient
     public void testSecureLogin() throws Exception {
-        testLogin(getSecureRouteURL().toString());
+        testLogin(getSecureRoute());
     }
 
     protected void testLogin(String host) throws Exception {
@@ -85,7 +93,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testOidcLogin() throws Exception {
-        Client client = login(getRouteURL().toString(), "app-profile-jsp/profile.jsp");
+        Client client = login(getRoute(), "app-profile-jsp/profile.jsp");
         
         String result = client.get();
         
@@ -98,7 +106,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testSecureOidcLogin() throws Exception {
-    	Client client = login(getSecureRouteURL().toString(), "app-profile-jsp/profile.jsp");
+    	Client client = login(getSecureRoute(), "app-profile-jsp/profile.jsp");
     	
     	String result = client.get();
     	
@@ -168,7 +176,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testSecureAppJspButtonsNoLogin() throws Exception {
-    	Client client = new Client(getSecureRouteURL().toString());
+    	Client client = new Client(getSecureRoute());
         String result = client.get("app-jsp/index.jsp");
          
         assertTrue(result.contains("Public"));
@@ -194,7 +202,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testSecureAppJspButtonsLogin() throws Exception {
-    	Client client = login(getSecureRouteURL().toString(), "app-jsp/protected.jsp");
+    	Client client = login(getSecureRoute(), "app-jsp/protected.jsp");
        
         String result = client.get();
         
@@ -207,7 +215,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
         Map<String, String> params = new HashMap<>();
         params.put("action", "public");
         client.setParams(params);
-        client.setBasicUrl(getSecureRouteURL().toString());
+        client.setBasicUrl(getSecureRoute());
         
         result = client.post("app-jsp/index.jsp");
           
