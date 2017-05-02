@@ -53,6 +53,7 @@ For more details about each component of this testsuite, please verify their doc
  - KIE SERVER:
     - [6.2](https://github.com/jboss-openshift/ce-testsuite/blob/master/kieserver/62/README.md)
     - [6.3](https://github.com/jboss-openshift/ce-testsuite/blob/master/kieserver/63/README.md)
+    - [6.4](https://github.com/jboss-openshift/ce-testsuite/blob/master/kieserver/64/README.md)
  - [SPARK](https://github.com/jboss-openshift/ce-testsuite/blob/master/spark/README.md)
  - [SSO](https://github.com/jboss-openshift/ce-testsuite/blob/master/sso/README.md)
  - [WEBSERVER](https://github.com/jboss-openshift/ce-testsuite/blob/master/webserver/README.md)

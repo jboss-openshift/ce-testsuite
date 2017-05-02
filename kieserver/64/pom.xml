@@ -13,9 +13,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
-    <artifactId>kieserver63-ce-testsuite</artifactId>
+    <artifactId>kieserver64-ce-testsuite</artifactId>
     <packaging>jar</packaging>
-    <name>KIE Server v6.3 CE Testsuite</name>
+    <name>KIE Server v6.4 CE Testsuite</name>
     <description>KIE Server Cloud Enablement Testsuite includes tests for decision server and process server</description>
 
     <properties>
@@ -24,8 +24,8 @@
         <version.javax.jpa>1.0.1.Final</version.javax.jpa>
         <version.javassist>3.19.0-GA</version.javassist>
         <!-- KIE versions -->
-        <version.jboss.bom.brms>6.3.4.GA-redhat-3</version.jboss.bom.brms>
-        <version.org.kie>6.4.0.Final-redhat-13</version.org.kie>
+        <version.jboss.bom.brms>6.4.2.GA-redhat-2</version.jboss.bom.brms>
+        <version.org.kie>6.5.0.Final-redhat-7</version.org.kie>
     </properties>
 
     <dependencyManagement>

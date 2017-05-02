@@ -23,10 +23,10 @@
 
 package org.jboss.test.arquillian.ce.decisionserver;
 
-import java.io.UnsupportedEncodingException;
+import static org.jboss.arquillian.ce.api.Tools.trustAllCertificates;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
 
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
@@ -43,11 +43,8 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/decisionserver/decisionserver63-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/decisionserver/decisionserver64-https-s2i.json",
         parameters = {
-                //the Containers list will be sorted in alphabetical order
-                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "decisionserver-hellorules=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final|" +
-                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.3.0.Final"),
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
@@ -55,9 +52,9 @@ import org.junit.runner.RunWith;
 @OpenShiftResources({
         @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
 })
-public class DecisionServerBasicMulltiContainerTest extends DecisionServerTestBase {
+public class DecisionServerBasicSecureTest extends DecisionServerTestBase {
 
-    @RouteURL("kie-app")
+    @RouteURL("secure-kie-app")
     private URL routeURL;
 
     @Override
@@ -83,15 +80,16 @@ public class DecisionServerBasicMulltiContainerTest extends DecisionServerTestBa
         checkFireAllRules();
     }
 
-    @Test
-    @RunAsClient
-    public void testSecondDecisionServerContainer() throws UnsupportedEncodingException, NoSuchAlgorithmException, MalformedURLException {
-        checkSecondDecisionServerContainer();
-    }
-
-    @Test
-    @RunAsClient
-    public void testFireAllRulesInSecondContainer() throws MalformedURLException {
-        checkFireAllRulesInSecondContainer();
+    /* only needed for non-production test scenarios
+    * @throws Exception for any error, inherited from org.jboss.arquillian.ce.api.trustAllCertificates
+    */
+    @Override
+    protected void prepareClientInvocation() {
+        try {
+            trustAllCertificates();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        log.info("Trusting all certs");
     }
 }

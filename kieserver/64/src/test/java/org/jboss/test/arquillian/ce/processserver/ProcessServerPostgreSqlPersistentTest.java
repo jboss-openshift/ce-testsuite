@@ -21,7 +21,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.test.arquillian.ce.decisionserver;
+package org.jboss.test.arquillian.ce.processserver;
 
 import java.net.URL;
 
@@ -30,8 +30,10 @@ import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,55 +42,43 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/decisionserver/decisionserver62-basic-s2i.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/processserver/processserver64-postgresql-persistent-s2i.json",
         parameters = {
-                //the Containers list will be sorted in alphabetical order
-                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "HelloRulesContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final|" +
-                        "AnotherContainer=org.openshift.quickstarts:decisionserver-hellorules:1.2.0.Final"),
                 @TemplateParameter(name = "KIE_SERVER_USER", value = "${kie.username:kieserver}"),
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}")
         }
 )
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/decisionserver-app-secret.json")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/processserver-app-secret.json")
 })
-public class DecisionServerBasicMulltiContainerTest extends DecisionServerTestBase {
+public class ProcessServerPostgreSqlPersistentTest extends LibraryProcessTestBase {
 
-    @RouteURL("kie-app")
-    private URL routeURL;
+        @Deployment
+        public static WebArchive getDeployment() throws Exception {
+                WebArchive war = getDeploymentInternal();
+                war.addPackage("org.openshift.quickstarts.processserver.library.types");
+                war.addClass(LibraryClient.class);
+                war.addClass(LibraryProcessTestBase.class);
+                return war;
+        }
 
-    @Override
-    protected URL getRouteURL() {
-        return routeURL;
-    }
+        @RouteURL("kie-app")
+        private URL routeURL;
 
-    @Test
-    @RunAsClient
-    public void testDecisionServerCapabilities() throws Exception {
-        checkDecisionServerCapabilities(getRouteURL());
-    }
+        @Override
+        protected URL getRouteURL() {
+                return routeURL;
+        }
 
-    @Test
-    @RunAsClient
-    public void testDecisionServerContainer() throws Exception {
-        checkDecisionServerContainer();
-    }
+        @Test
+        @RunAsClient
+        public void testProcessServerCapabilities() throws Exception {
+                checkKieServerCapabilities(getRouteURL(), "BPM");
+        }
 
-    @Test
-    @RunAsClient
-    public void testFireAllRules() throws Exception {
-        checkFireAllRules();
-    }
-
-    @Test
-    @RunAsClient
-    public void testSecondDecisionServerContainer() throws Exception {
-        checkSecondDecisionServerContainer();
-    }
-
-    @Test
-    @RunAsClient
-    public void testFireAllRulesInSecondContainer() throws Exception {
-        checkFireAllRulesInSecondContainer();
-    }
+        @Test
+        @RunAsClient
+        public void testProcessServerContainer() throws Exception {
+                checkKieServerContainer("processserver-library=org.openshift.quickstarts:processserver-library:1.3.0.Final");
+        }
 }

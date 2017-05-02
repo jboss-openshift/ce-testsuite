@@ -1,19 +1,19 @@
 # CE-Testsuite - Kie Server (Decision Server and Intelligent Process Server)
 
-This testsuite will test all KIE Server 6.3 S2I application templates which are:
+This testsuite will test all KIE Server 6.4 S2I application templates which are:
  
-  -  [decisionserver63-amq-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/decisionserver/decisionserver63-amq-s2i.json)
-  -  [decisionserver63-basic-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/decisionserver/decisionserver63-basic-s2i.json)
-  -  [decisionserver63-https-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/decisionserver/decisionserver63-https-s2i.json)
-  -  [processserver63-amq-mysql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver63-amq-mysql-persistent-s2i.json)
-  -  [processserver63-amq-mysql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver63-amq-mysql-s2i.json)
-  -  [processserver63-amq-postgresql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver63-amq-postgresql-persistent-s2i.json)
-  -  [processserver63-amq-postgresql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver63-amq-postgresql-s2i.json)
-  -  [processserver63-basic-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver63-basic-s2i.json)
-  -  [processserver63-mysql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver63-mysql-persistent-s2i.json)
-  -  [processserver63-mysql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver63-mysql-s2i.json)
-  -  [processserver63-postgresql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver63-postgresql-persistent-s2i.json)
-  -  [processserver63-postgresql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver63-postgresql-s2i.json)
+  -  [decisionserver64-amq-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/decisionserver/decisionserver64-amq-s2i.json)
+  -  [decisionserver64-basic-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/decisionserver/decisionserver64-basic-s2i.json)
+  -  [decisionserver64-https-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/decisionserver/decisionserver64-https-s2i.json)
+  -  [processserver64-amq-mysql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver64-amq-mysql-persistent-s2i.json)
+  -  [processserver64-amq-mysql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver64-amq-mysql-s2i.json)
+  -  [processserver64-amq-postgresql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver64-amq-postgresql-persistent-s2i.json)
+  -  [processserver64-amq-postgresql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver64-amq-postgresql-s2i.json)
+  -  [processserver64-basic-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver64-basic-s2i.json)
+  -  [processserver64-mysql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver64-mysql-persistent-s2i.json)
+  -  [processserver64-mysql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver64-mysql-s2i.json)
+  -  [processserver64-postgresql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver64-postgresql-persistent-s2i.json)
+  -  [processserver64-postgresql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/processserver/processserver64-postgresql-s2i.json)
 
 For all tests, on this case we are using the following quickstart application:
 
@@ -37,11 +37,11 @@ The Ce-Testsuite uses the [ce-arq](https://github.com/jboss-openshift/ce-arq) wh
  
 The CE-Testsuite is divided by profiles, to enable the Kie Server profile all you need to do is to use the following maven parameter:
 ```sh
--Pkieserver63
+-Pkieserver64
 ```
 ###### Required ce-arq parameteres
   - -P**profile_name**
-    - -Pkieserver63
+    - -Pkieserver64
   - -Dkubernetes.master=**address of your running OSE instance (master note)**
     - -Dkubernetes.master=https://openshift-master.mydomain.com:8443
   - -Dkubernetes.registry.url=**the registry address running in your ose instance**
@@ -63,12 +63,12 @@ ___
 ###### Running all tests
 For this example we'll consider the IP address 192.168.1.254 for required parameters, Example:
 ```sh
-$ mvn clean package test -Pkieserver63 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
+$ mvn clean package test -Pkieserver64 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
 ```
 ###### Running a specific test and ignoring the cleanup after the tests gets finished
 Example:
 ```sh
-$ mvn clean package test -Pkieserver63 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254 -Dtest=DecisionServerAmqTest -Dkubernetes.ignore.cleanup=true
+$ mvn clean package test -Pkieserver64 -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254 -Dtest=DecisionServerAmqTest -Dkubernetes.ignore.cleanup=true
 ```
 
 #### What this tests cover?

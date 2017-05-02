@@ -16,57 +16,132 @@
     <artifactId>kieserver-ce-testsuite</artifactId>
     <packaging>pom</packaging>
     <name>KIE Server CE Testsuite</name>
-    <description>Decision Server Cloud Enablement Testsuite</description>
+    <description>KIE Server Cloud Enablement Testsuite</description>
+
+    <licenses>
+        <license>
+            <name>Apache License Version 2.0</name>
+            <url>https://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <modules>
-	<!-- <module>62</module> -->
+    <!--<module>62</module>-->
         <module>63</module>
+        <module>64</module>
     </modules>
 
-    <properties>
-        <version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
-        <version.org.kie>6.2.0.Final-redhat-14</version.org.kie>
-        <version.activemq>5.8.0.redhat-60083</version.activemq>
-        <version.javax.jpa>1.0.1.Final</version.javax.jpa>
-        <version.org.openshift.kieserver>1.0.8.Final-redhat-1</version.org.openshift.kieserver>
-    </properties>
-    
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.bom.brms</groupId>
-                <artifactId>jboss-brms-bpmsuite-bom</artifactId>
-                <version>${version.jboss.bom.brms}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.kie</groupId>
-                <artifactId>kie-bom</artifactId>
-                <version>${version.org.kie}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+    <repositories>
+        <repository>
+            <id>redhat-ga-repository</id>
+            <url>http://maven.repository.redhat.com/ga/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>redhat-ea-repository</id>
+            <url>http://maven.repository.redhat.com/earlyaccess/all/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+          </repository>
+        <repository>
+            <id>redhat-tp-repository</id>
+            <url>http://maven.repository.redhat.com/techpreview/all</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-all</artifactId>
-                <version>${version.activemq}</version>
-            </dependency>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>redhat-ga-plugin-repository</id>
+            <url>http://maven.repository.redhat.com/ga/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>redhat-ea-plugin-repository</id>
+            <url>http://maven.repository.redhat.com/earlyaccess/all/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>redhat-tp-plugin-repository</id>
+            <url>http://maven.repository.redhat.com/techpreview/all</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
-            <dependency>
-                <groupId>org.hibernate.javax.persistence</groupId>
-                <artifactId>hibernate-jpa-2.0-api</artifactId>
-                <version>${version.javax.jpa}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.openshift.kieserver</groupId>
-                <artifactId>openshift-kieserver-common</artifactId>
-                <version>${version.org.openshift.kieserver}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.commonjava.maven.plugins</groupId>
+                                        <artifactId>project-sources-maven-plugin</artifactId>
+                                        <versionRange>[0.3,)</versionRange>
+                                        <goals>
+                                            <goal>archive</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>

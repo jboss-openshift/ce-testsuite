@@ -16,12 +16,94 @@
     <artifactId>kieserver62-ce-testsuite</artifactId>
     <packaging>jar</packaging>
     <name>KIE Server v6.2 CE Testsuite</name>
-    <description>Decision Server Cloud Enablement Testsuite</description>
+    <description>KIE Server Cloud Enablement Testsuite includes tests for decision server and process server</description>
+
+    <properties>
+        <version.activemq>5.8.0.redhat-60083</version.activemq>
+        <version.arquillian.ce>1.0.1.Final-SNAPSHOT</version.arquillian.ce>
+        <version.javax.jpa>1.0.1.Final</version.javax.jpa>
+        <version.javassist>3.19.0-GA</version.javassist>
+        <!-- KIE versions -->
+        <version.jboss.bom.brms>6.2.0.GA-redhat-1</version.jboss.bom.brms>
+        <version.org.kie>6.3.0.Final-redhat-5</version.org.kie>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.jboss.bom.brms</groupId>
+                <artifactId>jboss-brms-bpmsuite-bom</artifactId>
+                <version>${version.jboss.bom.brms}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-bom</artifactId>
+                <version>${version.org.kie}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-all</artifactId>
+                <version>${version.activemq}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate.javax.persistence</groupId>
+                <artifactId>hibernate-jpa-2.0-api</artifactId>
+                <version>${version.javax.jpa}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${version.javassist}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-api</artifactId>
+                <version>${version.arquillian.ce}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-cube</artifactId>
+                <version>${version.arquillian.ce}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-fabric8</artifactId>
+                <version>${version.arquillian.ce}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-httpclient</artifactId>
+                <version>${version.arquillian.ce}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-shrinkwrap</artifactId>
+                <version>${version.arquillian.ce}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-ce-utils</artifactId>
+                <version>${version.arquillian.ce}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
-
-        <!-- TODO -->
-
         <!-- EAP testunit deps -->
 
         <dependency>
@@ -30,15 +112,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
 
         <!-- Test Utils -->
 
@@ -56,6 +137,24 @@
 
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-cube</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-ce-fabric8</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-ce-httpclient</artifactId>
         </dependency>
 
@@ -67,7 +166,7 @@
 
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-cube</artifactId>
+            <artifactId>arquillian-ce-utils</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -87,13 +186,23 @@
 
         <dependency>
             <groupId>org.kie.server</groupId>
-            <artifactId>kie-server-client</artifactId>
+            <artifactId>kie-server-api</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.kie</groupId>
+            <groupId>org.kie.server</groupId>
             <artifactId>kie-server-client</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.kie.remote</groupId>
+            <artifactId>kie-remote-jaxb</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kie.remote</groupId>
+            <artifactId>kie-remote-client</artifactId>
+        </dependency>
 
         <!-- Dependencies needed to use JMS/AMQ -->
 
@@ -102,6 +211,11 @@
             <artifactId>activemq-all</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -152,4 +266,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
