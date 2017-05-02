@@ -92,6 +92,27 @@ public class EapClusteringTestBase {
         assertEquals(valueToCheck, retrieveKey(2, cookie));
     }
 
+    /**
+     * This test does the same as {@link #testSession()}, however it redeploys
+     * the app with environment variables "http_proxy" and "https_proxy". Those
+     * should not interfere in the EAP clustering.
+     *
+     * @throws Exception
+     */
+    @Test
+    @RunAsClient
+    @InSequence(2)
+    public void testSessionWithProxy() throws Exception {
+        scale(1);
+
+        Map<String, String> variables = new HashMap<>();
+        variables.put("http_proxy", "1.2.3.4");
+        variables.put("https_proxy", "4.3.2.1");
+        adapter.triggerDeploymentConfigUpdate("eap-app", true, variables);
+
+        testSession();
+    }
+
     protected void scale(int replicas) throws Exception {
         adapter.scaleDeployment("eap-app", replicas);
         pods = getPods();
