@@ -29,7 +29,7 @@
 
     <!-- Properties -->
     <properties>
-        <version.ce-arq>1.0.0.Final</version.ce-arq>
+        <version.ce-arq>1.0.1.Final</version.ce-arq>
         <version.meta-inf>1.6</version.meta-inf>
         <version.arquillian>1.1.11.Final</version.arquillian>
         <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
