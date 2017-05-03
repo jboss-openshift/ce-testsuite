@@ -20,7 +20,6 @@
 
     <properties>
         <version.activemq>5.8.0.redhat-60083</version.activemq>
-        <version.arquillian.ce>1.0.1.Final-SNAPSHOT</version.arquillian.ce>
         <version.javax.jpa>1.0.1.Final</version.javax.jpa>
         <version.javassist>3.19.0-GA</version.javassist>
         <!-- KIE versions -->
@@ -65,41 +64,6 @@
                 <version>${version.javassist}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-api</artifactId>
-                <version>${version.arquillian.ce}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-cube</artifactId>
-                <version>${version.arquillian.ce}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-fabric8</artifactId>
-                <version>${version.arquillian.ce}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-httpclient</artifactId>
-                <version>${version.arquillian.ce}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-shrinkwrap</artifactId>
-                <version>${version.arquillian.ce}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-utils</artifactId>
-                <version>${version.arquillian.ce}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
