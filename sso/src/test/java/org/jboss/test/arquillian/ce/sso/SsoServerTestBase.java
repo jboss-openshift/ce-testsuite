@@ -41,22 +41,33 @@ public abstract class SsoServerTestBase extends SsoTestBase {
 	
 	private final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
             .desiredStatusCode(200).delay(10).build();
+	
+	protected String getRoute() {
+        return getRouteURL().toString().replace(":80", "");
+    }
+	
+    protected String getSecureRoute() {
+        return getSecureRouteURL().toString().replace(":443", "");
+    }
 
     @Test
     @RunAsClient
     public void testConsoleRoute() throws Exception {
-        consoleRoute(getRouteURL().toString());
+        consoleRoute(getRoute());
     }
 
     @Test
     @RunAsClient
     public void testSecureConsoleRoute() throws Exception { 	 	
-    	consoleRoute(getSecureRouteURL().toString());
+    	consoleRoute(getSecureRoute());
     }
         
     protected void consoleRoute(String host) throws Exception {
     	HttpClient client = HttpClientBuilder.untrustedConnectionClient();
-        HttpRequest request = HttpClientBuilder.doGET(host + "auth/realms/master/protocol/openid-connect/auth?client_id=security-admin-console&redirect_uri=" + host + "auth/admin/master/console&state=5200ac38-a9fc-40af-88b9-f0291b7b097e&nonce=9adb148a-4575-4c8f-87fa-2e667fdff767&response_mode=fragment&response_type=code");
+    	String url = host + "auth/realms/master/protocol/openid-connect/auth?client_id=security-admin-console&redirect_uri=" + host + "auth/admin/master/console&state=5200ac38-a9fc-40af-88b9-f0291b7b097e&nonce=9adb148a-4575-4c8f-87fa-2e667fdff767&response_mode=fragment&response_type=code";
+        url = url.replace(":443", "");
+        url = url.replace(":80", "");
+    	HttpRequest request = HttpClientBuilder.doGET(url);
         HttpResponse response = client.execute(request, execOptions);
         
         String result = response.getResponseBodyAsString();
@@ -66,13 +77,13 @@ public abstract class SsoServerTestBase extends SsoTestBase {
     @Test
     @RunAsClient
     public void testRestRoute() throws Exception {
-    	restRoute(getRouteURL().toString());
+    	restRoute(getRoute());
     }
     
     @Test
     @RunAsClient
     public void testSecureRestRoute() throws Exception {
-    	restRoute(getSecureRouteURL().toString());
+    	restRoute(getSecureRoute());
     }
                
     protected void restRoute(String host) throws Exception {
@@ -99,13 +110,13 @@ public abstract class SsoServerTestBase extends SsoTestBase {
     @Test
     @RunAsClient
     public void testLogin() throws Exception {
-		login(getRouteURL().toString());
+		login(getRoute());
 	}
 	
 	@Test
     @RunAsClient
     public void testSecureOidcLogin() throws Exception {
-		login(getSecureRouteURL().toString());
+		login(getSecureRoute());
 	}
         
     protected void login(String host) throws Exception {

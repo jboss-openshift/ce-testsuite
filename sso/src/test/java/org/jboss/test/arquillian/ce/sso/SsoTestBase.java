@@ -34,18 +34,6 @@ import java.util.logging.Logger;
 public abstract class SsoTestBase {
     protected final Logger log = Logger.getLogger(getClass().getName());
 
-    /* @ArquillianResource
-    protected ConfigurationHandle configuration;
-
-    protected static WebArchive getDeploymentInternal() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
-
-        war.setWebXML("web.xml");
-        war.addClass(SsoTestBase.class);
-
-        return war;
-    } */
-    
     protected abstract URL getRouteURL();
     
     protected abstract URL getSecureRouteURL();
