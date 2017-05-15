@@ -25,7 +25,6 @@ package org.jboss.test.arquillian.ce.sso;
 
 import java.net.URL;
 
-import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
@@ -63,8 +62,4 @@ public class Sso71ServerPostgresqlTest extends SsoServerTestBase
     protected URL getSecureRouteURL() {
         return secureRouteURL;
     }
-
-	public SsoServerPostgresqlTest() {
-	
-	}
 }
