@@ -43,10 +43,12 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 @Template( url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/sso/sso71-https.json",
-labels = "application=sso",
-parameters = {
-        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-        @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
+	labels = "application=sso",
+	parameters = {
+        	@TemplateParameter(name = "SSO_ADMIN_USERNAME", value="admin"),
+                @TemplateParameter(name = "SSO_ADMIN_PASSWORD", value="admin"),
+        	@TemplateParameter(name = "HTTPS_NAME", value="jboss"),
+        	@TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
         })
 @OpenShiftResources({
         @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/sso-app-secret.json"),
