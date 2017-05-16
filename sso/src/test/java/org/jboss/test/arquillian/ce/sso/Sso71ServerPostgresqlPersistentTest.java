@@ -37,6 +37,8 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/sso/sso71-postgresql-persistent.json",
 		labels = "application=sso,component=server",
 		parameters = {
+                        @TemplateParameter(name = "SSO_ADMIN_USERNAME", value="admin"),
+                        @TemplateParameter(name = "SSO_ADMIN_PASSWORD", value="admin"),
 		        @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
 		        @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")
 		        })
