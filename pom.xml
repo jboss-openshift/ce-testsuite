@@ -54,6 +54,7 @@
         <hamcrest.library.version>1.3</hamcrest.library.version>
         <api-ldap-client-all.version>1.0.0-M33</api-ldap-client-all.version>
         <apacheds-server-annotations.version>2.0.0-M21</apacheds-server-annotations.version>
+        <version.amq.ce.common>1.0.0-SNAPSHOT</version.amq.ce.common>
     </properties>
 
     <modules>
@@ -123,6 +124,13 @@
             <dependency>
                 <groupId>org.jboss.ce.testsuite</groupId>
                 <artifactId>eap-ce-testsuite-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- AMQ Ce common -->
+            <dependency>
+                <groupId>org.jboss.ce.testsuite</groupId>
+                <artifactId>ce-amq-testsuite-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

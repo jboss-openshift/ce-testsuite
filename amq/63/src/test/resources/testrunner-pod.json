@@ -1,0 +1,74 @@
+{
+	"kind": "Pod",
+	"apiVersion": "v1",
+	"metadata": {
+		"name": "testrunner",
+		"labels": {
+			"application": "testrunner"
+		}
+	},
+
+	"spec": {
+		"terminationGracePeriodSeconds": 0,
+		"containers": [
+			{
+				"name": "testrunner",
+				"readinessProbe": {
+					"exec": {
+						"command": [
+							"/bin/bash",
+							"-c",
+							"/opt/eap/bin/readinessProbe.sh"
+						]
+					}
+				},
+				"serviceAccountName": "testrunner-account",
+				"volumeMounts": [
+					{
+						"mountPath": "/opt/eap/certs",
+						"name": "testrunner-pvol"
+					}
+				],
+
+				"image": "jboss-eap-6/eap64-openshift:1.4",
+				"ports": [
+					{
+						"containerPort": 8080,
+						"protocol": "TCP"
+					},
+
+					{
+						"containerPort": 9990,
+						"protocol": "TCP"
+					},
+
+					{
+						"containerPort": 9999,
+						"protocol": "TCP"
+					}
+				],
+
+				"env": [
+					{
+						"name": "ADMIN_USERNAME",
+						"value": "admin"
+					},
+
+					{
+						"name": "ADMIN_PASSWORD",
+						"value": "Admin#70365"
+					}
+				]
+			}
+		],
+
+		"volumes": [
+			{
+				"name": "testrunner-pvol",
+				"secret": {
+					"secretName": "testrunner-secret"
+				}
+			}
+		]
+	}
+}
