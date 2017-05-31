@@ -30,7 +30,7 @@
     <defaultProtocol type="jmx-as7" />
     
     <extension qualifier="ce-cube">
-        <property name="kubernetesNamespacePrefix">cearq-amq</property>
+        <property name="kubernetesNamespacePrefix">cearq-amq63</property>
     </extension>
   
     <!-- Example configuration for arquillian openshift extension -->

@@ -29,7 +29,7 @@
     <defaultProtocol type="jmx-as7" />
     
     <extension qualifier="ce-cube">
-        <property name="kubernetesNamespacePrefix">cearq-kie</property>
+        <property name="kubernetesNamespacePrefix">cearq-kie63</property>
     </extension>
   
     <!-- Example configuration for arquillian openshift extension -->
