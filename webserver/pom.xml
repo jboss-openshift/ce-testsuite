@@ -25,7 +25,7 @@
         <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-websockets-jsr</artifactId>
-            <version>${undertow.jsr356.version}</version>
+            <version>${version.undertow}</version>
         </dependency>
 
         <!-- TODO -->

@@ -49,8 +49,7 @@
         <version.org.jboss.xnio>3.3.1.Final</version.org.jboss.xnio>
         <version.syslog4j>0.9.30</version.syslog4j>
         <version.json-simple>1.1.1</version.json-simple>
-        <!-- undertow JSR356 implementation -->
-        <undertow.jsr356.version>1.3.24.Final</undertow.jsr356.version>
+        <version.undertow>1.3.30.Final</version.undertow>
         <hamcrest.library.version>1.3</hamcrest.library.version>
         <api-ldap-client-all.version>1.0.0-M33</api-ldap-client-all.version>
         <apacheds-server-annotations.version>2.0.0-M21</apacheds-server-annotations.version>
@@ -352,6 +351,13 @@
                 <type>pom</type>
                 <scope>import</scope>
                 <version>${version.arquillian}</version>
+            </dependency>
+
+            <!-- Newer undertow, so that we don't need newer arq-cube -->
+            <dependency>
+                <groupId>io.undertow</groupId>
+                <artifactId>undertow-core</artifactId>
+                <version>${version.undertow}</version>
             </dependency>
 
         </dependencies>
