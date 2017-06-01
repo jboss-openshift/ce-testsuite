@@ -37,6 +37,7 @@ import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.jboss.arquillian.ce.api.TemplateResources;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -48,12 +49,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datavirt/datavirt63-basic-s2i.json",
-		labels = "application=datavirt-app")
+@TemplateResources(syncInstantiation = true, templates = {
+	@Template(url = "https://raw.githubusercontent.com/bdecoste/jdv-jdg-test/master/datavirt63-extensions-support-s2i.json",
+		parameters = {
+				@TemplateParameter(name = "SOURCE_REPOSITORY_URL", value = "https://github.com/bdecoste/openshift-examples"),
+				@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "cloud-1303"),
+				@TemplateParameter(name = "CONTEXT_DIR", value = "datavirt/jdv-jdg-integration"),
+				@TemplateParameter(name = "VDB_DIRS", value = "dynamicvdb-datafederation/src/vdb,jdg-remote-cache-materialization/src/vdb"),
+				@TemplateParameter(name = "TEIID_USERNAME", value = "teiidUser"),
+				@TemplateParameter(name = "TEIID_PASSWORD", value = "Password1-"),
+				@TemplateParameter(name = "EXTENSIONS_REPOSITORY_URL", value = "http://github.com/bdecoste/openshift-examples"),
+				@TemplateParameter(name = "EXTENSIONS_REPOSITORY_REF", value = "cloud-1303"),
+				@TemplateParameter(name = "EXTENSIONS_DIR", value = "datavirt/jdv-jdg-integration-ext"),
+				@TemplateParameter(name = "EXTENSIONS_DOCKERFILE", value = "Dockerfile"),
+				@TemplateParameter(name = "ENV_FILES", value = "/etc/datavirt-environment/*,/home/jboss/source/extensions/extras/resourceadapters.env")
+		}),
+	@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-basic.json",
+        parameters = {
+        	@TemplateParameter(name = "DATAVIRT_CACHE_NAMES", value="ADDRESSBOOK") })
+		})
 @OpenShiftResources({
-       @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datavirt-app-secret.yaml")
+	@OpenShiftResource("classpath:datavirt-app-secret.yaml"),
+	@OpenShiftResource("classpath:datavirt-app-config-secret.json")
 })
-public class DatavirtLogTest extends DatavirtTestBase
+public class DatavirtDatagridLogTest extends DatavirtTestBase
 {
 	@RouteURL("datavirt-app")
     private URL routeURL;
@@ -75,7 +94,7 @@ public class DatavirtLogTest extends DatavirtTestBase
 	        assertFalse(result.contains("Failure"));
 	        assertTrue(result.contains("JBoss Red Hat JBoss Data Virtualization 6.3.5 (AS 7.5.15.Final-redhat-3) started in"));
 	        assertTrue(result.contains("Deployed \"portfolio-vdb.xml\""));
-	        assertTrue(result.contains("Deployed \"hibernate-portfolio-vdb.xml\""));
+	        assertTrue(result.contains("Deployed \"jdg-remote-cache-mat-vdb.xml\""));
 	        assertTrue(result.contains("Deployed \"teiid-olingo-odata4.war\""));
 	        assertTrue(result.contains("Deployed \"teiid-odata.war\""));
 	        assertTrue(result.contains("Deployed \"ModeShape.vdb\""));
@@ -88,7 +107,10 @@ public class DatavirtLogTest extends DatavirtTestBase
 	        assertTrue(result.contains("TEIID50030 VDB Portfolio.1 model \"Stocks\" metadata loaded."));
 	        assertTrue(result.contains("TEIID50030 VDB Portfolio.1 model \"OtherHoldings\" metadata loaded."));
 	        assertTrue(result.contains("TEIID50030 VDB Portfolio.1 model \"Accounts\" metadata loaded."));
-	        assertTrue(result.contains("TEIID50030 VDB Hibernate_Portfolio.1 model \"ProductPricingModel\" metadata loaded."));
+	        assertTrue(result.contains("TEIID50030 VDB PeopleMat.1 model \"PersonInfoModel\" metadata loaded."));
+	        assertTrue(result.contains("TEIID50030 VDB PeopleMat.1 model \"PersonMatModel\" metadata loaded."));
+	        assertTrue(result.contains("TEIID50030 VDB PeopleMat.1 model \"PersonMatCache\" metadata loaded."));
+
 		} catch (Exception e){
 			e.printStackTrace();
 			throw e;
