@@ -70,7 +70,7 @@ public class PersistentTimersTestBase extends KieServerTestBase {
     @RunAsClient
     @InSequence(1)
     public void checkContainerId() throws Exception {
-        checkKieServerContainer("timerProcess=org.openshift.quickstarts:processserver-timerprocess:1.3.0.Final");
+        checkKieServerContainer("timerProcess=org.openshift.quickstarts:processserver-timerprocess:1.4.0.Final");
     }
 
     /**
@@ -251,7 +251,7 @@ public class PersistentTimersTestBase extends KieServerTestBase {
      * @throws NoSuchAlgorithmException     if the algorithm used is not found
      */
     private String containerId() throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return convertKieContainerId("timerProcess=org.openshift.quickstarts:processserver-timerprocess:1.3.0.Final");
+        return convertKieContainerId("timerProcess=org.openshift.quickstarts:processserver-timerprocess:1.4.0.Final");
     }
 
     /**
