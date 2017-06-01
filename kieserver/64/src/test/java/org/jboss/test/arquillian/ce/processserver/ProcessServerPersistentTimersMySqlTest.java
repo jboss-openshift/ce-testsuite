@@ -43,7 +43,7 @@ import java.net.URL;
                 @TemplateParameter(name = "KIE_SERVER_PASSWORD", value = "${kie.password:Redhat@123}"),
                 @TemplateParameter(name = "CONTEXT_DIR", value = "processserver/timerprocess"),
                 @TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "master"),
-                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "timerProcess=org.openshift.quickstarts:processserver-timerprocess:1.3.0.Final")
+                @TemplateParameter(name = "KIE_CONTAINER_DEPLOYMENT", value = "timerProcess=org.openshift.quickstarts:processserver-timerprocess:1.4.0.Final")
         }
 )
 @OpenShiftResources({
