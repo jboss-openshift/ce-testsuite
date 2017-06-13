@@ -29,7 +29,6 @@
         <version.org.jboss.security.jbossxacml>2.0.8.Final-redhat-5</version.org.jboss.security.jbossxacml>
         <version.org.hornetq>2.3.25.SP6-redhat-1</version.org.hornetq>
         <version.org.jboss.xnio>3.3.1.Final</version.org.jboss.xnio>
-        <version.alpn-boot>8.1.7.v20160121</version.alpn-boot>
         <version.log4j>1.2.17</version.log4j>
         <version.org.jboss.as.ejb3>7.5.0.Final-redhat-21</version.org.jboss.as.ejb3>
         <version.commons.lang>2.6</version.commons.lang>
@@ -188,13 +187,6 @@
                 <artifactId>jbossxacml</artifactId>
                 <version>${version.org.jboss.security.jbossxacml}</version>
                 <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mortbay.jetty.alpn</groupId>
-                <artifactId>alpn-boot</artifactId>
-                <version>${version.alpn-boot}</version>
-                <scope>runtime</scope>
             </dependency>
 
             <dependency>
@@ -383,12 +375,6 @@
             <version>1.0.0.Final</version>
             <type>pom</type>
             <scope>provided</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.mortbay.jetty.alpn</groupId>
-            <artifactId>alpn-boot</artifactId>
         </dependency>
 
         <!-- Tests - add any external existing tests here -->
@@ -774,7 +760,6 @@
                 <version>2.18.1</version>
                 <configuration>
                     <argLine>
-                        -Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${version.alpn-boot}/alpn-boot-${version.alpn-boot}.jar
                         -Djboss.node.name=testrunner
                         -Djboss.qualified.host.name=testrunner
                         -Dorg.jboss.as.test.integration.remote=true
