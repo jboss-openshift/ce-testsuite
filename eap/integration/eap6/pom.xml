@@ -775,6 +775,8 @@
                     <excludes>
                         <!-- do filesystem operations in the host the tests 
                             are started instead the pod -->
+                        <exclude>**/MultipleCustomLoginModulesTest.java</exclude>
+                        <exclude>**/JBossCliXmlTestCase.java</exclude>
                         <exclude>**/AuditLogTestCase.java</exclude>
                         <exclude>**/JmxAuditLogTestCase.java</exclude>
                         <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
@@ -853,6 +855,7 @@
 
                         <!-- Enabling audit log wasn't logged into the syslog 
                             - even if the given port is opened in the pod and forwarded -->
+                        <exlude>**/ReconnectSyslogServerTestCase.java</exlude>
                         <exclude>**/AuditLogToUDPSyslogTestCase.java</exclude>
                         <exclude>**/AuditLogToTLSSyslogTestCase.java</exclude>
                         <exclude>**/TLSAuditLogToTCPSyslogTestCase.java</exclude>
@@ -929,6 +932,10 @@
 
                         <!-- TODO verifies if is possible to provide credentials -->
                         <exclude>**/ClientCompatibilityUnitTestCase.java</exclude>
+
+                        <!-- temporary exclusion -->
+                        <!-- needs this get merged: https://github.com/jbossas/jboss-eap/pull/2859 before add more changes on upstream -->
+                        <exclude>**/JNDIBindingMBeanTestCase.java</exclude>
 
                     </excludes>
                 </configuration>
