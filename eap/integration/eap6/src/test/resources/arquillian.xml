@@ -142,6 +142,9 @@
 
         <property name="methods_41">org.jboss.as.test.smoke.datasource.DsTestCase#testDatasourceSerialization</property>
         <property name="methods_42">org.jboss.as.test.smoke.webservices.WSTestCase#testManagementDescription</property>
+        <property name="methods_43">org.jboss.as.test.integration.ejb.transaction.cmt.inheritance.TransactionAttributeTestCase#defaultBeanAttributeOverridesParentMethodDeclaration</property>
+        <property name="methods_44">org.jboss.as.test.integration.ejb.transaction.cmt.inheritance.TransactionAttributeTestCase#classAnnotationOverridesParentDeclaration</property>
+        <property name="methods_45">org.jboss.as.test.integration.ejb.transaction.cmt.inheritance.TransactionAttributeTestCase#defaultBeanAttributeOverridesParentClassDeclaration</property>
 
     </extension>
 </arquillian>
