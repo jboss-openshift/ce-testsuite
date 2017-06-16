@@ -1220,6 +1220,9 @@
 
                         <!-- tries to open a port on local host instead the pod -->
                         <exclude>**/JMXConnectorTestCase.java</exclude>
+
+                        <!-- web console is disabled on EAP images -->
+                        <exclude>**/WebConsoleSecurityTestCase.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
