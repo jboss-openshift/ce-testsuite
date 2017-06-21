@@ -20,12 +20,9 @@
 
     <modules>
         <module>jdg65</module>
+        <module>jdg71</module>
         <module>integration</module>
     </modules>
-
-    <properties>
-        <version.org.infinispan>6.3.1.Final-redhat-1</version.org.infinispan>
-    </properties>
 
     <dependencyManagement>
         <dependencies>
