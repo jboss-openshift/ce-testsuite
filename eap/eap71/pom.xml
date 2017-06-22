@@ -13,10 +13,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
-    <artifactId>eap70-ce-testsuite</artifactId>
+    <artifactId>eap71-ce-testsuite</artifactId>
     <packaging>jar</packaging>
-    <name>EAP 7.0 CE Testsuite</name>
-    <description>EAP 7.0 Cloud Enablement Testsuite</description>
+    <name>EAP 7.1 CE Testsuite</name>
+    <description>EAP 7.1 Cloud Enablement Testsuite</description>
 
     <dependencies>
 
