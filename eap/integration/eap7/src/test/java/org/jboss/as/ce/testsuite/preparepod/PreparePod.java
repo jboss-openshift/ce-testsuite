@@ -5,11 +5,13 @@ import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.as.cli.CommandContext;
 import org.jboss.as.cli.CommandContextFactory;
+import org.jboss.as.cli.CommandFormatException;
 import org.jboss.as.cli.CommandLineException;
 import org.jboss.as.cli.impl.CommandContextConfiguration;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -31,19 +33,20 @@ public class PreparePod {
             //"/subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=OFF)",
 
             // create a new io-thread-pool for ejb connections
-            "/subsystem=io/worker=ejb-worker:add(io-threads=800, stack-size=64, task-max-threads=2000)",
+            "/subsystem=io/worker=ejb-worker:add(io-threads=400, stack-size=64, task-max-threads=400)",
             "/subsystem=ejb3/service=remote:write-attribute(name=thread-pool-name, value=ejb-worker)",
 
             // increase the ejb thread pool, the default is to small
-            "/subsystem=ejb3/thread-pool=default:write-attribute(name=max-threads, value=2000)",
-
-            // increase the undertow's buffers values.
-            "/subsystem=undertow/buffer-cache=default:write-attribute(name=buffer-size, value=1001920)",
-            "/subsystem=undertow/buffer-cache=default:write-attribute(name=buffers-per-region, value=10024)",
-            "/subsystem=undertow/buffer-cache=default:write-attribute(name=max-regions, value=256)",
+            "/subsystem=ejb3/thread-pool=default:write-attribute(name=max-threads, value=400)",
 
             // no retries on auth to decrease the overhead
             "/subsystem=remoting/configuration=endpoint:write-attribute(name=authentication-retries, value=0)",
+
+            // manually set ejb max pools
+            "/subsystem=ejb3/strict-max-bean-instance-pool=mdb-strict-max-pool:undefine-attribute(name=derive-size)",
+            "/subsystem=ejb3/strict-max-bean-instance-pool=mdb-strict-max-pool:write-attribute(name=max-pool-size, value=400)",
+            "/subsystem=ejb3/strict-max-bean-instance-pool=slsb-strict-max-pool:undefine-attribute(name=derive-size)",
+            "/subsystem=ejb3/strict-max-bean-instance-pool=slsb-strict-max-pool:write-attribute(name=max-pool-size,value=400)",
 
             ":reload"
     );
@@ -55,6 +58,7 @@ public class PreparePod {
     private String MANAGEMENT_ADDRESS;
     private String MANAGEMENT_PORT;
     private int CLI_CONNECTION_TIMEOUT;
+    private ModelControllerClient client;
 
     /*
     * Configure the pod before run the tests.
@@ -68,9 +72,23 @@ public class PreparePod {
         ctx = getCtx();
         // Execute all defined commands
         commands.stream().forEach(this::execute);
-        //wait server gets ready
-        // TODO maybe run the probes or something to do a real liveness check?
-        Thread.sleep(20000);
+
+        // Make sure server is running before proceed
+        boolean isServerReady = false;
+        client = ctx.getModelControllerClient();
+        while (!isServerReady) {
+            try {
+                Thread.sleep(1000);
+                ModelNode request = ctx.buildRequest(":read-attribute(name=server-state)");
+                String result = client.execute(request).get("result").toString();
+                if (result.equals("\"running\"")) {
+                    log.info("Server is ready.");
+                    isServerReady = true;
+                }
+            } catch (final Exception e) {
+                log.info("Server not ready yet, waiting 1 second, reason: " + e.getCause());
+            }
+        }
     }
 
     /*
@@ -80,7 +98,7 @@ public class PreparePod {
     * @throws Exception for all exceptions
     */
     public void execute(String command) {
-        ModelControllerClient client = ctx.getModelControllerClient();
+        client = ctx.getModelControllerClient();
         try {
             log.info("Trying to execute command [" + command + "]");
             ModelNode request = ctx.buildRequest(command);
@@ -141,7 +159,7 @@ public class PreparePod {
         MANAGEMENT_PASSWORD = getProperty(props, "password", "Admin#70365");
         MANAGEMENT_ADDRESS = getProperty(props, "managementAddress", "localhost");
         MANAGEMENT_PORT = getProperty(props, "managementPort", "9990");
-        CLI_CONNECTION_TIMEOUT = Integer.parseInt(getProperty(props,"cliConnectionTimeout", "10000")); //default 10 seconds
+        CLI_CONNECTION_TIMEOUT = Integer.parseInt(getProperty(props, "cliConnectionTimeout", "10000")); //default 10 seconds
     }
 
     /*
