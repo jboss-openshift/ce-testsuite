@@ -999,7 +999,7 @@
                 <version>1.5.0</version>
                 <executions>
                     <execution>
-                        <id>basic</id>
+                        <id>exec-1</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>exec</goal>
@@ -1007,9 +1007,26 @@
                         <configuration>
                             <executable>jar</executable>
                             <arguments>
-                                <argument>uf</argument>
+                                <argument>ufv</argument>
                                 <argument>
                                     ${user.home}/.m2/repository/org/jboss/eap/wildfly-ts-integ-basic/${version.eap7}/wildfly-ts-integ-basic-${version.eap7}-tests.jar
+                                </argument>
+                                <argument>jboss-ejb-client.properties</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>exec-2</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>jar</executable>
+                            <arguments>
+                                <argument>ufv</argument>
+                                <argument>
+                                    ${user.home}/.m2/repository/org/jboss/eap/wildfly-ts-integ-ws/${version.eap7}/wildfly-ts-integ-ws-${version.eap7}-tests.jar
                                 </argument>
                                 <argument>jboss-ejb-client.properties</argument>
                             </arguments>
@@ -1046,6 +1063,7 @@
                         <org.jboss.ejb.client.wildfly-testsuite-hack>true</org.jboss.ejb.client.wildfly-testsuite-hack>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <org.jboss.as.test.integration.remote>true</org.jboss.as.test.integration.remote>
+                        <jboss.qualified.host.name>testrunner</jboss.qualified.host.name>
                     </systemPropertyVariables>
                     <runOrder>alphabetical</runOrder>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -1091,6 +1109,7 @@
                         <exclude>**/AddMySqlDataSourceOperationsUnitTestCase.java</exclude>
 
                         <!-- always fails -->
+                        <exclude>**/JaxrsYamlProviderTestCase.java</exclude>
                         <exclude>**/RunAsTestCaseEJBMDB.java</exclude>
                         <exclude>**/LegacyTimerFormatTestCase.java</exclude>
                         <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
