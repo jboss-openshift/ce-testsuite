@@ -63,6 +63,7 @@ public class PreparePod {
     private String JBOSS_HOME;
     private String MANAGEMENT_USERNAME;
     private String MANAGEMENT_PASSWORD;
+    private ModelControllerClient client;
 
     /*
     * To run the EAP integration tests against a EAP instance running on Opensfhift we have to do some changes in the testrunner pod:
@@ -81,9 +82,23 @@ public class PreparePod {
         ctx = getCtx(MANAGEMENT_USERNAME, MANAGEMENT_PASSWORD);
         // Execute all defined commands
         commands.stream().forEach(this::execute);
-        //wait server gets ready
-        // TODO maybe run the probes or something to do a real liveness check?
-        Thread.sleep(20000);
+
+        // Make sure server is running before proceed
+        boolean isServerReady = false;
+        client = ctx.getModelControllerClient();
+        while (!isServerReady) {
+            try {
+                Thread.sleep(1000);
+                ModelNode request = ctx.buildRequest(":read-attribute(name=server-state)");
+                String result = client.execute(request).get("result").toString();
+                if (result.equals("\"running\"")) {
+                    log.info("Server is ready.");
+                    isServerReady = true;
+                }
+            } catch (final Exception e) {
+                log.info("Server not ready yet, waiting 1 second, reason: " + e.getCause());
+            }
+        }
     }
 
 
@@ -94,7 +109,7 @@ public class PreparePod {
     * @throws Exception for all exceptions
     */
     public void execute(String command) {
-        ModelControllerClient client = ctx.getModelControllerClient();
+        client = ctx.getModelControllerClient();
         try {
             log.info("Trying to execute command [" + command + "]");
             ModelNode request = ctx.buildRequest(command);
