@@ -143,6 +143,16 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+            <version>${version.org.jboss.shrinkwrap.resolver}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-api</artifactId>
+            <version>${version.org.jboss.shrinkwrap.resolver}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -210,6 +220,7 @@
         <version.arquillian>1.0.0.Final</version.arquillian>
         <version.logging>3.2.1.Final</version.logging>
         <version.org.jboss.xnio>3.3.6.Final-redhat-1</version.org.jboss.xnio>
+        <version.org.jboss.shrinkwrap.resolver>2.2.6</version.org.jboss.shrinkwrap.resolver>
         <suite.client.dist.phase>test</suite.client.dist.phase>
         <suite.client.repl.phase>test</suite.client.repl.phase>
         <suite.client.clustered.groups>org.infinispan.server.test.category.ClientClustered</suite.client.clustered.groups>
