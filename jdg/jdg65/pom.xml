@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -17,9 +17,10 @@
     <packaging>jar</packaging>
     <name>JDG 6.5 CE Testsuite</name>
     <description>JDG 6.5 Cloud Enablement Testsuite</description>
-    
+
     <properties>
         <version.spymemcached>2.8.1</version.spymemcached>
+        <version.commons.collections>3.2.2.redhat-2</version.commons.collections>
     </properties>
 
     <dependencies>
@@ -115,6 +116,11 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${version.commons.collections}</version>
+        </dependency>
 
     </dependencies>
 
@@ -170,7 +176,3 @@
         </plugins>
     </build>
 </project>
-
-
-
-

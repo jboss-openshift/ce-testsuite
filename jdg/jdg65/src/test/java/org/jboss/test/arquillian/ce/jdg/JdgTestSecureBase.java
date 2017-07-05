@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
 
+import org.apache.commons.collections.list.CursorableLinkedList;
 import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -40,7 +41,7 @@ public abstract class JdgTestSecureBase extends JdgTestBase {
     protected static WebArchive getDeploymentInternal() {
         WebArchive war = JdgTestBase.getDeploymentInternal();
         war.addClass(JdgTestSecureBase.class);
-
+        war.addClass(CursorableLinkedList.class);
         return war;
     }
     @Test
