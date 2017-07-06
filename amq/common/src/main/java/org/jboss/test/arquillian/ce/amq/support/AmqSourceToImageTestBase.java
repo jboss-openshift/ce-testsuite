@@ -41,6 +41,11 @@ public class AmqSourceToImageTestBase extends AmqBase {
     @Test
     @RunAsClient
     public void testCustomConfiguration(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        // wait for the broker-amq pod get ready, sometimes the tests finish before the s2i build gets ready, leading the
+        // test to fail.
+        adapter.waitForReadyPods("broker-amq", 1);
+        Assert.assertEquals("There is no enough replicas of broker-amq.",1, adapter.getReadyPods("broker-amq").size());
+
         String amqPod = "";
         for (String podName : adapter.getPods()) {
             if (NAME_REGEXP.matcher(podName).matches()) {
