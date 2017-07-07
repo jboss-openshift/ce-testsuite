@@ -172,7 +172,6 @@
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <trimStackTrace>false</trimStackTrace>
                     <enableAssertions>false</enableAssertions>
-                    <org.jboss.remoting-jmx.timeout>1000</org.jboss.remoting-jmx.timeout>
                     <forkMode>once</forkMode>
                     <includes>
                         <include>org/jboss/**/*Test.java</include>
@@ -186,6 +185,7 @@
                         <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
                         <template.repository>jboss-openshift</template.repository>
                         <template.branch>master</template.branch>
+                        <org.jboss.remoting-jmx.timeout>1000</org.jboss.remoting-jmx.timeout>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
