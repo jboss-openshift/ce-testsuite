@@ -23,6 +23,7 @@
 
 package org.jboss.test.arquillian.ce.amq.support;
 
+import org.fusesource.mqtt.codec.PINGREQ;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.shrinkwrap.Files;
@@ -48,6 +49,7 @@ public class AmqBase {
         war.addClass(AmqClient.class);
         war.addClass(AmqPersistentTestBase.class);
         war.addClass(AmqTestBase.class);
+        war.addClass(PINGREQ.class);
         war.addClasses(classes);
 
         war.addAsLibraries(Libraries.transitive("org.apache.activemq", "activemq-client"));
