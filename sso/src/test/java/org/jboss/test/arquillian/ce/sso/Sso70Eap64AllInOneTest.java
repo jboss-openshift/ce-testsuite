@@ -34,10 +34,10 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/jboss-openshift/openshift-examples/master/demos/sso/sso70-eap64-all-in-one-demo.json",
     labels = "application=helloworld,component=eap",
 	parameters = {
-			@TemplateParameter(name = "SSO_HOSTNAME_HTTP", value = "sso.cloudapps.example.com"),
-			@TemplateParameter(name = "SSO_HOSTNAME_HTTPS", value = "secure-sso.cloudapps.example.com"),
-			@TemplateParameter(name = "HOSTNAME_HTTP", value = "helloworld.cloudapps.example.com"),
-			@TemplateParameter(name = "HOSTNAME_HTTPS", value = "secure-helloworld.cloudapps.example.com")
+			@TemplateParameter(name = "SSO_HOSTNAME_HTTP", value = "sso.cluster.local"),
+			@TemplateParameter(name = "SSO_HOSTNAME_HTTPS", value = "secure-sso.cluster.local"),
+			@TemplateParameter(name = "HOSTNAME_HTTP", value = "helloworld.cluster.local"),
+			@TemplateParameter(name = "HOSTNAME_HTTPS", value = "secure-helloworld.cluster.local")
 		}
 )
 @OpenShiftResources({
