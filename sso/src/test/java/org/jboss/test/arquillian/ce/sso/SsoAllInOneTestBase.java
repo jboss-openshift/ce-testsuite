@@ -149,7 +149,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testAccessType() throws Exception {
-        Client client = new Client("https://secure-sso.cloudapps.example.com");
+        Client client = new Client("https://secure-sso.cluster.local");
         String accessToken = client.getToken("admin", "admin");
         
         Map<String, String> params = new HashMap<>();
