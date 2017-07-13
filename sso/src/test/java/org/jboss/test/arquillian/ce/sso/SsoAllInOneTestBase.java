@@ -53,6 +53,9 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     @RouteURL("secure-helloworld")
     private URL secureRouteURL;
 
+    @RouteURL("secure-sso")
+    private URL secureSsoRouteURL;
+
     @Override
     protected URL getRouteURL() {
         return routeURL;
@@ -149,7 +152,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     @Test
     @RunAsClient
     public void testAccessType() throws Exception {
-        Client client = new Client("https://secure-sso.cloudapps.example.com");
+        Client client = new Client(secureSsoRouteURL.toString());
         String accessToken = client.getToken("admin", "admin");
         
         Map<String, String> params = new HashMap<>();
@@ -237,7 +240,5 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     	for (Cookie cookie : cookies){
     		System.out.println("      " + cookie);
     	}
-    	
     }
-
 }
