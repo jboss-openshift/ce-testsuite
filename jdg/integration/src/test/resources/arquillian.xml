@@ -3,11 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-	<extension qualifier="ce-cube">
-		<property name="kubernetesNamespacePrefix">cearq-integration-jdg6</property>
-	</extension>
-
 	<extension qualifier="openshift">
+		<property name="namespace.prefix">cearq-integration-jdg6</property>
 		<property name="definitionsFile">${definitions.file}</property>
 		<!-- Ports to be proxied locally, <container>:<port> or <container>:0:<port>, to map the same port than container use <container>::<port> or <container>:<port>:<port> -->
 		<property name="proxiedContainerPorts">container1::8080,container1::9999,container1::11211,container1::11222,container2:8180:8080,container2:10099:9999,container2:11311:11211,container2:11322:11322</property>
