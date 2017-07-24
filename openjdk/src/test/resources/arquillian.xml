@@ -21,13 +21,10 @@
   
     <!-- Force the use of the Servlet 3.0 protocol with all containers, as it is the most mature -->
     <defaultProtocol type="jmx-as7" />
-    
-    <extension qualifier="ce-cube">
-        <property name="kubernetesNamespacePrefix">cearq-openjdk</property>
-    </extension>
-  
+
     <extension qualifier="openshift">
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
+        <property name="namespace.prefix">cearq-openjdk</property>
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <property name="proxiedContainerPorts">testrunner:9999,testrunner:9990,testrunner:8080</property>
     </extension>
