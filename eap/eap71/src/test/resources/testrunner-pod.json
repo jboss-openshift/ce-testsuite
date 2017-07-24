@@ -20,7 +20,7 @@
 					]
 				}
 			},
-			"image": "dpalmer/eap71-openshift:1.5",
+			"image": "jboss-eap-7/eap70-openshift:1.4",
             "ports": [
                 {
                     "containerPort": 8080,
