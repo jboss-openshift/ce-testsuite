@@ -26,16 +26,12 @@
     </engine>
     -->
 
-    <extension qualifier="ce-cube">
-        <property name="kubernetesNamespacePrefix">cearq-integration-eap6</property>
-    </extension>
-
     <!-- Example configuration for arquillian openshift extension -->
     <extension qualifier="openshift">
         <!-- Properties describing the location of the OpenShift instance.
         <property name="originServer">https://your-ose-instance.com:8443</property>
-        <property name="namespace">test-namespace</property>
         -->
+        <property name="namespace.prefix">cearq-integration-eap6</property>
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <!-- Ports to be proxied locally, <container>:<port> or <container>:0:<port>, to map the same port than container use <container>::<port> or <container>:<port>:<port> -->
