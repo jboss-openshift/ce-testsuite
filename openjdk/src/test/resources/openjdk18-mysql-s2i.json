@@ -407,26 +407,7 @@
                                     {
                                         "name": "HTTPS_PASSWORD",
                                         "value": "${HTTPS_PASSWORD}"
-                                    }
-                                ],
-                                "ports": [
-                                    {
-                                        "name": "jolokia",
-                                        "containerPort": 8778,
-                                        "protocol": "TCP"
                                     },
-                                    {
-                                        "name": "http",
-                                        "containerPort": 8080,
-                                        "protocol": "TCP"
-                                    },
-                                    {
-                                        "name": "https",
-                                        "containerPort": 8443,
-                                        "protocol": "TCP"
-                                    }
-                                ],
-                                "env": [
                                     {
                                         "name": "DB_DRIVER",
                                         "value": "mysql"
@@ -450,6 +431,23 @@
                                     {
                                         "name": "DB_DATABASE",
                                         "value": "${DB_DATABASE}"
+                                    }
+                                ],
+                                "ports": [
+                                    {
+                                        "name": "jolokia",
+                                        "containerPort": 8778,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "http",
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "https",
+                                        "containerPort": 8443,
+                                        "protocol": "TCP"
                                     }
                                 ]
                             }
