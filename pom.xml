@@ -30,6 +30,7 @@
     <!-- Properties -->
     <properties>
         <version.ce-arq>1.1.0.Final</version.ce-arq>
+        <version.arquillian.cube>1.7.1</version.arquillian.cube>
         <version.meta-inf>1.6</version.meta-inf>
         <version.arquillian>1.1.13.Final</version.arquillian>
         <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
@@ -359,6 +360,15 @@
                 <groupId>io.undertow</groupId>
                 <artifactId>undertow-core</artifactId>
                 <version>${version.undertow}</version>
+            </dependency>
+
+            <!-- Use newest arquillian-cube -->
+            <dependency>
+                <groupId>org.arquillian.cube</groupId>
+                <artifactId>arquillian-cube-parent</artifactId>
+                <version>${version.arquillian.cube}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
         </dependencies>
