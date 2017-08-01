@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.cube.RouteURL;
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;

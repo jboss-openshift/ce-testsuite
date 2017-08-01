@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.cube.RouteURL;
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Test;

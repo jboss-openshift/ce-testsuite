@@ -5,7 +5,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import java.net.URL;
 
 import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.cube.RouteURL;
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.junit.runner.RunWith;
 import org.junit.Test;

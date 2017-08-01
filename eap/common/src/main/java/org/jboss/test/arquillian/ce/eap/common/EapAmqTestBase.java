@@ -3,8 +3,8 @@ package org.jboss.test.arquillian.ce.eap.common;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.cube.RouteURL;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;

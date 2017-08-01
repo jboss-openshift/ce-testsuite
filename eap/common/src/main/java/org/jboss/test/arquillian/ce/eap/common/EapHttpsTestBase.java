@@ -2,7 +2,7 @@ package org.jboss.test.arquillian.ce.eap.common;
 
 import java.net.URL;
 
-import org.jboss.arquillian.ce.cube.RouteURL;
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 
 /**
  * @author Jonh Wendell

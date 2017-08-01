@@ -34,7 +34,7 @@ import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.cube.RouteURL;
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;

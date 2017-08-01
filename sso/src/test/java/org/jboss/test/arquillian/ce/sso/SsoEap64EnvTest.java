@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.cube.RouteURL;
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.test.api.ArquillianResource;
 
 //@RunWith(Arquillian.class)

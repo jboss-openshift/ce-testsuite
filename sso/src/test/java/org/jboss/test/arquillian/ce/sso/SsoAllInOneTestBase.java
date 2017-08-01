@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.http.cookie.Cookie;
-import org.jboss.arquillian.ce.cube.RouteURL;
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.test.arquillian.ce.sso.support.Client;
 import org.json.simple.JSONArray;

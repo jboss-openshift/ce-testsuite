@@ -51,7 +51,7 @@ import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.api.TemplateResources;
-import org.jboss.arquillian.ce.cube.RouteURL;
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;

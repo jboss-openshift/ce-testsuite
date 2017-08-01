@@ -135,7 +135,7 @@
                         <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
                         <kubernetes.master>${kubernetes.master}</kubernetes.master>
                         <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
-                        <arq.extension.ce-cube.routerHost>${router.hostIP}</arq.extension.ce-cube.routerHost>
+                        <arq.extension.openshift.routerHost>${router.hostIP}</arq.extension.openshift.routerHost>
                         <template.repository>jboss-openshift</template.repository>
                         <template.branch>master</template.branch>
                     </systemPropertyVariables>
