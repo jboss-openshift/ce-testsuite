@@ -23,69 +23,62 @@
 
 package org.jboss.test.arquillian.ce.datavirt;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
-
-import org.jboss.arquillian.ce.api.ExternalDeployment;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.cube.RouteURL;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.test.arquillian.ce.datavirt.support.JDBCClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 @RunWith(Arquillian.class)
 @Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datavirt/datavirt63-basic-s2i.json",
-		labels = "application=datavirt-app")
+        labels = "application=datavirt-app")
 @OpenShiftResources({
-       @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datavirt-app-secret.yaml")
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datavirt-app-secret.yaml")
 })
-public class DatavirtLogTest extends DatavirtTestBase
-{
-	@RouteURL("datavirt-app")
+public class DatavirtLogTest extends DatavirtTestBase {
+    @RouteURL("datavirt-app")
     private URL routeURL;
-	
+
     protected URL getRouteURL() {
         return routeURL;
     }
-    
-	@ArquillianResource
-	OpenShiftHandle adapter;
-    
+
+    @ArquillianResource
+    OpenShiftHandle adapter;
+
     @Test
     @RunAsClient
     public void testLogs() throws Exception {
-		try {
-	        Map<String, String> labels = Collections.singletonMap("application", "datavirt-app");
-	        String result = adapter.getLog(null, labels);
-	    
-	        assertFalse(result.contains("Failure"));
-	        assertTrue(result.contains("JBoss Red Hat JBoss Data Virtualization 6.3.4 (AS 7.5.13.Final-redhat-2) started in"));
-	        assertTrue(result.contains("Deployed \"portfolio-vdb.xml\""));
-	        assertTrue(result.contains("Deployed \"hibernate-portfolio-vdb.xml\""));
-	        assertTrue(result.contains("Deployed \"teiid-olingo-odata4.war\""));
-	        assertTrue(result.contains("Deployed \"teiid-odata.war\""));
-	        assertTrue(result.contains("Deployed \"ModeShape.vdb\""));
-	        assertTrue(result.contains("Deployed \"modeshape-cmis.war\""));
-	        assertTrue(result.contains("Deployed \"modeshape-webdav.war\""));
-	        assertTrue(result.contains("Deployed \"modeshape-rest.war\""));
-		} catch (Exception e){
-			e.printStackTrace();
-			throw e;
-		}
+        try {
+            Map<String, String> labels = Collections.singletonMap("application", "datavirt-app");
+            String result = adapter.getLog(null, labels);
+
+            assertFalse(result.contains("Failure"));
+            assertTrue(result.contains("JBoss Red Hat JBoss Data Virtualization 6.3.4 (AS 7.5.13.Final-redhat-2) started in"));
+            assertTrue(result.contains("Deployed \"portfolio-vdb.xml\""));
+            assertTrue(result.contains("Deployed \"hibernate-portfolio-vdb.xml\""));
+            assertTrue(result.contains("Deployed \"teiid-olingo-odata4.war\""));
+            assertTrue(result.contains("Deployed \"teiid-odata.war\""));
+            assertTrue(result.contains("Deployed \"ModeShape.vdb\""));
+            assertTrue(result.contains("Deployed \"modeshape-cmis.war\""));
+            assertTrue(result.contains("Deployed \"modeshape-webdav.war\""));
+            assertTrue(result.contains("Deployed \"modeshape-rest.war\""));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
 }
