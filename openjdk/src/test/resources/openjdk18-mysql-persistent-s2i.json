@@ -410,6 +410,12 @@
                                         "readOnly": true
                                     } 
                                 ],
+                                 "readinessProbe": {
+                                    "tcpSocket": {
+                                        "port": 8080
+                                    },
+                                    "initialDelaySeconds": 5
+                                },
                                 "env": [
                                     {
                                         "name": "HTTPS_KEYSTORE_DIR",
