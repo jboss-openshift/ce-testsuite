@@ -1,5 +1,6 @@
 package org.jboss.test.arquillian.ce.eap64;
 
+import java.io.IOException;
 import java.net.URL;
 
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -63,8 +64,12 @@ public class Eap64ClusteringTest extends EapClusteringTestBase {
         log.info(String.format("Waiting %d seconds before doing the second long request", DELAY_BETWEEN_REQUESTS));
         Thread.sleep(DELAY_BETWEEN_REQUESTS * 1000);
 
-        stars = doDelayRequest(serviceUrl, 200);
-        assertFalse(String.format("Number of stars (%d) should not match number of seconds (%d)", stars, 200), 200 == stars);
+        try {
+            stars = doDelayRequest(serviceUrl, 200);
+            assertFalse(String.format("Number of stars (%d) should not match number of seconds (%d)", stars, 200), 200 == stars);
+        } catch (IOException e) {
+            // This is expected, as our connection should be dropped by Openshift
+        }
     }
 
 
