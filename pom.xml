@@ -30,8 +30,8 @@
     <!-- Properties -->
     <properties>
         <version.ce-arq>1.1.0.Final</version.ce-arq>
-        <version.arquillian.cube>1.7.1</version.arquillian.cube>
-        <version.kubernetes_client>2.5.8</version.kubernetes_client>
+        <version.arquillian.cube>1.8.0</version.arquillian.cube>
+        <version.kubernetes_client>2.5.9</version.kubernetes_client>
         <version.meta-inf>1.6</version.meta-inf>
         <version.arquillian>1.1.13.Final</version.arquillian>
         <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
