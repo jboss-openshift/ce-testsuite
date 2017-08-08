@@ -22,9 +22,6 @@
 
         <!-- Tests - add any external existing tests here -->
 
-
-        <!-- TODO -->
-
         <!-- EAP testunit deps -->
 
         <dependency>
@@ -135,7 +132,7 @@
                     </includes>
                     <systemPropertyVariables>
                         <!-- Custom DNS resolver for OpenShift routes -->
-                        <sun.net.spi.nameservice.provider.1>dns,CEArquillianNameService</sun.net.spi.nameservice.provider.1>
+                        <sun.net.spi.nameservice.provider.1>dns,ArquillianCubeNameService</sun.net.spi.nameservice.provider.1>
                         <sun.net.spi.nameservice.provider.2>default</sun.net.spi.nameservice.provider.2>
                         <kubernetes.master>${kubernetes.master}</kubernetes.master>
                         <kubernetes.auth.token>${kubernetes.auth.token}</kubernetes.auth.token>
