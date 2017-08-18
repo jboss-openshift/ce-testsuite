@@ -54,7 +54,8 @@ public class AmqMeshTestBase extends AmqBase {
     @RunAsClient
     @InSequence(1)
     public void scaleUpResources(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.scaleDeployment("amq-test", 2);
+        adapter.scaleDeployment("amq-test-amq", 2);
+        adapter.waitForReadyPods("amq-test-amq", 2);
         pods.addAll(adapter.getPods());
 
         log.info("Pods used for test: " + pods.toString());
@@ -78,7 +79,7 @@ public class AmqMeshTestBase extends AmqBase {
 
         int totalMessages = 0;
         for (String podName : pods) {
-            if (!podName.equals("testrunner")) {
+            if (!podName.equals("testrunner") && !podName.endsWith("-deploy") && !podName.startsWith("amq-test-drainer")) {
                 final String queueSizeQuery = "org.apache.activemq:type=Broker,brokerName=" + podName + ",destinationType=Queue,destinationName=QUEUES.FOO/QueueSize";
                 String path = "/jolokia/read/" + queueSizeQuery;
                 log.info(path);

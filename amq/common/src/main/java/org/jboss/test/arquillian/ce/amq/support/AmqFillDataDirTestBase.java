@@ -42,6 +42,8 @@ public class AmqFillDataDirTestBase extends AmqMigrationTestBase {
     private static final String LOCK_LOG = "Successfully locked directory:";
     private static final String SPLIT_LOG = "split-";
 
+    private static final int NUM_MSGS = 4;
+
     private static int parseCount(String log) {
         int p = log.indexOf(LOCK_LOG);
         if (p == -1) {
@@ -57,21 +59,28 @@ public class AmqFillDataDirTestBase extends AmqMigrationTestBase {
     }
 
     @Test
+    @RunAsClient
     @InSequence(1)
+    public void testWaitForPods(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        adapter.waitForReadyPods("amq-test-amq", 1);
+    }
+
+    @Test
+    @InSequence(2)
     public void testSendMsgs() throws Exception {
-        sendNMessages(1, 4);
+        sendNMessages(0, NUM_MSGS);
     }
 
     @Test
     @RunAsClient
-    @InSequence(2)
+    @InSequence(3)
     public void testScale(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         Collection<String> pods = adapter.getPods("amq-test-amq");
         Assert.assertEquals(1, pods.size()); // there should be only one
         String firstPod = pods.iterator().next(); // we put the msgs here
 
         ObjectName objectName = new ObjectName(String.format(QUEUE_OBJECT_NAME, firstPod));
-        Assert.assertEquals(3, queryMessages(adapter, firstPod, objectName, "QueueSize")); // smoke test for 3 msgs
+        Assert.assertEquals(NUM_MSGS, queryMessages(adapter, firstPod, objectName, "QueueSize"));
 
         String log = adapter.getLog(firstPod);
         int count = parseCount(log);
@@ -102,9 +111,9 @@ public class AmqFillDataDirTestBase extends AmqMigrationTestBase {
     }
 
     @Test
-    @InSequence(3)
+    @InSequence(4)
     public void testConsumeMsgs() throws Exception {
-        consumeMsgs(3);
+        consumeMsgs(NUM_MSGS);
     }
 
 }

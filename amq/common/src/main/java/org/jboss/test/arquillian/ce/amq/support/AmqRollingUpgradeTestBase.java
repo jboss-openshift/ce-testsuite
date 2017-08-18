@@ -23,10 +23,13 @@
 
 package org.jboss.test.arquillian.ce.amq.support;
 
+import java.util.List;
+
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -35,12 +38,14 @@ import org.junit.Test;
 public class AmqRollingUpgradeTestBase extends AmqMigrationTestBase {
 
     private static final int N = 5;
+    private static final int TIMEOUT = 60000;
 
     @Test
     @RunAsClient
     @InSequence(1)
     public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         adapter.scaleDeployment("amq-test-amq", N);
+        adapter.waitForReadyPods("amq-test-amq", N);
     }
 
     @Test
@@ -53,7 +58,24 @@ public class AmqRollingUpgradeTestBase extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(3)
     public void testRollingUpdate(@ArquillianResource OpenShiftHandle adapter) throws Exception {
+        final List<String> origPods = adapter.getPods("amq-test-amq");
+
         adapter.triggerDeploymentConfigUpdate("amq-test-amq", true);
+
+        final long endTime = System.currentTimeMillis() + TIMEOUT;
+
+        boolean upgradeFinished = false;
+        while(!upgradeFinished && (System.currentTimeMillis() < endTime)) {
+            final List<String> pods = adapter.getPods("amq-test-amq");
+            pods.removeAll(origPods);
+            if (pods.size() == N) {
+                upgradeFinished = true;
+            } else {
+                Thread.sleep(1000);
+            }
+        }
+
+        Assert.assertTrue("Rolling Upgrade did not finish", upgradeFinished);
     }
 
     @Test
