@@ -140,6 +140,12 @@
                 <groupId>org.kohsuke.metainf-services</groupId>
                 <artifactId>metainf-services</artifactId>
                 <version>${version.meta-inf}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>org.apache.httpcomponents</artifactId>
+                        <groupId>httpclient-osgi</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
