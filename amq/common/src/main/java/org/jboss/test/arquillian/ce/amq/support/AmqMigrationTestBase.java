@@ -29,10 +29,10 @@ import org.junit.Assert;
 
 import javax.management.ObjectName;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Ales Justin
@@ -40,6 +40,7 @@ import java.util.TreeSet;
 public class AmqMigrationTestBase extends AmqBase {
 
     protected static final String END = "A-MQ migration finished";
+    protected static final long TIMEOUT = 60000;
 
     protected static int queryMessages(OpenShiftHandle adapter, String podName, ObjectName objectName, String attributeName) throws Exception {
         J4pReadRequest request = new J4pReadRequest(objectName, attributeName);
@@ -47,40 +48,84 @@ public class AmqMigrationTestBase extends AmqBase {
         return (number != null) ? number.intValue() : 0;
     }
 
-    protected static int waitForDrain(OpenShiftHandle adapter, int p) throws Exception {
-        return waitForDrain(adapter, p, END);
+    protected static int waitForDrain(final OpenShiftHandle adapter, int startIndex) throws Exception {
+        return waitForDrain(adapter, startIndex, END);
     }
 
-    protected static int waitForDrain(OpenShiftHandle adapter, int p, String... parts) throws Exception {
-        return waitForDrain(adapter, p, false, parts);
+    protected static int waitForDrain(final OpenShiftHandle adapter, final int startIndex, final String... parts) throws Exception {
+        return waitForDrain(adapter, startIndex, false, parts);
     }
 
-    protected static int waitForDrain(OpenShiftHandle adapter, int p, boolean checkIfReady, String... parts) throws Exception {
-        int repeat = 20;
-        while (repeat > 0) {
-            String drainLog = null;
-            if (checkIfReady) {
-                Collection<String> drainers = adapter.getReadyPods("amq-test-drainer");
-                if (drainers.size() > 0) {
-                    drainLog = adapter.getLog(drainers.iterator().next());
+    protected static int waitForDrain(final OpenShiftHandle adapter, final int startIndex, final boolean checkIfReady, final String... parts) throws Exception {
+        return waitForDrain(adapter, startIndex, false, TIMEOUT, parts);
+    }
+
+    protected static int waitForDrain(final OpenShiftHandle adapter, final int startIndex, final boolean checkIfReady, final long timeout, String... parts) throws Exception {
+        return waitForPodMessage(adapter, "amq-test-drainer", startIndex, checkIfReady, timeout, parts);
+    }
+
+    protected static int waitForPodMessage(final OpenShiftHandle adapter, final String podPrefix, int startIndex, final boolean checkIfReady, final long timeout, String... parts) throws Exception {
+        final String pod ;
+        final long endTime = System.currentTimeMillis() + timeout;
+        if (checkIfReady) {
+            while(true) {
+                final Set<String> readyPods = adapter.getReadyPods(podPrefix);
+                if ((readyPods != null) && (readyPods.size() > 0)) {
+                    pod = readyPods.iterator().next();
+                    break ;
                 }
-            } else {
-                drainLog = adapter.getLog("amq-test-drainer", null);
+                if (System.currentTimeMillis() > endTime) {
+                    return -1;
+                } else {
+                    TimeUnit.SECONDS.sleep(1);
+                }
             }
+        } else {
+            final List<String> pods = adapter.getPods(podPrefix);
+            pod = ((pods != null && !pods.isEmpty())) ? pods.get(0) : null;
+        }
+
+        if (pod == null) {
+            return -1;
+        }
+        final int maxPartLength = maxLength(parts);
+
+        while(true) {
+            // It would be more efficient to stream the log however that doesn't work, no information is returned.
+            final String drainLog = adapter.getLog("amq-test-drainer", null);
 
             if (drainLog != null) {
-                for (String content : parts) {
-                    int pp = drainLog.indexOf(content, p);
-                    if (pp != -1) {
-                        return pp + content.length();
+                final int drainLogLength = drainLog.length();
+                if (drainLogLength > startIndex) {
+                    for (String content : parts) {
+                        final int logIndex = drainLog.indexOf(content, startIndex);
+                        if (logIndex != -1) {
+                            return logIndex + content.length();
+                        }
+                    }
+                    startIndex = drainLogLength-maxPartLength-1;
+                    if (startIndex < 0) {
+                        startIndex = 0;
                     }
                 }
             }
-
-            repeat--;
-            Thread.sleep(6000);
+            if (System.currentTimeMillis() > endTime) {
+                return -1;
+            } else {
+                TimeUnit.SECONDS.sleep(1);
+            }
         }
-        throw new IllegalStateException("Migration not finished?!");
+    }
+
+    private static int maxLength(final String ... parts) {
+        int maxLength = 0;
+        for (int index = parts.length -1 ; index >= 0 ; index--) {
+            final int length = (parts[index] == null ? 0 : parts[index].length());
+            if (length > maxLength) {
+                maxLength = length;
+            }
+        }
+        return maxLength;
     }
 
     protected void sendNMessages(int from, int to) throws Exception {
@@ -104,9 +149,8 @@ public class AmqMigrationTestBase extends AmqBase {
         }
         Assert.assertEquals("Missing msgs: " + msgNumbers, msgsSize, msgNumbers.size()); // make sure we have all msgs
 
-        while (client.consumeOpenWireJms(2000, false) != null) ; // test we don't have more msgs
+        Assert.assertEquals("Extra msgs found", client.consumeOpenWireJms(2000, false), null); // make sure we have all msgs
 
         return msgs;
     }
-
 }

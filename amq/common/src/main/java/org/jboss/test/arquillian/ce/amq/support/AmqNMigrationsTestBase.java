@@ -51,6 +51,7 @@ public class AmqNMigrationsTestBase extends AmqMigrationTestBase {
     @InSequence(1)
     public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
         adapter.scaleDeployment("amq-test-amq", REPLICAS);
+        adapter.waitForReadyPods("amq-test-amq", REPLICAS);
     }
 
     @Test
@@ -80,9 +81,9 @@ public class AmqNMigrationsTestBase extends AmqMigrationTestBase {
 
             log.info(String.format("Deleting pod: %s", pods.get(pi)));
             adapter.deletePod(pods.get(pi), -1);
-        }
 
-        adapter.waitForReadyPods("amq-test-amq", REPLICAS);
+            adapter.waitForReadyPods("amq-test-amq", REPLICAS);
+        }
     }
 
     @Test

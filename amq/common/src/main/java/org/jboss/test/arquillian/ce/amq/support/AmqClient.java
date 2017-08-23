@@ -39,7 +39,6 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
-import javax.jms.TopicSubscriber;
 import javax.naming.NamingException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -57,6 +56,8 @@ public class AmqClient {
     private final String connectionUrl;
     private final String username;
     private final String password;
+
+    private static final long MSG_TIMEOUT = 60000;
 
     public AmqClient(String connectionUrl, String username, String password) throws IOException {
         this.connectionUrl = connectionUrl;
@@ -125,10 +126,12 @@ public class AmqClient {
 
             log.warning("Starting open-wire-consume ...");
             while (size > 0) {
-                Message msg = consumer.receive();
+                Message msg = consumer.receive(MSG_TIMEOUT);
+                if (msg == null) {
+                    throw new IllegalStateException("Missing " + size + " messages.");
+                }
                 msgs.add(((TextMessage) msg).getText());
                 size--;
-                log.warning(String.format("Current msgs: %s [%s]", msgs, size));
             }
         } finally {
             close(conn);
@@ -191,7 +194,10 @@ public class AmqClient {
             Queue q = session.createQueue("QUEUES.BAR");
             MessageConsumer consumer = session.createConsumer(q);
 
-            Message msg = consumer.receive();
+            Message msg = consumer.receive(MSG_TIMEOUT);
+            if (msg == null) {
+                throw new IllegalStateException("No messages.");
+            }
 
             return ((TextMessage) msg).getText();
         } finally {
@@ -233,7 +239,11 @@ public class AmqClient {
 
             MessageConsumer consumer = session.createConsumer(q);
 
-            return ((TextMessage) consumer.receive()).getText();
+            TextMessage msg = (TextMessage)consumer.receive(MSG_TIMEOUT);
+            if (msg == null) {
+                throw new IllegalStateException("No messages.");
+            }
+            return msg.getText();
         } finally {
             close(conn);
         }
@@ -257,7 +267,7 @@ public class AmqClient {
         }
     }
 
-    public void createTopicSubscriber(String subscriptionName) throws Exception {
+    public void createVirtualTopicSubscriber(String subscriptionName) throws Exception {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(false);
@@ -267,15 +277,17 @@ public class AmqClient {
             conn.start();
 
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Topic tFoo = session.createTopic("TOPICS.FOO");
-            TopicSubscriber subscriber = session.createDurableSubscriber(tFoo, subscriptionName);
-            subscriber.close();
+            Destination tFoo = session.createQueue("Consumer." + subscriptionName + ".VirtualTopic.FOO");
+
+            // This may need to remain open
+            MessageConsumer consumer = session.createConsumer(tFoo);
+            consumer.close();
         } finally {
             close(conn);
         }
     }
 
-    public void produceTopic(String message) throws Exception {
+    public void produceVirtualTopic(String message) throws Exception {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(false);
@@ -284,7 +296,7 @@ public class AmqClient {
             conn.start();
 
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Topic tFoo = session.createTopic("TOPICS.FOO");
+            Topic tFoo = session.createTopic("VirtualTopic.FOO");
             MessageProducer producer = session.createProducer(tFoo);
             producer.send(session.createTextMessage(message));
         } finally {
@@ -292,7 +304,7 @@ public class AmqClient {
         }
     }
 
-    public List<String> consumeTopic(int N, String subscriptionName) throws Exception {
+    public List<String> consumeVirtualTopic(int N, long timeout, String subscriptionName) throws Exception {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(false);
@@ -302,11 +314,16 @@ public class AmqClient {
             conn.start();
 
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Topic tFoo = session.createTopic("TOPICS.FOO");
-            MessageConsumer subscriber = session.createDurableSubscriber(tFoo, subscriptionName);
+            Destination tFoo = session.createQueue("Consumer." + subscriptionName + ".VirtualTopic.FOO");
+
+            MessageConsumer consumer = session.createConsumer(tFoo);
             List<String> msgs = new ArrayList<>();
             while (N > 0) {
-                msgs.add(((TextMessage) subscriber.receive()).getText());
+                TextMessage msg = (TextMessage)consumer.receive(timeout);
+                if (msg == null) {
+                    throw new IllegalStateException("Missing " + N + " messages.");
+                }
+                msgs.add(msg.getText());
                 N--;
             }
             return msgs;

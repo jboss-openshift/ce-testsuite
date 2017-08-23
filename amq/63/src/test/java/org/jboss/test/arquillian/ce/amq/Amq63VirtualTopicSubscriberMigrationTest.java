@@ -23,43 +23,44 @@
 
 package org.jboss.test.arquillian.ce.amq;
 
-import org.jboss.arquillian.ce.api.*;
+import java.io.IOException;
+
+import org.jboss.arquillian.ce.api.OpenShiftResource;
+import org.jboss.arquillian.ce.api.OpenShiftResources;
+import org.jboss.arquillian.ce.api.Replicas;
+import org.jboss.arquillian.ce.api.RoleBinding;
+import org.jboss.arquillian.ce.api.Template;
+import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.test.arquillian.ce.amq.support.AmqDrainerTestBase;
 import org.jboss.test.arquillian.ce.amq.support.AmqMigrationTestBase;
+import org.jboss.test.arquillian.ce.amq.support.AmqVirtualTopicSubscriberMigrationTestBase;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
-
-import java.io.IOException;
 
 /**
  * @author Ales Justin
  */
 @RunWith(Arquillian.class)
-// TODO -- change this once multi repl image is in prod
-@Template(url = "https://raw.githubusercontent.com/alesj/application-templates/amq1/amq/amq62-repl.json",
-    parameters = {
-        @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
-        @TemplateParameter(name = "MQ_TOPICS", value = "topics.mqtt"),
-        @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
-        @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
-        @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
-        @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
-        @TemplateParameter(name = "IMAGE_STREAM_NAMESPACE", value = "${kubernetes.namespace}")})
-// remove when amq-internal-is is removed
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/amq/amq63-persistent.json",
+        parameters = {
+                @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO,QUEUES.BAR"),
+                @TemplateParameter(name = "MQ_TOPICS", value = "topics.mqtt,TOPICS.FOO"),
+                @TemplateParameter(name = "APPLICATION_NAME", value = "amq-test"),
+                @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
+                @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
+                @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
-    @OpenShiftResource("classpath:testrunner-secret.json"),
-    @OpenShiftResource("classpath:amq-internal-imagestream.json") // custom dev imagestream; remove when multi repl image is in prod
+        @OpenShiftResource("classpath:testrunner-secret.json")
 })
 @Replicas(1)
-@Ignore("https://github.com/jboss-openshift/ce-testsuite/issues/123")
-public class Amq62DrainerTest extends AmqDrainerTestBase {
+@Ignore("https://github.com/jboss-openshift/ce-testsite/issues/123")
+public class Amq63VirtualTopicSubscriberMigrationTest extends AmqVirtualTopicSubscriberMigrationTestBase {
 
     @Deployment
     public static WebArchive getDeployment() throws IOException {
-        return getDeploymentBase(AmqMigrationTestBase.class);
+        return getDeploymentBase(AmqMigrationTestBase.class, AmqVirtualTopicSubscriberMigrationTestBase.class);
     }
 }
