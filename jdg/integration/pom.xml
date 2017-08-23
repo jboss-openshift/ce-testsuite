@@ -161,7 +161,16 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
+            <version>${version.httpclient.core}</version>
+            <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-osgi</artifactId>
+            <version>${version.httpclient}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -217,6 +226,7 @@
         <version.logging>3.2.1.Final</version.logging>
         <version.org.jboss.xnio>3.3.6.Final-redhat-1</version.org.jboss.xnio>
         <version.org.jboss.shrinkwrap.resolver>2.2.6</version.org.jboss.shrinkwrap.resolver>
+        <version.httpclient.core>4.4.6</version.httpclient.core>
         <suite.client.dist.phase>test</suite.client.dist.phase>
         <suite.client.repl.phase>test</suite.client.repl.phase>
         <suite.client.clustered.groups>org.infinispan.server.test.category.ClientClustered</suite.client.clustered.groups>
