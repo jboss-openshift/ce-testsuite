@@ -48,6 +48,8 @@
         <!-- EAP testunit deps -->
         <version.logging>3.2.1.Final</version.logging>
         <version.httpclient>4.5.3</version.httpclient>
+        <version.httpclient.eap6>4.3.6.redhat-1</version.httpclient.eap6>
+        <version.httpclient.core.eap6>4.3.3.redhat-1</version.httpclient.core.eap6>
         <version.org.jboss.xnio>3.3.1.Final</version.org.jboss.xnio>
         <version.syslog4j>0.9.30</version.syslog4j>
         <version.json-simple>1.1.1</version.json-simple>
