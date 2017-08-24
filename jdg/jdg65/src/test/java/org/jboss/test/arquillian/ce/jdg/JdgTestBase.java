@@ -23,15 +23,11 @@
 
 package org.jboss.test.arquillian.ce.jdg;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URL;
-
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jboss.arquillian.ce.api.ConfigurationHandle;
-import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -41,6 +37,11 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.jdg.support.MemcachedCache;
 import org.jboss.test.arquillian.ce.jdg.support.RESTCache;
 import org.junit.Test;
+
+import java.io.File;
+import java.net.URL;
+
+import static org.junit.Assert.assertEquals;
 
 public abstract class JdgTestBase {
     public static final String HTTP_ROUTE_HOST = "jdg-http-route.openshift";
@@ -53,10 +54,9 @@ public abstract class JdgTestBase {
         war.setWebXML(new StringAsset("<web-app/>"));
         war.addPackage(RESTCache.class.getPackage());
         war.addClass(JdgTestBase.class);
-
         war.addAsLibraries(Libraries.transitive("com.google.code.simple-spring-memcached", "spymemcached"));
         war.addAsLibraries(Libraries.transitive("org.infinispan", "infinispan-client-hotrod"));
-
+        war.addAsWebInfResource(new File("src/test/resources/jboss-deployment-structure.xml"), "jboss-deployment-structure.xml");
         return war;
     }
 
@@ -92,10 +92,10 @@ public abstract class JdgTestBase {
         int port = Integer.parseInt(System.getenv("DATAGRID_APP_HOTROD_SERVICE_PORT"));
 
         RemoteCacheManager cacheManager = new RemoteCacheManager(
-            new ConfigurationBuilder()
-                .addServer()
-                .host(host).port(port)
-                .build()
+                new ConfigurationBuilder()
+                        .addServer()
+                        .host(host).port(port)
+                        .build()
         );
         RemoteCache<Object, Object> cache = cacheManager.getCache("default");
 
