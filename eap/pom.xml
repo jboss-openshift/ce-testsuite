@@ -20,7 +20,6 @@
     <name>CE Testsuite -- EAP testsuite</name>
     <description>Cloud Enablement Testsuite -- EAP testsuite</description>
 
-
     <modules>
         <module>common</module>
         <module>eap64</module>
