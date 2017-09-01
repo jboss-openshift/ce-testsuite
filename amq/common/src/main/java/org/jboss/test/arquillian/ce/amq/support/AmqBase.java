@@ -66,10 +66,10 @@ public class AmqBase {
     }
 
     protected static void restartAmq(OpenShiftHandle handler) throws Exception {
-        handler.scaleDeployment("amq-test-amq", 0);
-        handler.waitForReadyPods("amq-test-amq", 0);
-        handler.scaleDeployment("amq-test-amq", 1);
-        handler.waitForReadyPods("amq-test-amq", 1);
+        handler.scaleDeployment("amq-test", 0);
+        handler.waitForReadyPods("amq-test", 0);
+        handler.scaleDeployment("amq-test", 1);
+        handler.waitForReadyPods("amq-test", 1);
     }
 
     protected AmqClient createAmqClient(String url) throws Exception {

@@ -54,8 +54,8 @@ public class AmqMeshTestBase extends AmqBase {
     @RunAsClient
     @InSequence(1)
     public void scaleUpResources(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.scaleDeployment("amq-test-amq", 2);
-        adapter.waitForReadyPods("amq-test-amq", 2);
+        adapter.scaleDeployment("amq-test", 2);
+        adapter.waitForReadyPods("amq-test", 2);
         pods.addAll(adapter.getPods());
 
         log.info("Pods used for test: " + pods.toString());

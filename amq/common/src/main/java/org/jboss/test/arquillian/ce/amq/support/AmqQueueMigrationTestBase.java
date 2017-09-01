@@ -40,8 +40,8 @@ public class AmqQueueMigrationTestBase extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(1)
     public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.scaleDeployment("amq-test-amq", 2); // scale up
-        adapter.waitForReadyPods("amq-test-amq", 2);
+        adapter.scaleDeployment("amq-test", 2); // scale up
+        adapter.waitForReadyPods("amq-test", 2);
     }
 
     @Test
@@ -56,8 +56,8 @@ public class AmqQueueMigrationTestBase extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(3)
     public void testScaleDown(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.scaleDeployment("amq-test-amq", 1); // scale down
-        adapter.waitForReadyPods("amq-test-amq", 1);
+        adapter.scaleDeployment("amq-test", 1); // scale down
+        adapter.waitForReadyPods("amq-test", 1);
 
         // drain should kick-in in any case
         Assert.assertNotEquals("Migration should have finished", -1, waitForDrain(adapter, 0, true, END));

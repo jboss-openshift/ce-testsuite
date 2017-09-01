@@ -50,8 +50,8 @@ public class AmqNMigrationsTestBase extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(1)
     public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.scaleDeployment("amq-test-amq", REPLICAS);
-        adapter.waitForReadyPods("amq-test-amq", REPLICAS);
+        adapter.scaleDeployment("amq-test", REPLICAS);
+        adapter.waitForReadyPods("amq-test", REPLICAS);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class AmqNMigrationsTestBase extends AmqMigrationTestBase {
         final int N = 10;
 
         for (int i = 0; i < N; i++) {
-            List<String> pods = new ArrayList<>(adapter.getReadyPods("amq-test-amq"));
+            List<String> pods = new ArrayList<>(adapter.getReadyPods("amq-test"));
             int pi;
             for (pi = 0; pi < pods.size(); pi++) {
                 String pod = pods.get(pi);
@@ -82,7 +82,7 @@ public class AmqNMigrationsTestBase extends AmqMigrationTestBase {
             log.info(String.format("Deleting pod: %s", pods.get(pi)));
             adapter.deletePod(pods.get(pi), -1);
 
-            adapter.waitForReadyPods("amq-test-amq", REPLICAS);
+            adapter.waitForReadyPods("amq-test", REPLICAS);
         }
     }
 

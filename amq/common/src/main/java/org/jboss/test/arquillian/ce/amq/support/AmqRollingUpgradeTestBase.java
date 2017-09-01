@@ -44,8 +44,8 @@ public class AmqRollingUpgradeTestBase extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(1)
     public void testScaleUp(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.scaleDeployment("amq-test-amq", N);
-        adapter.waitForReadyPods("amq-test-amq", N);
+        adapter.scaleDeployment("amq-test", N);
+        adapter.waitForReadyPods("amq-test", N);
     }
 
     @Test
@@ -58,15 +58,15 @@ public class AmqRollingUpgradeTestBase extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(3)
     public void testRollingUpdate(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        final List<String> origPods = adapter.getPods("amq-test-amq");
+        final List<String> origPods = adapter.getPods("amq-test");
 
-        adapter.triggerDeploymentConfigUpdate("amq-test-amq", true);
+        adapter.triggerDeploymentConfigUpdate("amq-test", true);
 
         final long endTime = System.currentTimeMillis() + TIMEOUT;
 
         boolean upgradeFinished = false;
         while(!upgradeFinished && (System.currentTimeMillis() < endTime)) {
-            final List<String> pods = adapter.getPods("amq-test-amq");
+            final List<String> pods = adapter.getPods("amq-test");
             pods.removeAll(origPods);
             if (pods.size() == N) {
                 upgradeFinished = true;

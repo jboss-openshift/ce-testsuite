@@ -62,7 +62,7 @@ public class AmqFillDataDirTestBase extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(1)
     public void testWaitForPods(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        adapter.waitForReadyPods("amq-test-amq", 1);
+        adapter.waitForReadyPods("amq-test", 1);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class AmqFillDataDirTestBase extends AmqMigrationTestBase {
     @RunAsClient
     @InSequence(3)
     public void testScale(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        Collection<String> pods = adapter.getPods("amq-test-amq");
+        Collection<String> pods = adapter.getPods("amq-test");
         Assert.assertEquals(1, pods.size()); // there should be only one
         String firstPod = pods.iterator().next(); // we put the msgs here
 
@@ -85,10 +85,10 @@ public class AmqFillDataDirTestBase extends AmqMigrationTestBase {
         String log = adapter.getLog(firstPod);
         int count = parseCount(log);
 
-        adapter.scaleDeployment("amq-test-amq", 2); // scale up
+        adapter.scaleDeployment("amq-test", 2); // scale up
 
         String sndPod = null;
-        pods = adapter.getReadyPods("amq-test-amq");
+        pods = adapter.getReadyPods("amq-test");
         for (String podName : pods) {
             if (podName.equals(firstPod) == false) {
                 sndPod = podName;
@@ -99,9 +99,9 @@ public class AmqFillDataDirTestBase extends AmqMigrationTestBase {
 
         adapter.deletePod(firstPod, -1); // kill first, RC should re-use data dir
 
-        adapter.waitForReadyPods("amq-test-amq", 2);
+        adapter.waitForReadyPods("amq-test", 2);
 
-        pods = adapter.getReadyPods("amq-test-amq");
+        pods = adapter.getReadyPods("amq-test");
         for (String podName : pods) {
             if (podName.equals(sndPod) == false) {
                 int count2 = parseCount(adapter.getLog(podName));
