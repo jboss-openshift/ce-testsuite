@@ -57,13 +57,6 @@ public abstract class WebserverTestBase {
     protected final String URI = "websocket-chat/websocket/chat";
     private boolean ssl;
 
-    protected static WebArchive getDeploymentInternal() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
-        war.setWebXML("web.xml");
-        war.addAsLibraries(Libraries.transitive("io.undertow", "undertow-websockets-jsr"));
-        return war;
-    }
-
     /*
     * Returns the correct websocket URI
     */

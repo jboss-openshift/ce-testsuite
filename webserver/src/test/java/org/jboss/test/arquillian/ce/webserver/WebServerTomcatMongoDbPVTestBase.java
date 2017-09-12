@@ -55,11 +55,6 @@ public class WebServerTomcatMongoDbPVTestBase extends WebserverTestBase {
     @ArquillianResource
     private OpenShiftHandle adapter;
 
-    @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return getDeploymentInternal();
-    }
-
     @Test
     @RunAsClient
     @InSequence(1)

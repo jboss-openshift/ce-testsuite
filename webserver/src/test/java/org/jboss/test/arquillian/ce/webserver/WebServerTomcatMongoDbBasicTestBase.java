@@ -48,11 +48,6 @@ public abstract class WebServerTomcatMongoDbBasicTestBase extends WebserverTestB
     private final String description = "This todo was added by Arquillian Test using HTTP.";
     private final String descriptionHttps = "This todo was added by Arquillian Test using HTTPS.";
 
-    @Deployment
-    public static WebArchive getDeployment() throws Exception {
-        return getDeploymentInternal();
-    }
-
     @Test
     @RunAsClient
     @InSequence(1)
