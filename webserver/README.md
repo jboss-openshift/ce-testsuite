@@ -1,26 +1,12 @@
-# CE-Testsuite - Web Servers
-There are two tomcat (JWS3) versions that will be tested by this testsuite:
+# CE-Testsuite - Webserver
+There are two tomcat (JWS 3.0 and JWS 3.1) versions that will be tested by this testsuite:
   - tomcat 7
   - tomcat 8
 
 This testsuite will test all WebServer S2I application templates which are:
  
-  - [jws30-tomcat7-basic-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat7-basic-s2i.json)
-  - [jws30-tomcat7-https-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat7-https-s2i.json)
-  - [jws30-tomcat7-mongodb-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat7-mongodb-persistent-s2i.json)
-  - [jws30-tomcat7-mongodb-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat7-mongodb-s2i.json)
-  - [jws30-tomcat7-mysql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat7-mysql-persistent-s2i.json)
-  - [jws30-tomcat7-mysql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat7-mysql-s2i.json)
-  - [jws30-tomcat7-postgresql-persistent-s2i.json days ago](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat7-postgresql-persistent-s2i.json)
-  - [jws30-tomcat7-postgresql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat7-postgresql-s2i.json)
-  - [jws30-tomcat8-basic-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat8-basic-s2i.json)
-  - [jws30-tomcat8-https-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat8-https-s2i.json)
-  - [jws30-tomcat8-mongodb-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat8-mongodb-persistent-s2i.json)
-  - [jws30-tomcat8-mongodb-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat8-mongodb-s2i.json)
-  - [jws30-tomcat8-mysql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat8-mysql-persistent-s2i.json)
-  - [jws30-tomcat8-mysql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat8-mysql-s2i.json)
-  - [jws30-tomcat8-postgresql-persistent-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat8-postgresql-persistent-s2i.json)
-  - [jws30-tomcat8-postgresql-s2i.json](https://github.com/jboss-openshift/application-templates/blob/master/webserver/jws30-tomcat8-postgresql-s2i.json)
+  - [JWS 3.0](jws30/README.md)
+  - [JWS 3.1](jws31/README.md)
 
 For all tests, on this case we are using:
   - For templates which don't use database:
@@ -46,37 +32,25 @@ The CE-Testsuite is divided by profiles, to enable the WebServer profile all you
 ```sh
 -Pwebserver
 ```
-###### Required ce-arq parameteres
-  - -P**profile_name**
-    - -Pwebserver
+###### Required parameters
   - -Dkubernetes.master=**address of your running OSE instance (master note)**
     - -Dkubernetes.master=https://openshift-master.mydomain.com:8443
-  - -Dkubernetes.registry.url=**the registry address running in your ose instance**
-    - -Dkubernetes.registry.url=openshift-master.mydomain.com:5001
-  - -Ddocker.url=**Docker url address**
-    - -Ddocker.url=https://openshift-master.mydomain.com2375
-  - -Drouter.hostIP=**The OSE router IP**
+  - -Drouter.hostIP=**The Openshift router IP**
     - -Drouter.hostIP=192.168.1.254
       - You can change this parameter name in the pom.xml
 
-###### Optional ce-arq parameteres
+###### Optional ce-arq parameters
   - -Dtest=**The test class name, if you want to run only one test, otherwise all tests will be executed**
     - -Dtest=WebServerTomcat7BasicTest
-  - -Dkubernetes.ignore.cleanup=true **(default is false), It will ignore the resources cleanup, so you can take a look in the used pods to troubleshooting**
-
-> **All those are java parameters, so use -D.**
+ 
 ___
 
 ###### Running all tests
 For this example we'll consider the IP address 192.168.1.254 for required parameters, Example:
 ```sh
-$ mvn clean package test -Pwebserver -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254
+$ mvn clean test -pl webserver/jws31 -Dkubernetes.master=https://192.168.1.254:8443 -Drouter.hostIP=192.168.1.254
 ```
-###### Running a specific test and ignoring the cleanup after the tests gets finished
-Example:
-```sh
-$ mvn clean package test -Pwebserver -Dkubernetes.master=https://192.168.1.254:8443 -Dkubernetes.registry.url=192.168.1.254:5001 -Ddocker.url=http://192.168.1.254:2375 -Drouter.hostIP=192.168.1.254 -Dtest=WebServerTomcat7BasicTest -Dkubernetes.ignore.cleanup=true
-```
+
 
 #### What this tests cover?
 This test covers all basic operations to make sure the docker image generated by the used application templates will work as expected, it will do basic operations against the deployed quickstart application, which is:
@@ -93,4 +67,4 @@ All tests above are executed using *HTTP, HTTPS, WS* and *WSS* protocols.
 #### Found an issue?
 Please, feel free to report the issue that you found [here](https://github.com/jboss-openshift/ce-testsuite/issues/new).
 
-__For feedbacks please send us an email (cloud-enablement-feedback@redhat.com) and let us know what you are thinking.__ 
+__For feedback please send us an email (cloud-enablement-feedback@redhat.com) and let us know what you are thinking.__ 

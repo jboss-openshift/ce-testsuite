@@ -139,6 +139,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- CE Webserver common -->
+            <dependency>
+                <groupId>org.jboss.ce.testsuite</groupId>
+                <artifactId>ce-webserver-testsuite-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.kohsuke.metainf-services</groupId>
                 <artifactId>metainf-services</artifactId>
