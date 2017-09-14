@@ -20,7 +20,7 @@
 					]
 				}
 			},
-			"image": "registry.access.redhat.com/jboss-eap-6/eap64-openshift:1.4",
+			"image": "registry.access.redhat.com/jboss-eap-6/eap64-openshift:1.5",
             "ports": [
                 {
                     "containerPort": 8080,
