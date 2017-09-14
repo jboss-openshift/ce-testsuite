@@ -25,11 +25,18 @@ package org.jboss.test.arquillian.ce.jdg;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
-
-import org.jboss.arquillian.ce.api.Tools;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
+import org.infinispan.client.hotrod.RemoteCache;
+import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.jdg.support.MemcachedCache;
@@ -41,8 +48,22 @@ public abstract class JdgTestSecureBase extends JdgTestBase {
     protected static WebArchive getDeploymentInternal() {
         WebArchive war = JdgTestBase.getDeploymentInternal();
         war.addClass(JdgTestSecureBase.class);
+        war.addAsResource("keystore.jks");
         return war;
     }
+
+    protected void configureTrustStore() throws IOException {
+        InputStream stream = null;
+
+        try {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            stream = cl.getResourceAsStream("keystore.jks");
+            Files.copy(stream, Paths.get("/tmp/keystore.jks"), StandardCopyOption.REPLACE_EXISTING);
+        } finally {
+            stream.close();
+        }
+    }
+
     @Test
     // @Ignore("Fails with IOException: Invalid Http response, but works with curl")
     @RunAsClient
@@ -81,6 +102,33 @@ public abstract class JdgTestSecureBase extends JdgTestBase {
         MemcachedCache<String, Object> cache = new MemcachedCache<>(HTTP_ROUTE_HOST, 443, true);
         cache.put("foo2", "bar2");
         assertEquals("bar2", cache.get("foo2"));
+    }
+
+    @Test
+    @Override
+    public void testHotRodService() throws Exception {
+        configureTrustStore();
+
+        String host = System.getenv("DATAGRID_APP_HOTROD_SERVICE_HOST");
+        int port = Integer.parseInt(System.getenv("DATAGRID_APP_HOTROD_SERVICE_PORT"));
+
+        RemoteCacheManager cacheManager = new RemoteCacheManager(
+                new ConfigurationBuilder()
+                        .addServer()
+                        .host(host).port(port)
+                        .security()
+                            .ssl()
+                                .enable()
+                                .trustStoreFileName("/tmp/keystore.jks")
+                                .trustStorePassword("mykeystorepass".toCharArray())
+                                .keyStoreFileName("/tmp/keystore.jks")
+                                .keyStorePassword("mykeystorepass".toCharArray())
+                        .build()
+        );
+        RemoteCache<Object, Object> cache = cacheManager.getCache("default");
+
+        cache.put("foo3", "bar3");
+        assertEquals("bar3", cache.get("foo3"));
     }
 
 }
