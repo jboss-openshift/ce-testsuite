@@ -33,7 +33,7 @@
             }
           }
         },
-        "image": "jboss-eap-7/eap71-openshift:1.0-TP",
+        "image": "jboss-eap-7-tech-preview/eap71-openshift:1.0",
         "ports": [
           {
             "containerPort": 8080,
@@ -72,6 +72,14 @@
           {
             "name": "ADMIN_PASSWORD",
             "value": "Admin#70365"
+          },
+          {
+            "name": "GC_MAX_METASPACE_SIZE",
+            "value": "512"
+          },
+          {
+            "name": "JAVA_OPTS_APPEND",
+            "value": "-Djboss.remoting.pooled-buffers=false"
           }
         ]
       }
