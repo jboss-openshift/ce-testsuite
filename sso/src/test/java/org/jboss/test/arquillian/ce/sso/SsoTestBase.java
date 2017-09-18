@@ -23,6 +23,8 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
+import static org.junit.Assert.assertTrue;
+
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -37,4 +39,9 @@ public abstract class SsoTestBase {
     protected abstract URL getRouteURL();
     
     protected abstract URL getSecureRouteURL();
+
+    public static void assertContains(String content, String... expecteds) {
+        for (String expected: expecteds)
+            assertTrue(String.format("String does not contain the expected value \"%s\". Content: %s", expected, content), content.contains(expected));
+    }
 }

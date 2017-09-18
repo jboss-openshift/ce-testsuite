@@ -23,8 +23,6 @@
 
 package org.jboss.test.arquillian.ce.sso;
 
-import static org.junit.Assert.assertTrue;
-
 import org.jboss.arquillian.ce.httpclient.HttpClient;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
 import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
@@ -76,9 +74,7 @@ public abstract class SsoEapTestBase extends SsoTestBase {
         HttpResponse response = client.execute(request, execOptions);
         
         String result = response.getResponseBodyAsString();
-         
-        for (String expected: expecteds)
-        	assertTrue(result.contains(expected));
+        assertContains(result, expecteds);
     }
 
 }
