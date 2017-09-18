@@ -3,6 +3,7 @@ package org.jboss.test.arquillian.ce.openjdk;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
+import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.jboss.arquillian.ce.shrinkwrap.Libraries;
@@ -16,6 +17,8 @@ import org.junit.Assert;
 public class OpenJDKTest {
 
     private Logger log = Logger.getLogger(getClass().getName());
+    private final HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
+            .desiredStatusCode(200).delay(10).build();
 
     @Deployment
     public static WebArchive getDeployment() {
@@ -30,7 +33,7 @@ public class OpenJDKTest {
 
     protected void checkResponse(String url, String expected) throws Exception {
         HttpRequest request = HttpClientBuilder.doGET(url);
-        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
+        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request, execOptions);
         String responseString = response.getResponseBodyAsString();
     
         log.log(Level.INFO, responseString);
