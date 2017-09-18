@@ -128,6 +128,9 @@
                     <includes>
                         <include>org/jboss/**/*Test.java</include>
                     </includes>
+                    <excludes>
+                        <exclude>**/Sso70*.java</exclude>
+                    </excludes>
                     <systemPropertyVariables>
                         <!-- the property below ere needed to run the All in One tests, if it is not set then it
                         will be default to cloudapps.example.com, then make sure your openshift instance can resolve this
