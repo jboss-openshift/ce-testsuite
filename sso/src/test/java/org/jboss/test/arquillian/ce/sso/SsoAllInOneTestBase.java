@@ -90,7 +90,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
         Client client = new Client(host);
 
         String result = client.get("app-profile-jsp/profile.jsp");
-        assertTrue(result.contains("kc-form-login"));
+        assertContains(result, "kc-form-login");
     }
 
     @Test
@@ -99,11 +99,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
         Client client = login(getRoute(), "app-profile-jsp/profile.jsp");
         
         String result = client.get();
-        
-        assertTrue(result.contains("First name"));
-        assertTrue(result.contains("Last name"));
-        assertTrue(result.contains("Username"));
-        assertTrue(result.contains("demouser"));
+        assertContains(result, "First name", "Last name", "Username", "demouser");
     }
 
     @Test
@@ -112,18 +108,13 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     	Client client = login(getSecureRoute(), "app-profile-jsp/profile.jsp");
     	
     	String result = client.get();
-    	
-    	assertTrue(result.contains("First name"));
-        assertTrue(result.contains("Last name"));
-        assertTrue(result.contains("Username"));
-        assertTrue(result.contains("demouser"));
+        assertContains(result, "First name", "Last name", "Username", "demouser");
     }
 
     protected Client login(String host, String key) throws Exception {
     	Client client = new Client(host);
         String result = client.get(key);
-        
-        assertTrue(result.contains("kc-form-login"));
+        assertContains(result, "kc-form-login");
         
         int index = result.indexOf("action");
         String action=result.substring(index + "action=\"".length());
@@ -140,7 +131,7 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
         
         result = client.post();
         
-        assertTrue(result.contains(Client.trimPort(host)));
+        assertContains(result, Client.trimPort(host));
         
         client.setBasicUrl(result);
         params = new HashMap<>();
@@ -154,14 +145,13 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     public void testAccessType() throws Exception {
         Client client = new Client(secureSsoRouteURL.toString());
         String accessToken = client.getToken("admin", "admin");
-        
+
         Map<String, String> params = new HashMap<>();
         params.put("Accept", "application/json");
         params.put("Authorization", "Bearer " + accessToken);
 
         String result = client.get("/auth/admin/realms/demo/clients", params);
-        
-        
+
         JSONParser jsonParser = new JSONParser();
         Iterator clients = ((JSONArray) jsonParser.parse(result)).iterator();
         while (clients.hasNext()) {
@@ -181,25 +171,22 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     public void testSecureAppJspButtonsNoLogin() throws Exception {
     	Client client = new Client(getSecureRoute());
         String result = client.get("app-jsp/index.jsp");
+        assertContains(result, "Public", "Secured", "Admin");
          
-        assertTrue(result.contains("Public"));
-        assertTrue(result.contains("Secured"));
-        assertTrue(result.contains("Admin"));
-        
         Map<String, String> params = new HashMap<>();
         params.put("action", "public");
         client.setParams(params);
         
         result = client.post("app-jsp/index.jsp");
-        
-        assertTrue(result.contains("Message: public"));
+        assertContains(result, "Message: public");
         
         params.put("action", "secured");
         client.setParams(params);
         
         result = client.post("app-jsp/index.jsp");
-           
-        assertTrue(result.contains("Internal Server Error") && result.contains("500") || result.contains("HTTP Status 500"));
+        assertTrue(String.format("Result does not contain the expected value. Content: %s", result),
+                result.contains("Internal Server Error") && result.contains("500")
+                        || result.contains("HTTP Status 500"));
     }
     
     @Test
@@ -208,29 +195,22 @@ public class SsoAllInOneTestBase extends SsoEapTestBase {
     	Client client = login(getSecureRoute(), "app-jsp/protected.jsp");
        
         String result = client.get();
-        
-        assertTrue(result.contains("Public"));
-        assertTrue(result.contains("Secured"));
-        assertTrue(result.contains("Admin"));
-        assertTrue(result.contains("Logout"));
-        assertTrue(result.contains("Account"));
-        
+        assertContains(result, "Public", "Secured", "Admin", "Logout", "Account");
+
         Map<String, String> params = new HashMap<>();
         params.put("action", "public");
         client.setParams(params);
         client.setBasicUrl(getSecureRoute());
-        
+
         result = client.post("app-jsp/index.jsp");
-          
-        assertTrue(result.contains("Message: public"));
+        assertContains(result, "Message: public");
         
         params.put("action", "secured");
         client.setParams(params);
         
         result = client.post("app-jsp/index.jsp");
-        
-        assertTrue(result.contains("Message: secured"));
-        
+        assertContains(result, "Message: secured");
+
         printCookieStore(client);
     }
     
