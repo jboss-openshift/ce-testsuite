@@ -1,0 +1,32 @@
+package jdgquerytest;
+
+/* @Indexed */
+message Car {
+
+	/* @IndexedField */
+	required string brand = 1;
+	/* @IndexedField */
+	required double displacement = 2;
+	/* @IndexedField */
+	required CarType type = 3;
+	/* @IndexedField */
+	required string color = 4;
+	/* @IndexedField */
+	required string numberPlate = 5;
+	/* @IndexedField */
+	required Country country = 6;
+
+	enum CarType {
+ 		SEDAN = 0;
+		HATCHBACK = 1;
+		COMBI = 2;
+		CABRIO = 3;
+		ROADSTER = 4;
+	}
+
+	enum Country {
+		CZECH_REPUBLIC = 0;
+		USA = 1;
+		GERMANY = 2;
+	}
+}
