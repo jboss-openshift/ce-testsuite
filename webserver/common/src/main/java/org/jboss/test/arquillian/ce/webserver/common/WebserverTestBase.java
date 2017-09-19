@@ -26,6 +26,7 @@ package org.jboss.test.arquillian.ce.webserver.common;
 import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
+import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
 import org.jboss.arquillian.ce.httpclient.HttpRequest;
 import org.jboss.arquillian.ce.httpclient.HttpResponse;
 import org.junit.Assert;
@@ -48,7 +49,6 @@ import java.util.regex.Pattern;
  * @author fspolti
  */
 public abstract class WebserverTestBase {
-
     private Logger log = Logger.getLogger(getClass().getName());
     protected final String URI = "websocket-chat/websocket/chat";
     private boolean ssl;
@@ -152,7 +152,9 @@ public abstract class WebserverTestBase {
 
         request.setEntity(getParams(summary, description));
 
-        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
+        HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
+                .desiredStatusCode(302).delay(10).build();
+        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request, execOptions);
         //there is a redirect
         Assert.assertEquals(302, response.getResponseCode());
     }
@@ -164,7 +166,9 @@ public abstract class WebserverTestBase {
 
         log.info("Cheking if the summary [" + summary + "] and description [" + description + "] was successfully added.");
         HttpRequest request = HttpClientBuilder.doGET(URL);
-        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request);
+        HttpClientExecuteOptions execOptions = new HttpClientExecuteOptions.Builder().tries(3)
+                .desiredStatusCode(200).delay(10).build();
+        HttpResponse response = HttpClientBuilder.untrustedConnectionClient().execute(request, execOptions);
         String responseString = response.getResponseBodyAsString();
 
         //responseString cannot be null
