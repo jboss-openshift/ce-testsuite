@@ -50,7 +50,6 @@
         <!-- Pod running remote tests. -->
         <configuration>
             <!-- For use with archillian-chameleon -->
-            <property name="target">jboss eap:6.4.5:remote</property>
             <property name="username">admin</property>
             <property name="password">Admin#70365</property>
         </configuration>

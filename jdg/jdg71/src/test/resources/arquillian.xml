@@ -33,7 +33,7 @@
         <!-- Properties describing the location of the OpenShift instance.
         <property name="originServer">https://your-ose-instance.com:8443</property>
         -->
-        <property name="namespace.prefix">cearq-jdg65</property>
+        <property name="namespace.prefix">cearq-jdg71</property>
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <!-- Ports to be proxied locally, <container>:<port> -->
@@ -50,7 +50,6 @@
         <!-- Pod running remote tests. -->
         <configuration>
             <!-- For use with archillian-chameleon -->
-            <property name="target">jboss eap:6.4.5:remote</property>
             <property name="username">admin</property>
             <property name="password">Admin#70365</property>
         </configuration>
