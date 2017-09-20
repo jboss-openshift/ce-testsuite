@@ -35,7 +35,7 @@ import org.jboss.test.arquillian.ce.jdg.common.JdgTestSecureBase;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-https.json",
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid71-https.json",
           parameters = {
               @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
               @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")})

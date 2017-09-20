@@ -31,22 +31,25 @@ import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.test.arquillian.ce.jdg.common.JdgTestSecureBase;
+import org.jboss.test.arquillian.ce.jdg.common.JdgDBPersistentTestBase;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-https.json",
-          parameters = {
-              @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-              @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")})
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid71-postgresql-persistent.json", parameters = {
+        @TemplateParameter(name = "HTTPS_NAME", value = "jboss"),
+        @TemplateParameter(name = "HTTPS_PASSWORD", value = "mykeystorepass") })
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json")
-})
-public class JdgHttpsTest extends JdgTestSecureBase {
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json") })
+public class JdgPostgresqlPersistentTest extends JdgDBPersistentTestBase {
 
     @Deployment
     public static WebArchive getDeployment() {
-        return JdgTestSecureBase.getDeployment();
+        return JdgDBPersistentTestBase.getDeployment();
+    }
+
+    @Override
+    protected String getDriver() {
+        return "postgresql";
     }
 }

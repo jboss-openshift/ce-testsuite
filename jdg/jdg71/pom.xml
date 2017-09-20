@@ -13,10 +13,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
-    <artifactId>jdg65-ce-testsuite</artifactId>
+    <artifactId>jdg71-ce-testsuite</artifactId>
     <packaging>jar</packaging>
-    <name>JDG 6.5 CE Testsuite</name>
-    <description>JDG 6.5 Cloud Enablement Testsuite</description>
+    <name>JDG 7.1 CE Testsuite</name>
+    <description>JDG 7.1 Cloud Enablement Testsuite</description>
 
     <dependencies>
 

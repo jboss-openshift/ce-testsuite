@@ -23,75 +23,33 @@
 
 package org.jboss.test.arquillian.ce.jdg;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URL;
-import java.util.logging.Logger;
-
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.test.arquillian.ce.jdg.support.RESTCache;
-import org.junit.Test;
+import org.jboss.test.arquillian.ce.jdg.common.JdgDBPersistentTestBase;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-mysql-persistent.json",
-          parameters = {
-              @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-              @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")})
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-mysql-persistent.json", parameters = {
+        @TemplateParameter(name = "HTTPS_NAME", value = "jboss"),
+        @TemplateParameter(name = "HTTPS_PASSWORD", value = "mykeystorepass") })
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json")
-})
-public class JdgMysqlPersistentTest extends JdgTestSecureBase {
-    private static final Logger log = Logger.getLogger(JdgMysqlPersistentTest.class.getName());
+        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json") })
+public class JdgMysqlPersistentTest extends JdgDBPersistentTestBase {
 
     @Deployment
     public static WebArchive getDeployment() {
-        return getDeploymentInternal();
+        return JdgDBPersistentTestBase.getDeployment();
     }
 
-    @Test
-    @InSequence(1)
-    public void testRestService() throws Exception {
-        String host = System.getenv("DATAGRID_APP_SERVICE_HOST");
-        int port = Integer.parseInt(System.getenv("DATAGRID_APP_SERVICE_PORT"));
-        RESTCache<String, Object> cache = new RESTCache<>("default", new URL("http://" + host + ":" + port), "rest");
-        cache.put("beforeShutdown", "shouldWork");
-        assertEquals("shouldWork", cache.get("beforeShutdown"));
-    }
-
-    private void restartPod(OpenShiftHandle adapter, String name) throws Exception {
-        log.info("Scaling down " + name);
-        adapter.scaleDeployment(name, 0);
-        log.info("Scaling up " + name);
-        adapter.scaleDeployment(name, 1);
-    }
-
-    @Test
-    @RunAsClient
-    @InSequence(2)
-    public void restartDB(@ArquillianResource OpenShiftHandle adapter) throws Exception {
-        restartPod(adapter, "datagrid-app-mysql");
-        restartPod(adapter, "datagrid-app");
-    }
-
-    @Test
-    @InSequence(3)
-    public void testRestAfterRestartingDB() throws Exception {
-        String host = System.getenv("DATAGRID_APP_SERVICE_HOST");
-        int port = Integer.parseInt(System.getenv("DATAGRID_APP_SERVICE_PORT"));
-        RESTCache<String, Object> cache = new RESTCache<>("default", new URL("http://" + host + ":" + port), "rest");
-        assertEquals("shouldWork", cache.get("beforeShutdown"));
+    @Override
+    protected String getDriver() {
+        return "mysql";
     }
 }

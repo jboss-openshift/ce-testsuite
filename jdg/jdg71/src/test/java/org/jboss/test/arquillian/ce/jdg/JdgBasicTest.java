@@ -27,26 +27,22 @@ import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.test.arquillian.ce.jdg.common.JdgTestSecureBase;
+import org.jboss.test.arquillian.ce.jdg.common.JdgTestBase;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-https.json",
-          parameters = {
-              @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-              @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")})
+@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid71-basic.json")
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
         @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json")
 })
-public class JdgHttpsTest extends JdgTestSecureBase {
+public class JdgBasicTest extends JdgTestBase {
 
     @Deployment
     public static WebArchive getDeployment() {
-        return JdgTestSecureBase.getDeployment();
+        return JdgTestBase.getDeployment();
     }
 }

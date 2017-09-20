@@ -20,7 +20,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.jboss.test.arquillian.ce.jdg;
 
 import org.jboss.arquillian.ce.api.OpenShiftResource;
@@ -28,25 +27,24 @@ import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.ce.api.TemplateResources;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.test.arquillian.ce.jdg.common.JdgTestSecureBase;
+import org.jboss.test.arquillian.ce.jdg.common.JdgMultTempTestBase;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid65-https.json",
-          parameters = {
-              @TemplateParameter(name = "HTTPS_NAME", value="jboss"),
-              @TemplateParameter(name = "HTTPS_PASSWORD", value="mykeystorepass")})
+@TemplateResources(syncInstantiation = true, templates = {
+		@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid71-basic.json", parameters = {
+				@TemplateParameter(name = "APPLICATION_NAME", value = "carcache"),
+				@TemplateParameter(name = "INFINISPAN_CONNECTORS", value = "hotrod"),
+				@TemplateParameter(name = "CACHE_NAMES", value = "carcache") }),
+		@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/eap/eap64-basic-s2i.json", parameters = {
+				@TemplateParameter(name = "SOURCE_REPOSITORY_URL", value = "https://github.com/jboss-openshift/openshift-quickstarts"),
+				@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "1.2"),
+				@TemplateParameter(name = "CONTEXT_DIR", value = "datagrid/carmart") }) })
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
-        @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json")
-})
-public class JdgHttpsTest extends JdgTestSecureBase {
+		@OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json") })
+public class JdgMultTempTest extends JdgMultTempTestBase {
 
-    @Deployment
-    public static WebArchive getDeployment() {
-        return JdgTestSecureBase.getDeployment();
-    }
 }

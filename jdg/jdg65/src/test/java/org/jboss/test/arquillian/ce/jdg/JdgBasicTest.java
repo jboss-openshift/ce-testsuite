@@ -30,6 +30,7 @@ import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.test.arquillian.ce.jdg.common.JdgTestBase;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -39,9 +40,9 @@ import org.junit.runner.RunWith;
         @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json")
 })
 public class JdgBasicTest extends JdgTestBase {
+
     @Deployment
     public static WebArchive getDeployment() {
-        return getDeploymentInternal();
+        return JdgTestBase.getDeployment();
     }
-
 }

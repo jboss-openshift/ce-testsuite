@@ -146,6 +146,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- JDG Webserver common -->
+            <dependency>
+                <groupId>org.jboss.ce.testsuite</groupId>
+                <artifactId>jdg-ce-testsuite-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.kohsuke.metainf-services</groupId>
                 <artifactId>metainf-services</artifactId>
