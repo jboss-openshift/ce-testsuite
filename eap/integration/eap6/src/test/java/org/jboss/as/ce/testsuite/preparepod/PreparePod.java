@@ -51,6 +51,7 @@ public class PreparePod {
     private final List<String> commands = Arrays.asList(
             "/interface=public:undefine-attribute(name=nic)",
             "/interface=public:write-attribute(name=inet-address, value=127.0.0.1)",
+            "/interface=bindall:write-attribute(name=inet-address, value=127.0.0.1)",
             "/subsystem=remoting:write-attribute(name=worker-read-threads, value=8)",
             "/subsystem=remoting:write-attribute(name=worker-task-core-threads, value=8)",
             "/subsystem=remoting:write-attribute(name=worker-task-max-threads, value=64)",

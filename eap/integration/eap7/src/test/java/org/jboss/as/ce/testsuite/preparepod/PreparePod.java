@@ -48,6 +48,9 @@ public class PreparePod {
             "/subsystem=ejb3/strict-max-bean-instance-pool=slsb-strict-max-pool:undefine-attribute(name=derive-size)",
             "/subsystem=ejb3/strict-max-bean-instance-pool=slsb-strict-max-pool:write-attribute(name=max-pool-size,value=400)",
 
+            // set security-realm for the management http interface
+            "/core-service=management/management-interface=http-interface:write-attribute(name=security-realm,value=ManagementRealm)",
+
             ":reload"
     );
 
