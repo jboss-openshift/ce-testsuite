@@ -943,6 +943,8 @@
                         <!-- temporary exclusion -->
                         <!-- needs this get merged: https://github.com/jbossas/jboss-eap/pull/2859 before add more changes on upstream -->
                         <exclude>**/JNDIBindingMBeanTestCase.java</exclude>
+                        <!-- needs https://github.com/jbossas/jboss-eap/pull/3041 -->
+                        <exclude>**/ExceptionHandlingTestCase.java</exclude>
 
                     </excludes>
                 </configuration>
