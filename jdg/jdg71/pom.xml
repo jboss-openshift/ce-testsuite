@@ -148,6 +148,7 @@
                     </includes>
                     <excludes>
                         <exclude>**/JdgQueryTest.java</exclude>
+                        <exclude>**/JdgMultTempTest.java</exclude>
                     </excludes>
                     <systemPropertyVariables>
                         <!-- Custom DNS resolver for OpenShift routes -->
