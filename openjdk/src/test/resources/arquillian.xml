@@ -27,6 +27,8 @@
         <property name="namespace.prefix">cearq-openjdk</property>
         <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
         <property name="proxiedContainerPorts">testrunner:9999,testrunner:9990,testrunner:8080</property>
+        <!-- Fetch the logs from Openshift and pods, and save them into target/surefire-reports -->
+        <property name="logs.copy">true</property>
     </extension>
 
     <container qualifier="testrunner" mode="class" default="true">
