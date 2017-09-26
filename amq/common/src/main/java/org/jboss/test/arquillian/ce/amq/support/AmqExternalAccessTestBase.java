@@ -27,7 +27,6 @@ import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.fusesource.mqtt.client.*;
 import org.jboss.arquillian.ce.api.Tools;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URL;
@@ -89,7 +88,6 @@ public class AmqExternalAccessTestBase extends AmqSslTestBase {
 
     @Test
     @RunAsClient
-    @Ignore
     public void testMqttConnection() throws Exception {
         MQTT mqtt = new MQTT();
         mqtt.setHost(getRouteUrl(mqttUrl, "ssl"));
