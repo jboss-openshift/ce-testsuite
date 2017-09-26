@@ -48,6 +48,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.test.arquillian.ce.jdg.common.JdgUtils;
 import org.jboss.test.arquillian.ce.jdg.common.query.support.Person;
 import org.jboss.test.arquillian.ce.jdg.common.query.support.PersonMarshaller;
 import org.jboss.test.arquillian.ce.jdg.common.query.support.PhoneNumberMarshaller;
@@ -65,8 +66,9 @@ public class JdgQueryTestBase {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML(new StringAsset("<web-app/>"));
         war.addPackage(Person.class.getPackage());
-        war.addClass(JdgQueryTestBase.class);
+        war.addClasses(JdgQueryTestBase.class, JdgUtils.class);
         war.addAsResource("jdgquerytest/addressbook.proto");
+        war.addAsResource("keystore.jks");
 
         war.addAsLibraries(Libraries.transitive("org.infinispan", "infinispan-client-hotrod"));
         war.addAsLibraries(Libraries.transitive("org.infinispan", "infinispan-query-dsl"));
@@ -78,6 +80,8 @@ public class JdgQueryTestBase {
 
     @Test
     public void testQueryThroughHotRodService() throws Exception {
+        JdgUtils.configureTrustStore();
+
         String host = System.getenv("DATAGRID_APP_HOTROD_SERVICE_HOST");
         int port = Integer.parseInt(System.getenv("DATAGRID_APP_HOTROD_SERVICE_PORT"));
 
@@ -86,6 +90,13 @@ public class JdgQueryTestBase {
                         .addServer()
                         .host(host).port(port)
                         .marshaller(new ProtoStreamMarshaller())  // The Protobuf based marshaller is required for query capabilities
+                        .security()
+                        .ssl()
+                            .enable()
+                            .trustStoreFileName("/tmp/keystore.jks")
+                            .trustStorePassword("mykeystorepass".toCharArray())
+                            .keyStoreFileName("/tmp/keystore.jks")
+                            .keyStorePassword("mykeystorepass".toCharArray())
                         .build()
         );
         RemoteCache<Object, Object> cache = cacheManager.getCache();
