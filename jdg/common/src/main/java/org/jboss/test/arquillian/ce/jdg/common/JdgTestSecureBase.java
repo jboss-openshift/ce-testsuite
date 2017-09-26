@@ -25,12 +25,7 @@ package org.jboss.test.arquillian.ce.jdg.common;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.infinispan.client.hotrod.RemoteCache;
@@ -48,21 +43,9 @@ public abstract class JdgTestSecureBase extends JdgTestBase {
 
     public static WebArchive getDeployment() {
         WebArchive war = JdgTestBase.getDeployment();
-        war.addClass(JdgTestSecureBase.class);
+        war.addClasses(JdgTestSecureBase.class, JdgUtils.class);
         war.addAsResource("keystore.jks");
         return war;
-    }
-
-    protected void configureTrustStore() throws IOException {
-        InputStream stream = null;
-
-        try {
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            stream = cl.getResourceAsStream("keystore.jks");
-            Files.copy(stream, Paths.get("/tmp/keystore.jks"), StandardCopyOption.REPLACE_EXISTING);
-        } finally {
-            stream.close();
-        }
     }
 
     @Test
@@ -107,7 +90,7 @@ public abstract class JdgTestSecureBase extends JdgTestBase {
     @Test
     @Override
     public void testHotRodService() throws Exception {
-        configureTrustStore();
+        JdgUtils.configureTrustStore();
 
         String host = System.getenv("DATAGRID_APP_HOTROD_SERVICE_HOST");
         int port = Integer.parseInt(System.getenv("DATAGRID_APP_HOTROD_SERVICE_PORT"));
