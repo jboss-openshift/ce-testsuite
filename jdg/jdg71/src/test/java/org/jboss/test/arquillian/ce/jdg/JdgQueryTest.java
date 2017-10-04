@@ -23,12 +23,14 @@
 
 package org.jboss.test.arquillian.ce.jdg;
 
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
 import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.test.arquillian.ce.jdg.common.LoginHandler;
 import org.jboss.test.arquillian.ce.jdg.common.query.JdgQueryTestBase;
 import org.junit.runner.RunWith;
 
@@ -41,39 +43,27 @@ import org.junit.runner.RunWith;
         parameters = {
                 @TemplateParameter(name="HTTPS_NAME", value="jboss"),
                 @TemplateParameter(name="HTTPS_PASSWORD", value="mykeystorepass"),
+                @TemplateParameter(name="USERNAME", value="xuxa"),
+                @TemplateParameter(name="PASSWORD", value="xuxo"),
+                @TemplateParameter(name="ADMIN_GROUP", value="REST,admin,___schema_manager"),
+                @TemplateParameter(name="CONTAINER_SECURITY_ROLES", value="admin=ALL,___schema_manager=ALL"),
+                @TemplateParameter(name="CONTAINER_SECURITY_ROLE_MAPPER", value="identity-role-mapper"),
+                @TemplateParameter(name="HOTROD_AUTHENTICATION", value="true"),
                 @TemplateParameter(name="CACHE_NAMES", value="addressbook_indexed,addressbook"),
-                @TemplateParameter(name="addressbook_indexed_CACHE_START", value="EAGER"),
-                @TemplateParameter(name="addressbook_indexed_CACHE_INDEX", value="ALL"),
-                @TemplateParameter(name="addressbook_indexed_INDEXING_PROPERTIES", value="\"default.directory_provider=ram\""),
-                @TemplateParameter(name="addressbook_indexed_JDBC_STORE_TYPE", value="string"),
-                @TemplateParameter(name="addressbook_indexed_JDBC_STORE_PASSIVATION", value="false"),
-                @TemplateParameter(name="addressbook_indexed_JDBC_STORE_PRELOAD", value="false"),
-                @TemplateParameter(name="addressbook_indexed_JDBC_STORE_PURGE", value="false"),
-                @TemplateParameter(name="addressbook_indexed_JDBC_STORE_DATASOURCE", value="\"java:jboss/datasources/ExampleDS\""),
-                @TemplateParameter(name="addressbook_indexed_KEYED_TABLE_PREFIX", value="JDG"),
-                @TemplateParameter(name="addressbook_indexed_ID_COLUMN_NAME", value="id"),
-                @TemplateParameter(name="addressbook_indexed_ID_COLUMN_TYPE", value="VARCHAR"),
-                @TemplateParameter(name="addressbook_indexed_DATA_COLUMN_NAME", value="datum"),
-                @TemplateParameter(name="addressbook_indexed_DATA_COLUMN_TYPE", value="BINARY"),
-                @TemplateParameter(name="addressbook_indexed_TIMESTAMP_COLUMN_NAME", value="version"),
-                @TemplateParameter(name="addressbook_indexed_TIMESTAMP_COLUMN_TYPE", value="BIGINT"),
-                @TemplateParameter(name="addressbook_CACHE_START", value="EAGER"),
-                @TemplateParameter(name="addressbook_JDBC_STORE_TYPE", value="string"),
-                @TemplateParameter(name="addressbook_JDBC_STORE_PASSIVATION", value="false"),
-                @TemplateParameter(name="addressbook_JDBC_STORE_PRELOAD", value="false"),
-                @TemplateParameter(name="addressbook_JDBC_STORE_PURGE", value="false"),
-                @TemplateParameter(name="addressbook_JDBC_STORE_DATASOURCE", value="\"java:jboss/datasources/ExampleDS\""),
-                @TemplateParameter(name="addressbook_KEYED_TABLE_PREFIX", value="JDG"),
-                @TemplateParameter(name="addressbook_ID_COLUMN_NAME", value="id"),
-                @TemplateParameter(name="addressbook_ID_COLUMN_TYPE", value="VARCHAR"),
-                @TemplateParameter(name="addressbook_DATA_COLUMN_NAME", value="datum"),
-                @TemplateParameter(name="addressbook_DATA_COLUMN_TYPE", value="BINARY"),
-                @TemplateParameter(name="addressbook_TIMESTAMP_COLUMN_NAME", value="version"),
-                @TemplateParameter(name="addressbook_TIMESTAMP_COLUMN_TYPE", value="BIGINT")})
+                @TemplateParameter(name="MEMCACHED_CACHE", value="mc_default")})
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
         @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json")
 })
 public class JdgQueryTest extends JdgQueryTestBase {
 
+    @Override
+    protected ConfigurationBuilder addConfigRule(ConfigurationBuilder b) {
+        b.security().authentication()
+            .serverName("jdg-server")
+            .saslMechanism("DIGEST-MD5")
+            .callbackHandler(new LoginHandler("xuxa", "xuxo".toCharArray(), "ApplicationRealm"))
+            .enable();
+        return b;
+    }
 }

@@ -147,7 +147,6 @@
                         <include>org/jboss/**/*Test.java</include>
                     </includes>
                     <excludes>
-                        <exclude>**/JdgQueryTest.java</exclude>
                         <exclude>**/JdgMultTempTest.java</exclude>
                     </excludes>
                     <systemPropertyVariables>

@@ -49,6 +49,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.jdg.common.JdgUtils;
+import org.jboss.test.arquillian.ce.jdg.common.LoginHandler;
 import org.jboss.test.arquillian.ce.jdg.common.query.support.Person;
 import org.jboss.test.arquillian.ce.jdg.common.query.support.PersonMarshaller;
 import org.jboss.test.arquillian.ce.jdg.common.query.support.PhoneNumberMarshaller;
@@ -66,7 +67,7 @@ public class JdgQueryTestBase {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "run-in-pod.war");
         war.setWebXML(new StringAsset("<web-app/>"));
         war.addPackage(Person.class.getPackage());
-        war.addClasses(JdgQueryTestBase.class, JdgUtils.class);
+        war.addClasses(JdgQueryTestBase.class, JdgUtils.class, LoginHandler.class);
         war.addAsResource("jdgquerytest/addressbook.proto");
         war.addAsResource("keystore.jks");
 
@@ -77,6 +78,9 @@ public class JdgQueryTestBase {
         return war;
     }
 
+    protected ConfigurationBuilder addConfigRule(ConfigurationBuilder b) {
+        return b;
+    }
 
     @Test
     public void testQueryThroughHotRodService() throws Exception {
@@ -85,20 +89,20 @@ public class JdgQueryTestBase {
         String host = System.getenv("DATAGRID_APP_HOTROD_SERVICE_HOST");
         int port = Integer.parseInt(System.getenv("DATAGRID_APP_HOTROD_SERVICE_PORT"));
 
-        RemoteCacheManager cacheManager = new RemoteCacheManager(
-                new ConfigurationBuilder()
-                        .addServer()
-                        .host(host).port(port)
-                        .marshaller(new ProtoStreamMarshaller())  // The Protobuf based marshaller is required for query capabilities
-                        .security()
-                        .ssl()
-                            .enable()
-                            .trustStoreFileName("/tmp/keystore.jks")
-                            .trustStorePassword("mykeystorepass".toCharArray())
-                            .keyStoreFileName("/tmp/keystore.jks")
-                            .keyStorePassword("mykeystorepass".toCharArray())
-                        .build()
-        );
+        ConfigurationBuilder b = new ConfigurationBuilder()
+            .addServer()
+            .host(host).port(port)
+            .security()
+            .ssl()
+                .enable()
+                .trustStoreFileName("/tmp/keystore.jks")
+                .trustStorePassword("mykeystorepass".toCharArray())
+                .keyStoreFileName("/tmp/keystore.jks")
+                .keyStorePassword("mykeystorepass".toCharArray())
+            .marshaller(new ProtoStreamMarshaller());  // The Protobuf based marshaller is required for query capabilities
+        addConfigRule(b);
+
+        RemoteCacheManager cacheManager = new RemoteCacheManager(b.build());
         RemoteCache<Object, Object> cache = cacheManager.getCache();
         assertNotNull(cache);
 
