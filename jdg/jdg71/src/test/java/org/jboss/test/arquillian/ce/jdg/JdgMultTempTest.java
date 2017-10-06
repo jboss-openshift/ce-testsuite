@@ -22,6 +22,7 @@
  */
 package org.jboss.test.arquillian.ce.jdg;
 
+import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jboss.arquillian.ce.api.OpenShiftResource;
 import org.jboss.arquillian.ce.api.OpenShiftResources;
 import org.jboss.arquillian.ce.api.RoleBinding;
@@ -29,15 +30,23 @@ import org.jboss.arquillian.ce.api.Template;
 import org.jboss.arquillian.ce.api.TemplateParameter;
 import org.jboss.arquillian.ce.api.TemplateResources;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.test.arquillian.ce.jdg.common.LoginHandler;
 import org.jboss.test.arquillian.ce.jdg.common.JdgMultTempTestBase;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 @TemplateResources(syncInstantiation = true, templates = {
 		@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid71-basic.json", parameters = {
-				@TemplateParameter(name = "APPLICATION_NAME", value = "carcache"),
-				@TemplateParameter(name = "INFINISPAN_CONNECTORS", value = "hotrod"),
-				@TemplateParameter(name = "CACHE_NAMES", value = "carcache") }),
+                @TemplateParameter(name="APPLICATION_NAME", value = "carcache"),
+                @TemplateParameter(name="INFINISPAN_CONNECTORS", value = "hotrod"),
+                @TemplateParameter(name="USERNAME", value="xuxa"),
+                @TemplateParameter(name="PASSWORD", value="xuxo"),
+                @TemplateParameter(name="ADMIN_GROUP", value="REST,admin,___schema_manager"),
+                @TemplateParameter(name="CONTAINER_SECURITY_ROLES", value="admin=ALL,___schema_manager=ALL"),
+                @TemplateParameter(name="CONTAINER_SECURITY_ROLE_MAPPER", value="identity-role-mapper"),
+                @TemplateParameter(name="HOTROD_AUTHENTICATION", value="true"),
+                @TemplateParameter(name="CACHE_NAMES", value = "carcache"),
+                @TemplateParameter(name="MEMCACHED_CACHE", value="mc_default")}),
 		@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/eap/eap64-basic-s2i.json", parameters = {
 				@TemplateParameter(name = "SOURCE_REPOSITORY_URL", value = "https://github.com/jboss-openshift/openshift-quickstarts"),
 				@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "1.2"),
@@ -47,4 +56,13 @@ import org.junit.runner.RunWith;
 		@OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json") })
 public class JdgMultTempTest extends JdgMultTempTestBase {
 
+    @Override
+    protected ConfigurationBuilder addConfigRule(ConfigurationBuilder b) {
+        b.security().authentication()
+            .serverName("jdg-server")
+            .saslMechanism("DIGEST-MD5")
+            .callbackHandler(new LoginHandler("xuxa", "xuxo".toCharArray(), "ApplicationRealm"))
+            .enable();
+        return b;
+    }
 }

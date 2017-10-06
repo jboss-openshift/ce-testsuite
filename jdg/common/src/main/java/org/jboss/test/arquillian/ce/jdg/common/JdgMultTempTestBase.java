@@ -109,6 +109,7 @@ public class JdgMultTempTestBase {
 		war.addClass(HttpClientExecuteOptions.class);
 		war.addClass(HttpClient.class);
 		war.addClass(JdgMultTempTestBase.class);
+		war.addClass(LoginHandler.class);
 
 		war.addAsLibraries(Libraries.transitive("org.infinispan", "infinispan-client-hotrod"));
 		war.addAsLibraries(Libraries.transitive("org.infinispan", "infinispan-query-dsl"));
@@ -133,6 +134,10 @@ public class JdgMultTempTestBase {
 	}
 
 
+    protected ConfigurationBuilder addConfigRule(ConfigurationBuilder b) {
+        return b;
+    }
+
 	/**
 	 * Confirms that the car that was added to the CarMart application
 	 * in the previous test was properly cached
@@ -145,15 +150,15 @@ public class JdgMultTempTestBase {
 		String host = System.getenv("CARCACHE_HOTROD_SERVICE_HOST");
 		int port = Integer.parseInt(System.getenv("CARCACHE_HOTROD_SERVICE_PORT"));
 
-		RemoteCacheManager cacheManager = new RemoteCacheManager(
-				new ConfigurationBuilder()
-				.addServer()
-				.host(host)
-				.port(port)
-				// Needed to convert cache entries back to Java objects
-				.marshaller(new ProtoStreamMarshaller())
-				.build()
-		);
+		ConfigurationBuilder b = new ConfigurationBuilder()
+                .addServer()
+                .host(host)
+                .port(port)
+                // Needed to convert cache entries back to Java objects
+                .marshaller(new ProtoStreamMarshaller());
+		addConfigRule(b);
+
+		RemoteCacheManager cacheManager = new RemoteCacheManager(b.build());
 		RemoteCache<Object, Object> cache = cacheManager.getCache("carcache");
 		assertNotNull(cache);
 
