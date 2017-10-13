@@ -147,7 +147,6 @@
                         <include>org/jboss/**/*Test.java</include>
                     </includes>
                     <excludes>
-                        <exclude>**/JdgMultTempTest.java</exclude>
                     </excludes>
                     <systemPropertyVariables>
                         <!-- Custom DNS resolver for OpenShift routes -->
