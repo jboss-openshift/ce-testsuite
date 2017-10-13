@@ -39,8 +39,8 @@ import org.junit.runner.RunWith;
 		@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/datagrid/datagrid71-basic.json", parameters = {
                 @TemplateParameter(name="APPLICATION_NAME", value = "carcache"),
                 @TemplateParameter(name="INFINISPAN_CONNECTORS", value = "hotrod"),
-                @TemplateParameter(name="USERNAME", value="xuxa"),
-                @TemplateParameter(name="PASSWORD", value="xuxo"),
+                @TemplateParameter(name="USERNAME", value="jdguser"),
+                @TemplateParameter(name="PASSWORD", value="P@ssword1"),
                 @TemplateParameter(name="ADMIN_GROUP", value="REST,admin,___schema_manager"),
                 @TemplateParameter(name="CONTAINER_SECURITY_ROLES", value="admin=ALL,___schema_manager=ALL"),
                 @TemplateParameter(name="CONTAINER_SECURITY_ROLE_MAPPER", value="identity-role-mapper"),
@@ -49,8 +49,8 @@ import org.junit.runner.RunWith;
                 @TemplateParameter(name="MEMCACHED_CACHE", value="mc_default")}),
 		@Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/eap/eap64-basic-s2i.json", parameters = {
 				@TemplateParameter(name = "SOURCE_REPOSITORY_URL", value = "https://github.com/jboss-openshift/openshift-quickstarts"),
-				@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "1.2"),
-				@TemplateParameter(name = "CONTEXT_DIR", value = "datagrid/carmart") }) })
+				@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value = "master"),
+				@TemplateParameter(name = "CONTEXT_DIR", value = "datagrid71/carmart") }) })
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 @OpenShiftResources({
 		@OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/datagrid-app-secret.json") })
@@ -61,7 +61,7 @@ public class JdgMultTempTest extends JdgMultTempTestBase {
         b.security().authentication()
             .serverName("jdg-server")
             .saslMechanism("DIGEST-MD5")
-            .callbackHandler(new LoginHandler("xuxa", "xuxo".toCharArray(), "ApplicationRealm"))
+            .callbackHandler(new LoginHandler("jdguser", "P@ssword1".toCharArray(), "ApplicationRealm"))
             .enable();
         return b;
     }
