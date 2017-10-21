@@ -90,7 +90,7 @@ public class AmqClient {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(isSecured);
-            conn = cf.createConnection(username, password);
+            conn = createConnection(cf, username, password);
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Destination qFoo = session.createQueue("QUEUES.FOO");
 
@@ -116,7 +116,7 @@ public class AmqClient {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(isSecured);
-            conn = cf.createConnection(username, password);
+            conn = createConnection(cf, username, password);
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Destination qFoo = session.createQueue("QUEUES.FOO");
 
@@ -142,7 +142,7 @@ public class AmqClient {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(isSecured);
-            conn = cf.createConnection(username, password);
+            conn = createConnection(cf, username, password);
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Destination qFoo = session.createQueue("QUEUES.FOO");
 
@@ -161,7 +161,7 @@ public class AmqClient {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(isSecured);
-            conn = cf.createConnection(username, password);
+            conn = createConnection(cf, username, password);
             Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Destination qFoo = session.createQueue("QUEUES.FOO");
 
@@ -185,7 +185,7 @@ public class AmqClient {
         options.setVerifyHost(false);
         ConnectionFactory factory = new JmsConnectionFactory(connectionUrl);
 
-        Connection connection = factory.createConnection(username, password);
+        Connection connection = createConnection(factory, username, password);
         try {
             connection.start();
 
@@ -208,7 +208,7 @@ public class AmqClient {
     public void produceAmqp(String message) throws JMSException, NamingException {
         ConnectionFactory factory = new JmsConnectionFactory(connectionUrl);
 
-        Connection conn = factory.createConnection(username, password);
+        Connection conn = createConnection(factory, username, password);
         try {
             conn.start();
 
@@ -230,7 +230,7 @@ public class AmqClient {
     public String consumeStomp() throws Exception {
         StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
         factory.setBrokerURI(connectionUrl);
-        Connection conn = factory.createConnection(username, password);
+        Connection conn = createConnection(factory, username, password);
         try {
             conn.start();
 
@@ -252,7 +252,7 @@ public class AmqClient {
     public void produceStomp(String message) throws Exception {
         StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
         factory.setBrokerURI(connectionUrl);
-        Connection conn = factory.createConnection(username, password);
+        Connection conn = createConnection(factory, username, password);
         try {
             conn.start();
 
@@ -271,7 +271,7 @@ public class AmqClient {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(false);
-            conn = cf.createConnection(username, password);
+            conn = createConnection(cf, username, password);
             conn.setClientID("tmp123");
 
             conn.start();
@@ -291,7 +291,7 @@ public class AmqClient {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(false);
-            conn = cf.createConnection(username, password);
+            conn = createConnection(cf, username, password);
 
             conn.start();
 
@@ -308,7 +308,7 @@ public class AmqClient {
         Connection conn = null;
         try {
             ConnectionFactory cf = getAMQConnectionFactory(false);
-            conn = cf.createConnection(username, password);
+            conn = createConnection(cf, username, password);
             conn.setClientID("tmp123");
 
             conn.start();
@@ -330,5 +330,26 @@ public class AmqClient {
         } finally {
             close(conn);
         }
+    }
+
+    private Connection createConnection(ConnectionFactory cf, String username, String password) throws JMSException {
+        final int TRIES = 3;
+        final int DELAY = 5;
+
+        for (int i = 1; i <= TRIES; i++) {
+            try {
+                return cf.createConnection(username, password);
+            } catch (JMSException e) {
+                log.warning(String.format("Failed to create an AMQ connection. Attempt #%d of #%d. Caused by: %s", i, TRIES, e.getMessage()));
+                if (i == TRIES)
+                    throw e;
+                try {
+                    Thread.sleep(DELAY * 1000);
+                } catch (InterruptedException e1) {
+                }
+            }
+        }
+
+        return null;
     }
 }
