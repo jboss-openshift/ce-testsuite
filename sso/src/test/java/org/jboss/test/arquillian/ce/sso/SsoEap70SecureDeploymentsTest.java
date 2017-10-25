@@ -39,8 +39,8 @@ import org.junit.runner.RunWith;
 @Template(url = "https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/eap/eap70-sso-s2i.json",
 		labels = "application=eap-app",
 		parameters = {
-				@TemplateParameter(name = "SOURCE_REPOSITORY_URL", value="https://github.com/jboss-openshift/openshift-examples"),
-				@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value="master"),
+				@TemplateParameter(name = "SOURCE_REPOSITORY_URL", value="https://github.com/${template.repository:jboss-openshift}/openshift-examples"),
+				@TemplateParameter(name = "SOURCE_REPOSITORY_REF", value="${template.branch:master}"),
 				@TemplateParameter(name = "CONTEXT_DIR", value="sso-securedeployments"),
                 @TemplateParameter(name = "ARTIFACT_DIR", value="app-profile-jee/target,app-profile-jee-saml/target"),
                 @TemplateParameter(name = "HTTPS_NAME", value = "jboss"),
