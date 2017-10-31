@@ -34,9 +34,10 @@
         -->
         <property name="namespace.prefix">cearq-integration-eap7</property>
         <!-- The file containing the pod definition. Used to instantiate the JBoss instance. -->
-        <property name="definitionsFile">src/test/resources/testrunner-pod.json</property>
+        <property name="definitionsFile">${definitions.file}</property>
         <!-- Ports to be proxied locally, <container>:<port> or <container>:0:<port>, to map the same port than container use <container>::<port> or <container>:<port>:<port> -->
         <property name="proxiedContainerPorts">testrunner-eap7::9990,testrunner-eap7::8080,testrunner-eap7::8443,testrunner-eap7::3528,testrunner-eap7::3529,testrunner-eap7::2020,testrunner-eap7::8181,testrunner-eap7::11090</property>
+        <property name="logs.copy">true</property>
     </extension>
 
     <!--
@@ -45,7 +46,7 @@
       environment, e.g. service host, port, etc. testrunner relates to the pod
       name in testrunner-pod.json.
     -->
-    <container qualifier="testrunner-eap7" mode="suite" default="true">
+    <container qualifier="testrunner-eap7" mode="${container.mode}" default="true">
         <configuration>
             <!-- For use with archillian-chameleon -->
             <property name="username">admin</property>

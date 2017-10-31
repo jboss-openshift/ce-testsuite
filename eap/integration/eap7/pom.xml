@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Parent -->
     <parent>
@@ -18,41 +18,8 @@
     <name>CE Testsuite -- EAP 7 testsuite Integration tests</name>
     <description>Cloud Enablement Testsuite -- EAP 7 testsuite Integration tests</description>
 
-    <!-- All versions used here are based on EAP 7.0.0.GA -->
-    <properties>
-        <version.org.jboss.resteasy.multipart.provider>3.0.16.Final-redhat-1
-        </version.org.jboss.resteasy.multipart.provider>
-        <version.org.hibernate.javax.persistence.jpa>1.0.0.Final-redhat-1</version.org.hibernate.javax.persistence.jpa>
-        <version.org.apache.lucene.core>5.3.1.redhat-1</version.org.apache.lucene.core>
-        <version.org.hibernate.core>5.0.9.Final-redhat-1</version.org.hibernate.core>
-        <version.org.hibernate.validator>5.2.4.Final-redhat-1</version.org.hibernate.validator>
-        <version.org.apache.activemq.artemis>1.1.0.SP16-redhat-1</version.org.apache.activemq.artemis>
-        <version.org.bouncycastle.bcprov-jdk15on>1.52.0.redhat-3</version.org.bouncycastle.bcprov-jdk15on>
-        <version.org.jboss.logmanager>1.1.2.Final-redhat-2</version.org.jboss.logmanager>
-        <version.org.syslog4j>0.9.30</version.org.syslog4j>
-        <version.com.io7m.xom>1.2.10.redhat-1</version.com.io7m.xom>
-        <version.org.jboss.security.jbossxacml>2.0.8.Final-redhat-6</version.org.jboss.security.jbossxacml>
-        <version.javax.json>1.0.3.redhat-1</version.javax.json>
-        <version.org.wildfly.core>2.1.10.Final-redhat-ce</version.org.wildfly.core>
-        <version.org.apache.ds>2.0.0-M15</version.org.apache.ds>
-        <version.org.apache.jbdm>2.0.0-M3</version.org.apache.jbdm>
-        <version.org.apache.httpcomponents>4.5.0.redhat-1</version.org.apache.httpcomponents>
-        <version.jboss.ws.api.version>1.0.3.Final-redhat-1</version.jboss.ws.api.version>
-        <version.jboss.ws.cfx.version>5.1.3.SP1-redhat-1</version.jboss.ws.cfx.version>
-        <version.org.picketlink.federation>2.5.5.SP1-redhat-1</version.org.picketlink.federation>
-        <version.org.apache.cxf.services.version>3.1.4.redhat-1</version.org.apache.cxf.services.version>
-        <version.com.fasterxml.jackson>2.6.3</version.com.fasterxml.jackson>
-        <version.org.codehaus.plexus>3.0.24</version.org.codehaus.plexus>
-        <version.org.apache.maven>3.3.9</version.org.apache.maven>
-        <version.org.eclipse.aether>1.1.0</version.org.eclipse.aether>
-        <version.org.jboss.eap.wildfly.jaxrs>7.0.3.GA-redhat-ce</version.org.jboss.eap.wildfly.jaxrs>
-        <version.org.jboss.eap.wildfly.messaging>7.0.3.GA-redhat-ce</version.org.jboss.eap.wildfly.messaging>
-        <version.org.apache.activemq.artemis>1.1.0.SP16-redhat-1</version.org.apache.activemq.artemis>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
-
             <!-- EAP7 BOM -->
             <dependency>
                 <groupId>org.jboss.bom</groupId>
@@ -61,535 +28,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-            <!-- EAP 7 integration tests dependencies -->
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-ts-integ-basic</artifactId>
-                <type>test-jar</type>
-                <version>${version.eap7}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-ts-integ-smoke</artifactId>
-                <type>test-jar</type>
-                <version>${version.eap7}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-ts-integ-web</artifactId>
-                <type>test-jar</type>
-                <version>${version.eap7}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-ts-integ-ws</artifactId>
-                <type>test-jar</type>
-                <version>${version.eap7}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-testsuite-shared</artifactId>
-                <version>${version.eap7}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.core</groupId>
-                <artifactId>wildfly-core-testsuite-shared</artifactId>
-                <version>${version.org.wildfly.core}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.core</groupId>
-                <artifactId>wildfly-model-test</artifactId>
-                <version>${version.org.wildfly.core}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.core</groupId>
-                <artifactId>wildfly-core-model-test-framework</artifactId>
-                <version>${version.org.wildfly.core}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.core</groupId>
-                <artifactId>wildfly-core-test-runner</artifactId>
-                <version>${version.org.wildfly.core}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- wfly cli -->
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-client-all</artifactId>
-                <version>${version.eap7}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org..wildfly.core</groupId>
-                <artifactId>wildfly-cli</artifactId>
-                <version>${version.org.wildfly.core}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- WildFly connector -->
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-connector</artifactId>
-                <version>${version.eap7}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.remoting</groupId>
-                        <artifactId>jboss-remoting</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- resteasy -->
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-multipart-provider</artifactId>
-                <version>${version.org.jboss.resteasy.multipart.provider}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.jboss.logging</groupId>
-                        <artifactId>jboss-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- hibernate dependencies -->
-            <dependency>
-                <groupId>org.hibernate.javax.persistence</groupId>
-                <artifactId>hibernate-jpa-2.1-api</artifactId>
-                <version>${version.org.hibernate.javax.persistence.jpa}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${version.org.hibernate.core}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.logging</groupId>
-                        <artifactId>jboss-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${version.org.hibernate.validator}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.logging</groupId>
-                        <artifactId>jboss-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- JMS dependencies -->
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-core-client</artifactId>
-                <version>${version.org.apache.activemq.artemis}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- wildfly messaging -->
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-messaging</artifactId>
-                <version>${version.org.jboss.eap.wildfly.messaging}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- EJB -->
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-ejb3</artifactId>
-                <version>${version.eap7}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.remoting</groupId>
-                        <artifactId>jboss-remoting</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.jboss.logging</groupId>
-                        <artifactId>jboss-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-
-            </dependency>
-
-            <!-- WildFly system jmx -->
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-system-jmx</artifactId>
-                <version>${version.eap7}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.logging</groupId>
-                        <artifactId>jboss-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- lucene -->
-            <dependency>
-                <groupId>org.apache.lucene</groupId>
-                <artifactId>lucene-core</artifactId>
-                <version>${version.org.apache.lucene.core}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- hamcrest -->
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-library</artifactId>
-                <version>${hamcrest.library.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- bouncycastle -->
-            <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>${version.org.bouncycastle.bcprov-jdk15on}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- logging dependencies -->
-            <dependency>
-                <groupId>org.jboss.logmanager</groupId>
-                <artifactId>log4j-jboss-logmanager</artifactId>
-                <version>${version.org.jboss.logmanager}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- apache directory dependencies -->
-            <dependency>
-                <groupId>org.apache.directory.server</groupId>
-                <artifactId>apacheds-parent</artifactId>
-                <version>${version.org.apache.ds}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.directory.jdbm</groupId>
-                <artifactId>apacheds-jdbm1</artifactId>
-                <version>${version.org.apache.jbdm}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- JBoss security dependencies -->
-            <dependency>
-                <groupId>org.jboss.security</groupId>
-                <artifactId>jbossxacml</artifactId>
-                <version>${version.org.jboss.security.jbossxacml}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.picketlink</groupId>
-                <artifactId>picketlink-federation</artifactId>
-                <version>${version.org.picketlink.federation}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- JSON dependencies -->
-            <dependency>
-                <groupId>org.glassfish</groupId>
-                <artifactId>javax.json</artifactId>
-                <version>${version.javax.json}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- apache http -->
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpmime</artifactId>
-                <version>${version.org.apache.httpcomponents}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${version.org.apache.httpcomponents}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- WildFly launcher -->
-            <dependency>
-                <groupId>org.wildfly.core</groupId>
-                <artifactId>wildfly-launcher</artifactId>
-                <version>${version.org.wildfly.core}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- jipi dependencies -->
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>jipijapa-spi</artifactId>
-                <version>${version.eap7}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.logging</groupId>
-                        <artifactId>jboss-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- syslog4j -->
-            <dependency>
-                <groupId>org.syslog4j</groupId>
-                <artifactId>syslog4j</artifactId>
-                <version>${version.org.syslog4j}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- io7m -->
-            <dependency>
-                <groupId>com.io7m.xom</groupId>
-                <artifactId>xom</artifactId>
-                <version>${version.com.io7m.xom}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- undertow dependencies -->
-            <dependency>
-                <groupId>io.undertow</groupId>
-                <artifactId>undertow-servlet</artifactId>
-                <version>${version.undertow}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.undertow</groupId>
-                <artifactId>undertow-core</artifactId>
-                <version>${version.undertow}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- jbossws dependencies -->
-            <dependency>
-                <groupId>org.jboss.ws</groupId>
-                <artifactId>jbossws-api</artifactId>
-                <version>${version.jboss.ws.api.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.ws.cxf</groupId>
-                <artifactId>jbossws-cxf-client</artifactId>
-                <version>${version.jboss.ws.cfx.version}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.logging</groupId>
-                        <artifactId>jboss-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpcore</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpcore-nio</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- apache cxf -->
-            <dependency>
-                <groupId>org.apache.cxf.services.sts</groupId>
-                <artifactId>cxf-services-sts-core</artifactId>
-                <version>${version.org.apache.cxf.services.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- jackson -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${version.com.fasterxml.jackson}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${version.com.fasterxml.jackson}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${version.com.fasterxml.jackson}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-json-provider</artifactId>
-                <version>${version.com.fasterxml.jackson}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- wildfly jaxrs -->
-            <dependency>
-                <groupId>org.jboss.eap</groupId>
-                <artifactId>wildfly-jaxrs</artifactId>
-                <version>${version.org.jboss.eap.wildfly.jaxrs}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- codehaus dependency -->
-            <dependency>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-utils</artifactId>
-                <version>${version.org.codehaus.plexus}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- maven core dependency -->
-            <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-core</artifactId>
-                <version>${version.org.apache.maven}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- eclipse aether dependencies -->
-            <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-api</artifactId>
-                <version>${version.org.eclipse.aether}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-impl</artifactId>
-                <version>${version.org.eclipse.aether}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-connector-basic</artifactId>
-                <version>${version.org.eclipse.aether}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-transport-file</artifactId>
-                <version>${version.org.eclipse.aether}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.aether</groupId>
-                <artifactId>aether-transport-http</artifactId>
-                <version>${version.org.eclipse.aether}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- artemis -->
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-server</artifactId>
-                <version>${version.org.apache.activemq.artemis}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- WildFly arquillian -->
-            <dependency>
-                <groupId>org.wildfly.arquillian</groupId>
-                <artifactId>wildfly-arquillian-container-remote</artifactId>
-                <version>${version.org.wildfly.arquillian}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.remoting</groupId>
-                        <artifactId>jboss-remoting</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.arquillian</groupId>
-                <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
-                <version>${version.org.wildfly.arquillian}</version>
-                <scope>test</scope>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -600,176 +38,99 @@
             <groupId>org.jboss.eap</groupId>
             <artifactId>wildfly-ts-integ-basic</artifactId>
             <type>test-jar</type>
+            <version>${version.eap7.tests}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jboss.eap</groupId>
             <artifactId>wildfly-ts-integ-smoke</artifactId>
             <type>test-jar</type>
+            <version>${version.eap7.tests}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jboss.eap</groupId>
             <artifactId>wildfly-ts-integ-web</artifactId>
             <type>test-jar</type>
+            <version>${version.eap7.tests}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jboss.eap</groupId>
             <artifactId>wildfly-ts-integ-ws</artifactId>
             <type>test-jar</type>
+            <version>${version.eap7.tests}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jboss.eap</groupId>
             <artifactId>wildfly-testsuite-shared</artifactId>
+            <version>${version.eap7.tests}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.eap</groupId>
+                    <artifactId>wildfly-feature-pack</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.eap</groupId>
+                    <artifactId>wildfly-servlet-feature-pack</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-core-testsuite-shared</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-model-test</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-core-model-test-framework</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-core-test-runner</artifactId>
-        </dependency>
-
-        <!-- specs -->
-        <!-- jboss resources spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.resource</groupId>
-            <artifactId>jboss-connector-api_1.7_spec</artifactId>
-        </dependency>
-        <!-- Servlet spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
-        </dependency>
-        <!-- JaxRS spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
-        </dependency>
-        <!-- interceptor spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.interceptor</groupId>
-            <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-        </dependency>
-        <!-- transaction spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.transaction</groupId>
-            <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-        </dependency>
-        <!-- jms spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.jms</groupId>
-            <artifactId>jboss-jms-api_2.0_spec</artifactId>
-        </dependency>
-        <!--EJB spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.ejb</groupId>
-            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-        </dependency>
-        <!--EJB spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.websocket</groupId>
-            <artifactId>jboss-websocket-api_1.1_spec</artifactId>
-        </dependency>
-        <!-- jboss batch spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.batch</groupId>
-            <artifactId>jboss-batch-api_1.0_spec</artifactId>
-        </dependency>
-        <!-- servlet jsp spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
-            <artifactId>jboss-jsp-api_2.3_spec</artifactId>
-        </dependency>
-        <!-- jaspi api spec -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.security.auth.message</groupId>
-            <artifactId>jboss-jaspi-api_1.1_spec</artifactId>
-        </dependency>
-
-        <!-- hibernate dependencies -->
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.1-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-        </dependency>
-
-        <!-- JMS dependencies -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>artemis-core-client</artifactId>
-        </dependency>
-
-        <!-- wildfly messaging -->
         <dependency>
             <groupId>org.jboss.eap</groupId>
-            <artifactId>wildfly-messaging</artifactId>
+            <artifactId>wildfly-feature-pack</artifactId>
+            <version>${version.eap7}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                </exclusion>
+            </exclusions>
+            <type>pom</type>
         </dependency>
-
-        <!-- EJB -->
         <dependency>
             <groupId>org.jboss.eap</groupId>
-            <artifactId>wildfly-ejb3</artifactId>
+            <artifactId>wildfly-servlet-feature-pack</artifactId>
+            <version>${version.eap7}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                </exclusion>
+            </exclusions>
+            <type>pom</type>
         </dependency>
 
-        <!-- lucene -->
+        <!-- logging dependencies -->
         <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-        </dependency>
-
-        <!-- WildFly system jmx -->
-        <dependency>
-            <groupId>org.jboss.eap</groupId>
-            <artifactId>wildfly-system-jmx</artifactId>
-        </dependency>
-
-        <!-- javax validation -->
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-        </dependency>
-
-        <!-- CDI -->
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-        </dependency>
-
-        <!-- wfly-core cli -->
-        <dependency>
-            <groupId>org.jboss.eap</groupId>
-            <artifactId>wildfly-client-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org..wildfly.core</groupId>
-            <artifactId>wildfly-cli</artifactId>
-        </dependency>
-
-        <!-- WildFly connector -->
-        <dependency>
-            <groupId>org.jboss.eap</groupId>
-            <artifactId>wildfly-connector</artifactId>
-        </dependency>
-
-        <!-- resteasy -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- hamcrest -->
@@ -778,182 +139,26 @@
             <artifactId>hamcrest-library</artifactId>
         </dependency>
 
-        <!-- bouncycastle -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>${version.org.bouncycastle.bcprov-jdk15on}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- logging dependencies -->
-        <dependency>
-            <groupId>org.jboss.logmanager</groupId>
-            <artifactId>log4j-jboss-logmanager</artifactId>
-        </dependency>
-
-        <!-- apache directory deps -->
-        <dependency>
-            <groupId>org.apache.directory.server</groupId>
-            <artifactId>apacheds-server-annotations</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.directory.jdbm</groupId>
-                    <artifactId>apacheds-jdbm1</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.directory.jdbm</groupId>
-            <artifactId>apacheds-jdbm1</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.directory.server</groupId>
-            <artifactId>apacheds-interceptor-kerberos</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- JBoss security dependencies -->
-        <dependency>
-            <groupId>org.jboss.security</groupId>
-            <artifactId>jbossxacml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.picketlink</groupId>
-            <artifactId>picketlink-federation</artifactId>
-        </dependency>
-
-        <!-- JSON dependencies -->
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-        </dependency>
-
-        <!-- apache http -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-
-
-        <!-- WildFly launcher -->
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-launcher</artifactId>
-        </dependency>
-
-        <!-- jipi dependencies -->
-        <dependency>
-            <groupId>org.jboss.eap</groupId>
-            <artifactId>jipijapa-spi</artifactId>
-        </dependency>
-
-        <!-- syslog4j -->
-        <dependency>
-            <groupId>org.syslog4j</groupId>
-            <artifactId>syslog4j</artifactId>
-        </dependency>
-
-        <!-- io7m -->
-        <dependency>
-            <groupId>com.io7m.xom</groupId>
-            <artifactId>xom</artifactId>
-        </dependency>
-
-        <!-- jbossws api -->
-        <dependency>
-            <groupId>org.jboss.ws</groupId>
-            <artifactId>jbossws-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.ws.cxf</groupId>
-            <artifactId>jbossws-cxf-client</artifactId>
-        </dependency>
-
-        <!-- apache cxf -->
-        <dependency>
-            <groupId>org.apache.cxf.services.sts</groupId>
-            <artifactId>cxf-services-sts-core</artifactId>
-        </dependency>
-
-        <!-- jackson -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-        </dependency>
-
-        <!-- wildfly jaxrs -->
-        <dependency>
-            <groupId>org.jboss.eap</groupId>
-            <artifactId>wildfly-jaxrs</artifactId>
-        </dependency>
-
         <!-- codehaus dependency -->
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
         </dependency>
 
-        <!-- maven core dependency -->
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-core</artifactId>
-        </dependency>
-
-        <!-- eclipse aether dependencies -->
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-connector-basic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-transport-file</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-transport-http</artifactId>
-        </dependency>
-
-        <!-- artemis -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>artemis-server</artifactId>
-        </dependency>
-
         <!-- arquillian dependencies -->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-container-remote</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.remoting</groupId>
+                    <artifactId>jboss-remoting</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
@@ -962,7 +167,6 @@
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-ce-cube</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- arquillian enrichers -->
@@ -981,7 +185,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.hamcrest</groupId>
@@ -989,262 +192,591 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- xnio -->
+        <dependency>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-nio</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.5.0</version>
-                <executions>
-                    <execution>
-                        <id>exec-1</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>jar</executable>
-                            <arguments>
-                                <argument>ufv</argument>
-                                <argument>
-                                    ${user.home}/.m2/repository/org/jboss/eap/wildfly-ts-integ-basic/${version.eap7}/wildfly-ts-integ-basic-${version.eap7}-tests.jar
-                                </argument>
-                                <argument>jboss-ejb-client.properties</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>exec-2</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>jar</executable>
-                            <arguments>
-                                <argument>ufv</argument>
-                                <argument>
-                                    ${user.home}/.m2/repository/org/jboss/eap/wildfly-ts-integ-ws/${version.eap7}/wildfly-ts-integ-ws-${version.eap7}-tests.jar
-                                </argument>
-                                <argument>jboss-ejb-client.properties</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-dependencies</id>
-                        <phase>process-test-classes</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeGroupIds>org.jboss,org.wildfly.core</includeGroupIds>
-                            <includeTypes>test-jar</includeTypes>
-                            <includeScope>test</includeScope>
-                            <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${version.surefire.plugin}</version>
+                <inherited>true</inherited>
                 <configuration>
-                    <systemPropertyVariables combine.children="append">
+                    <systemPropertyVariables>
                         <!-- EJB client library hack, see WFLY-4973-->
                         <org.jboss.ejb.client.wildfly-testsuite-hack>true</org.jboss.ejb.client.wildfly-testsuite-hack>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <org.jboss.as.test.integration.remote>true</org.jboss.as.test.integration.remote>
                         <jboss.qualified.host.name>testrunner</jboss.qualified.host.name>
+                        <definitions.file>${definitions.file}</definitions.file>
+                        <container.mode>${container.mode}</container.mode>
                     </systemPropertyVariables>
                     <runOrder>alphabetical</runOrder>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <trimStackTrace>false</trimStackTrace>
-                    <includes>
-                        <include>**/*TestCase.java</include>
-                        <include>**/*Test.java</include>
-                    </includes>
-                    <excludes>
-                        <!-- reload the server -->
-                        <exclude>**/ChunkPartitionTestCase.java</exclude>
-                        <exclude>**/DeploymentDescriptorTestCase.java</exclude>
-                        <exclude>**/XADatasourceCapacityPoliciesTestCase.java</exclude>
-                        <exclude>**/BasicFlatTestCase.java</exclude>
-                        <exclude>**/BasicJarTestCase.java</exclude>
-                        <exclude>**/InflowFlatTestCase.java</exclude>
-                        <exclude>**/InflowJarTestCase.java</exclude>
-                        <exclude>**/MultiActivationFlatTestCase.java</exclude>
-                        <exclude>**/MultiActivationJarTestCase.java</exclude>
-                        <exclude>**/MultiObjectActivationFlatTestCase.java</exclude>
-                        <exclude>**/MultiObjectActivationJarTestCase.java</exclude>
-                        <exclude>**/PartialObjectActivationFlatTestCase.java</exclude>
-                        <exclude>**/PartialObjectActivationJarTestCase.java</exclude>
-                        <exclude>**/PureFlatTestCase.java</exclude>
-                        <exclude>**/PureJarTestCase.java</exclude>
-                        <exclude>**/TwoModulesFlatTestCase.java</exclude>
-                        <exclude>**/TwoModulesJarTestCase.java</exclude>
-                        <exclude>**/TwoModulesOfDifferentTypeTestCase.java</exclude>
-                        <exclude>**/TwoRaFlatTestCase.java</exclude>
-                        <exclude>**/TwoRaJarTestCase.java</exclude>
-                        <exclude>**/DataSourceJdbcStatisticsTestCase.java</exclude>
-                        <exclude>**/RequestDumpingHandlerTestCase.java</exclude>
-                        <exclude>**/DataSourcePoolStatisticsTestCase.java</exclude>
-                        <exclude>**/SimpleApplicationClientTestCase.java</exclude>
-                        <exclude>**/DatasourceEnableAttributeTestCase.java</exclude>
-                        <exclude>**/DatasourceCapacityPoliciesTestCase.java</exclude>
-                        <exclude>**/DatasourceXaEnableAttributeTestCase.java</exclude>
-                        <exclude>**/DataSourceCfgMetricUnitTestCase.java</exclude>
-                        <exclude>**/RaCfgMetricUnitTestCase.java</exclude>
-                        <exclude>**/ExportImportJournalTestCase.java</exclude>
-
-                        <!-- path used to map files does not exist in this scenario -->
-                        <exclude>**/AddMySqlDataSourceOperationsUnitTestCase.java</exclude>
-
-                        <!-- always fails -->
-                        <exclude>**/JaxrsYamlProviderTestCase.java</exclude>
-                        <exclude>**/RunAsTestCaseEJBMDB.java</exclude>
-                        <exclude>**/LegacyTimerFormatTestCase.java</exclude>
-                        <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
-                        <exclude>**/LdapExtLikeAdvancedLdapLMTestCase.java</exclude>
-                        <exclude>**/LdapExtLoginModuleTestCase.java</exclude>
-                        <exclude>**/LdapExtPasswordCachingTestCase.java</exclude>
-                        <exclude>**/LdapLoginModuleTestCase.java</exclude>
-                        <exclude>**/AdvancedLdapLoginModuleTestCase.java</exclude>
-                        <exclude>**/SPNEGOLoginModuleTestCase.java</exclude>
-                        <exclude>**/PasswordMaskingInContainerTestCase.java</exclude>
-                        <exclude>**/BasicTests.java</exclude>
-                        <exclude>**/ContextRootTestBase.java</exclude>
-                        <exclude>**/TestNoAddressingTestCase.java</exclude>
-                        <exclude>**/TestOptionalAddressingTestCase.java</exclude>
-                        <exclude>**/TestRequiredAddressingTestCase.java</exclude>
-                        <exclude>**/EJBSignTestCase.java</exclude>
-                        <exclude>**/SignTestCase.java</exclude>
-                        <exclude>**/EJBSignEncryptMultipleClientsTestCase.java</exclude>
-                        <exclude>**/EJBSignEncryptTestCase.java</exclude>
-                        <exclude>**/SignEncryptMultipleClientsTestCase.java</exclude>
-                        <exclude>**/SignEncryptTestCase.java</exclude>
-                        <exclude>**/WSTrustTestCase.java</exclude>
-                        <exclude>**/JMSBridgeTest.java</exclude>
-                        <exclude>**/GlobalModulesTestCase.java</exclude>
-                        <exclude>**/MapBasedInitialContextEjbClientTestCase.java</exclude>
-                        <exclude>**/AccessSerializationTestCase.java</exclude>
-                        <exclude>**/RemoveSFSBOnUndeployTestCase.java</exclude>
-                        <exclude>**/WSTestCase.java</exclude>
-                        <exclude>**/EJBClientUserTransactionTestCase.java</exclude>
-                        <exclude>**/ReentrantLockTestCase.java</exclude>
-                        <exclude>**/WebSuspendTestCase.java</exclude>
-                        <exclude>**/EJBClientDescriptorTestCase.java</exclude>
-                        <exclude>**/JMXFilterTestCase.java</exclude>
-                        <exclude>**/ClientCompatibilityUnitTestCase.java</exclude>
-                        <exclude>**/JmsTestCase.java</exclude>
-                        <exclude>**/WebSecurityCERTTestCase.java</exclude>
-                        <exclude>**/TransactionObjectStoreTestCase.java</exclude>
-                        <exclude>**/CLISecurityTestCase.java</exclude>
-                        <exclude>**/SessionObjectReferenceTestCase.java</exclude>
-                        <exclude>**/WebSecurityProgrammaticLoginTestCase.java</exclude>
-                        <exclude>**/ear/OverlayExistingResourceTestCase.java</exclude>
-                        <exclude>**/ear/OverlayNonExistingResourceTestCase.java</exclude>
-                        <exclude>**/war/OverlayNonExistingResourceTestCase.java</exclude>
-                        <exclude>**/EJBNameWildcardTestCase.java</exclude>
-                        <exclude>**/AroundConstructSimpleTestCase.java</exclude>
-                        <exclude>**/BeanManagedTransactionsTestCase.java</exclude>
-                        <exclude>**/SarValueFactoryInjectionTestCase.java</exclude>
-                        <exclude>**/SarInjectionTestCase.java</exclude>
-
-                        <!-- tries to create|reach|read files on local filesystem -->
-                        <exclude>**/SecurityAuditingTestCase.java</exclude>
-                        <exclude>**/TestsuiteSanityTestCase.java</exclude>
-                        <exclude>**/DeploymentArchiveTestCase.java</exclude>
-                        <exclude>**/MDBWhichDependsOnTestCase.java</exclude>
-                        <exclude>**/StatefulBeanWhichDependsOnTestCase.java</exclude>
-                        <exclude>**/StatelesBeanWhichDependsOnTestCase.java</exclude>
-                        <exclude>**/DeploymentScannerTestCase.java</exclude>
-                        <exclude>**/JdrReportManagmentTestCase.java</exclude>
-                        <exclude>**/DeployURLTestCase.java</exclude>
-                        <exclude>**/TransportGuaranteeTestCase.java</exclude>
-                        <exclude>**/ObjectFactoryWithEnvironmentBindingTestCase.java</exclude>
-                        <exclude>**/RemotingLoginModuleTestCase.java</exclude>
-                        <exclude>**/WebModuleDeploymentTestCase.java</exclude>
-                        <exclude>**/ExternalTagLibTestCase.java</exclude>
-                        <exclude>**/WeldModuleDeploymentTestCase.java</exclude>
-                        <exclude>**/ExportedModuleTestCase.java</exclude>
-                        <exclude>**/StaticModuleToDeploymentVisibilityWarTest.java</exclude>
-                        <exclude>**/StaticModuleToDeploymentVisibilityEarTest.java</exclude>
-                        <exclude>**/BuiltInBeanWithPackagePrivateConstructorTest.java</exclude>
-                        <exclude>**/PortableExtensionInExternalModuleTestCase.java</exclude>
-                        <exclude>**/MultipleJarInModuleTestCase.java</exclude>
-                        <exclude>**/CrossModuleAccessibilityTestCase.java</exclude>
-                        <exclude>**/ExtensionTestCase.java</exclude>
-                        <exclude>**/WeldBundledLibraryDeploymentEarTestCase.java</exclude>
-                        <exclude>**/WeldBundledLibraryDeploymentTestCase.java</exclude>
-                        <exclude>**/StandardConfigsXMLValidationUnitTestCase.java</exclude>
-                        <exclude>**/XSDValidationUnitTestCase.java</exclude>
-
-                        <!-- Uses a local db instance -->
-                        <exclude>**/DatabaseLoginModuleTestCase.java</exclude>
-
-                        <!-- vault tests -->
-                        <exclude>org/jboss/as/test/integration/security/vault/**</exclude>
-                        <exclude>**/MDBWithVaultedPropertiesTestCase.java</exclude>
-                        <exclude>**/VaultedInjectedJMSContextTestCase.java</exclude>
-                        <exclude>**/JMSResourceDefinitionsTestCase.java</exclude>
-
-                        <!-- uses local auth -->
-                        <exclude>**/WildCardReadsTestCase.java</exclude>
-
-                        <!-- unsupported subsystems -->
-                        <exclude>**/ModClusterSubsystemAddTestCase.java</exclude>
-                        <exclude>**/ResourceInjectionTestCas.java</exclude>
-                        <exclude>**/IIOPNamingTestCase.java</exclude>
-                        <exclude>**/ResourceInjectionTestCase.java</exclude>
-                        <exclude>**/IIOPNamingInContainerDDNameTestCase.java</exclude>
-                        <exclude>**/IIOPNamingInContainerTestCase.java</exclude>
-
-                        <!-- tests skipped by default -->
-                        <exclude>**/PersistentCalendarTimerManagementTestCase.java</exclude>
-                        <exclude>**/Hibernate4NativeAPINaturalIdTestCase.java</exclude>
-                        <exclude>**/MultipleMappingTestCase.java</exclude>
-                        <exclude>**/ArchiveValidationDeploymentTestCase.java</exclude>
-                        <exclude>**/OrmTestCase.java</exclude>
-                        <exclude>**/TxTimeoutTestCase.java</exclude>
-                        <exclude>**/ManagementOnlyModeTestCase.java</exclude>
-                        <exclude>**/CustomProvidersTestCase.java</exclude>
-                        <exclude>**/BeanValidationCdiIntegrationTestCase.java</exclude>
-                        <exclude>**/CustomBootstrapContextTestCase.java</exclude>
-                        <exclude>**/MySqlDsDriverInEarReauthTestCas.java</exclude>
-                        <exclude>**/LongRunningThreadsCheckTestCase.java</exclude>
-                        <exclude>**/MySqlDsDriverInEarReauthTestCase.java</exclude>
-                        <exclude>**/SAML2AttributeMappingTestCase.java</exclude>
-                        <exclude>**/SAML2BasicAuthenticationTestCase.java</exclude>
-                        <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
-                        <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
-                        <exclude>**/SAML2KerberosAuthenticationTestCase.java</exclude>
-                        <exclude>**/ScriptAssertTestCase.java</exclude>
-                        <exclude>**/SymlinkingUnitTestCase.java</exclude>
-                        <exclude>**/SocketsAndInterfacesTestCase.java</exclude>
-
-                        <!-- Makes the test hang,  -->
-                        <exclude>**/ServletThreadPoolSelectionTestCase.java</exclude>
-                        <exclude>**/EjbJarInEarRuntimeResourcesTestCase.java</exclude>
-                        <exclude>**/EjbJarRuntimeResourcesTestCase.java</exclude>
-                        <exclude>**/ModelControllerMBeanTestCase.java</exclude>
-
-                        <!-- tries to open a port on local host instead the pod -->
-                        <exclude>**/JMXConnectorTestCase.java</exclude>
-
-                        <!-- web console is disabled on EAP images -->
-                        <exclude>**/WebConsoleSecurityTestCase.java</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>eap70</id>
+            <activation>
+                <property>
+                    <name>!eap71</name>
+                </property>
+            </activation>
+            <properties>
+                <definitions.file>src/test/resources/eap70.json</definitions.file>
+                <container.mode>suite</container.mode>
+                <version.eap7>7.0.3.GA-redhat-2</version.eap7> <!-- eap-7 downstream-->
+                <version.eap7.tests>7.0.3.GA-redhat-ce</version.eap7.tests>
+                <version.com.fasterxml.jackson>2.6.3</version.com.fasterxml.jackson>
+                <version.org.wildfly.core>2.1.10.Final-redhat-ce</version.org.wildfly.core>
+            </properties>
+            <dependencies>
+                <!-- jackson -->
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>${version.com.fasterxml.jackson}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                    <version>${version.com.fasterxml.jackson}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                    <version>${version.com.fasterxml.jackson}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                    <artifactId>jackson-jaxrs-json-provider</artifactId>
+                    <version>${version.com.fasterxml.jackson}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*TestCase.java</include>
+                                <include>**/*Test.java</include>
+                            </includes>
+                            <excludes>
+                                <!-- reload the server -->
+                                <exclude>**/ChunkPartitionTestCase.java</exclude>
+                                <exclude>**/DeploymentDescriptorTestCase.java</exclude>
+                                <exclude>**/XADatasourceCapacityPoliciesTestCase.java</exclude>
+                                <exclude>**/BasicFlatTestCase.java</exclude>
+                                <exclude>**/BasicJarTestCase.java</exclude>
+                                <exclude>**/InflowFlatTestCase.java</exclude>
+                                <exclude>**/InflowJarTestCase.java</exclude>
+                                <exclude>**/MultiActivationFlatTestCase.java</exclude>
+                                <exclude>**/MultiActivationJarTestCase.java</exclude>
+                                <exclude>**/MultiObjectActivationFlatTestCase.java</exclude>
+                                <exclude>**/MultiObjectActivationJarTestCase.java</exclude>
+                                <exclude>**/PartialObjectActivationFlatTestCase.java</exclude>
+                                <exclude>**/PartialObjectActivationJarTestCase.java</exclude>
+                                <exclude>**/PureFlatTestCase.java</exclude>
+                                <exclude>**/PureJarTestCase.java</exclude>
+                                <exclude>**/TwoModulesFlatTestCase.java</exclude>
+                                <exclude>**/TwoModulesJarTestCase.java</exclude>
+                                <exclude>**/TwoModulesOfDifferentTypeTestCase.java</exclude>
+                                <exclude>**/TwoRaFlatTestCase.java</exclude>
+                                <exclude>**/TwoRaJarTestCase.java</exclude>
+                                <exclude>**/DataSourceJdbcStatisticsTestCase.java</exclude>
+                                <exclude>**/RequestDumpingHandlerTestCase.java</exclude>
+                                <exclude>**/DataSourcePoolStatisticsTestCase.java</exclude>
+                                <exclude>**/SimpleApplicationClientTestCase.java</exclude>
+                                <exclude>**/DatasourceEnableAttributeTestCase.java</exclude>
+                                <exclude>**/DatasourceCapacityPoliciesTestCase.java</exclude>
+                                <exclude>**/DatasourceXaEnableAttributeTestCase.java</exclude>
+                                <exclude>**/DataSourceCfgMetricUnitTestCase.java</exclude>
+                                <exclude>**/RaCfgMetricUnitTestCase.java</exclude>
+                                <exclude>**/ExportImportJournalTestCase.java</exclude>
+
+                                <!-- path used to map files does not exist in this scenario -->
+                                <exclude>**/AddMySqlDataSourceOperationsUnitTestCase.java</exclude>
+
+                                <!-- always fails -->
+                                <exclude>**/JaxrsYamlProviderTestCase.java</exclude>
+                                <exclude>**/RunAsTestCaseEJBMDB.java</exclude>
+                                <exclude>**/LegacyTimerFormatTestCase.java</exclude>
+                                <exclude>**/LdapUrlInSearchBaseTestCase.java</exclude>
+                                <exclude>**/LdapExtLikeAdvancedLdapLMTestCase.java</exclude>
+                                <exclude>**/LdapExtLoginModuleTestCase.java</exclude>
+                                <exclude>**/LdapExtPasswordCachingTestCase.java</exclude>
+                                <exclude>**/LdapLoginModuleTestCase.java</exclude>
+                                <exclude>**/AdvancedLdapLoginModuleTestCase.java</exclude>
+                                <exclude>**/SPNEGOLoginModuleTestCase.java</exclude>
+                                <exclude>**/PasswordMaskingInContainerTestCase.java</exclude>
+                                <exclude>**/BasicTests.java</exclude>
+                                <exclude>**/ContextRootTestBase.java</exclude>
+                                <exclude>**/TestNoAddressingTestCase.java</exclude>
+                                <exclude>**/TestOptionalAddressingTestCase.java</exclude>
+                                <exclude>**/TestRequiredAddressingTestCase.java</exclude>
+                                <exclude>**/EJBSignTestCase.java</exclude>
+                                <exclude>**/SignTestCase.java</exclude>
+                                <exclude>**/EJBSignEncryptMultipleClientsTestCase.java</exclude>
+                                <exclude>**/EJBSignEncryptTestCase.java</exclude>
+                                <exclude>**/SignEncryptMultipleClientsTestCase.java</exclude>
+                                <exclude>**/SignEncryptTestCase.java</exclude>
+                                <exclude>**/WSTrustTestCase.java</exclude>
+                                <exclude>**/JMSBridgeTest.java</exclude>
+                                <exclude>**/GlobalModulesTestCase.java</exclude>
+                                <exclude>**/MapBasedInitialContextEjbClientTestCase.java</exclude>
+                                <exclude>**/AccessSerializationTestCase.java</exclude>
+                                <exclude>**/RemoveSFSBOnUndeployTestCase.java</exclude>
+                                <exclude>**/WSTestCase.java</exclude>
+                                <exclude>**/EJBClientUserTransactionTestCase.java</exclude>
+                                <exclude>**/ReentrantLockTestCase.java</exclude>
+                                <exclude>**/WebSuspendTestCase.java</exclude>
+                                <exclude>**/EJBClientDescriptorTestCase.java</exclude>
+                                <exclude>**/JMXFilterTestCase.java</exclude>
+                                <exclude>**/ClientCompatibilityUnitTestCase.java</exclude>
+                                <exclude>**/JmsTestCase.java</exclude>
+                                <exclude>**/WebSecurityCERTTestCase.java</exclude>
+                                <exclude>**/TransactionObjectStoreTestCase.java</exclude>
+                                <exclude>**/CLISecurityTestCase.java</exclude>
+                                <exclude>**/SessionObjectReferenceTestCase.java</exclude>
+                                <exclude>**/WebSecurityProgrammaticLoginTestCase.java</exclude>
+                                <exclude>**/ear/OverlayExistingResourceTestCase.java</exclude>
+                                <exclude>**/ear/OverlayNonExistingResourceTestCase.java</exclude>
+                                <exclude>**/war/OverlayNonExistingResourceTestCase.java</exclude>
+                                <exclude>**/EJBNameWildcardTestCase.java</exclude>
+                                <exclude>**/AroundConstructSimpleTestCase.java</exclude>
+                                <exclude>**/BeanManagedTransactionsTestCase.java</exclude>
+                                <exclude>**/SarValueFactoryInjectionTestCase.java</exclude>
+                                <exclude>**/SarInjectionTestCase.java</exclude>
+
+                                <!-- tries to create|reach|read files on local filesystem -->
+                                <exclude>**/SecurityAuditingTestCase.java</exclude>
+                                <exclude>**/TestsuiteSanityTestCase.java</exclude>
+                                <exclude>**/DeploymentArchiveTestCase.java</exclude>
+                                <exclude>**/MDBWhichDependsOnTestCase.java</exclude>
+                                <exclude>**/StatefulBeanWhichDependsOnTestCase.java</exclude>
+                                <exclude>**/StatelesBeanWhichDependsOnTestCase.java</exclude>
+                                <exclude>**/DeploymentScannerTestCase.java</exclude>
+                                <exclude>**/JdrReportManagmentTestCase.java</exclude>
+                                <exclude>**/DeployURLTestCase.java</exclude>
+                                <exclude>**/TransportGuaranteeTestCase.java</exclude>
+                                <exclude>**/ObjectFactoryWithEnvironmentBindingTestCase.java</exclude>
+                                <exclude>**/RemotingLoginModuleTestCase.java</exclude>
+                                <exclude>**/WebModuleDeploymentTestCase.java</exclude>
+                                <exclude>**/ExternalTagLibTestCase.java</exclude>
+                                <exclude>**/WeldModuleDeploymentTestCase.java</exclude>
+                                <exclude>**/ExportedModuleTestCase.java</exclude>
+                                <exclude>**/StaticModuleToDeploymentVisibilityWarTest.java</exclude>
+                                <exclude>**/StaticModuleToDeploymentVisibilityEarTest.java</exclude>
+                                <exclude>**/BuiltInBeanWithPackagePrivateConstructorTest.java</exclude>
+                                <exclude>**/PortableExtensionInExternalModuleTestCase.java</exclude>
+                                <exclude>**/MultipleJarInModuleTestCase.java</exclude>
+                                <exclude>**/CrossModuleAccessibilityTestCase.java</exclude>
+                                <exclude>**/ExtensionTestCase.java</exclude>
+                                <exclude>**/WeldBundledLibraryDeploymentEarTestCase.java</exclude>
+                                <exclude>**/WeldBundledLibraryDeploymentTestCase.java</exclude>
+                                <exclude>**/StandardConfigsXMLValidationUnitTestCase.java</exclude>
+                                <exclude>**/XSDValidationUnitTestCase.java</exclude>
+
+                                <!-- Uses a local db instance -->
+                                <exclude>**/DatabaseLoginModuleTestCase.java</exclude>
+
+                                <!-- vault tests -->
+                                <exclude>org/jboss/as/test/integration/security/vault/**</exclude>
+                                <exclude>**/MDBWithVaultedPropertiesTestCase.java</exclude>
+                                <exclude>**/VaultedInjectedJMSContextTestCase.java</exclude>
+                                <exclude>**/JMSResourceDefinitionsTestCase.java</exclude>
+
+                                <!-- uses local auth -->
+                                <exclude>**/WildCardReadsTestCase.java</exclude>
+
+                                <!-- unsupported subsystems -->
+                                <exclude>**/ModClusterSubsystemAddTestCase.java</exclude>
+                                <exclude>**/ResourceInjectionTestCase.java</exclude>
+                                <exclude>**/IIOPNamingTestCase.java</exclude>
+                                <exclude>**/IIOPNamingInContainerDDNameTestCase.java</exclude>
+                                <exclude>**/IIOPNamingInContainerTestCase.java</exclude>
+
+                                <!-- tests skipped by default -->
+                                <exclude>**/PersistentCalendarTimerManagementTestCase.java</exclude>
+                                <exclude>**/Hibernate4NativeAPINaturalIdTestCase.java</exclude>
+                                <exclude>**/MultipleMappingTestCase.java</exclude>
+                                <exclude>**/ArchiveValidationDeploymentTestCase.java</exclude>
+                                <exclude>**/OrmTestCase.java</exclude>
+                                <exclude>**/TxTimeoutTestCase.java</exclude>
+                                <exclude>**/ManagementOnlyModeTestCase.java</exclude>
+                                <exclude>**/CustomProvidersTestCase.java</exclude>
+                                <exclude>**/BeanValidationCdiIntegrationTestCase.java</exclude>
+                                <exclude>**/CustomBootstrapContextTestCase.java</exclude>
+                                <exclude>**/MySqlDsDriverInEarReauthTestCas.java</exclude>
+                                <exclude>**/LongRunningThreadsCheckTestCase.java</exclude>
+                                <exclude>**/MySqlDsDriverInEarReauthTestCase.java</exclude>
+                                <exclude>**/SAML2AttributeMappingTestCase.java</exclude>
+                                <exclude>**/SAML2BasicAuthenticationTestCase.java</exclude>
+                                <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
+                                <exclude>**/SAML2GlobalSSOandLogoutTestCase.java</exclude>
+                                <exclude>**/SAML2KerberosAuthenticationTestCase.java</exclude>
+                                <exclude>**/ScriptAssertTestCase.java</exclude>
+                                <exclude>**/SymlinkingUnitTestCase.java</exclude>
+                                <exclude>**/SocketsAndInterfacesTestCase.java</exclude>
+
+                                <!-- Makes the test hang,  -->
+                                <exclude>**/ServletThreadPoolSelectionTestCase.java</exclude>
+                                <exclude>**/EjbJarInEarRuntimeResourcesTestCase.java</exclude>
+                                <exclude>**/EjbJarRuntimeResourcesTestCase.java</exclude>
+                                <exclude>**/ModelControllerMBeanTestCase.java</exclude>
+
+                                <!-- tries to open a port on local host instead the pod -->
+                                <exclude>**/JMXConnectorTestCase.java</exclude>
+
+                                <!-- web console is disabled on EAP images -->
+                                <exclude>**/WebConsoleSecurityTestCase.java</exclude>
+
+                                <!-- Todo -->
+                                <exclude>org.jboss.as.test.integration.deployment.jcedeployment.JCETestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.ee.injection.resource.jndi.bad.BadResourceTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.cli.ArchiveDefaultScriptNamesTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.cli.ArchiveTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.cli.DataSourceTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.cli.DeployTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.cli.DeployWithRuntimeNameTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.cli.UndeployWildcardTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.deploy.runtime.JaxrsRuntimeNameTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.deploy.runtime.ServletRuntimeNameTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.deploy.runtime.StatefulEJBRemoteHomeRuntimeNameTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.deploy.runtime.StatefulEJBRuntimeNameTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.deploy.runtime.StatelessEJBRemoteHomeRuntimeNameTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.deploy.runtime.StatelessEJBRuntimeNameTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.management.deploy.runtime.TimerEJBRuntimeNameTestCase</exclude>
+                                <exclude>org.jboss.as.test.integration.security.cli.JsseTestCase</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>eap71</id>
+            <activation>
+                <property>
+                    <name>eap71</name>
+                </property>
+            </activation>
+            <properties>
+                <definitions.file>src/test/resources/eap71.json</definitions.file>
+                <container.mode>class</container.mode>
+                <org.jboss.bom.version>7.1.0.CR1</org.jboss.bom.version>
+                <version.eap7>7.1.0.GA-redhat-6</version.eap7>
+                <version.eap7.tests>7.1.0.GA-redhat-6</version.eap7.tests>
+                <version.org.wildfly.arquillian>2.1.0.Final</version.org.wildfly.arquillian>
+                <version.org.wildfly.core>3.0.1.Final-redhat-1</version.org.wildfly.core>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-dependencies</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-test</id>
+                                <phase>none</phase>
+                            </execution>
+                            <execution>
+                                <id>smoke</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <dependenciesToScan>
+                                        <dependency>org.jboss.eap:wildfly-ts-integ-smoke</dependency>
+                                    </dependenciesToScan>
+                                    <includes>
+                                        <include>**/*Test*.java</include>
+                                    </includes>
+                                    <excludes combine.children="append">
+                                        <!-- tries to create|reach|read files on local filesystem -->
+                                        <exclude>org.jboss.as.test.smoke.TestsuiteSanityTestCase</exclude>
+                                        <exclude>org.jboss.as.test.smoke.mgmt.datasource.AddMySqlDataSourceOperationsUnitTestCase</exclude>
+                                        <exclude>org.jboss.as.test.smoke.subsystem.xml.StandardConfigsXMLValidationUnitTestCase</exclude>
+                                        <exclude>org.jboss.as.test.smoke.subsystem.xml.XSDValidationUnitTestCase</exclude>
+        
+                                        <!-- challenge file -->
+                                        <exclude>org.jboss.as.test.smoke.jms.JMSBridgeTest</exclude>
+                                        <exclude>org.jboss.as.test.smoke.webservices.WSTestCase</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>web</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <dependenciesToScan>
+                                        <dependency>org.jboss.eap:wildfly-ts-integ-web</dependency>
+                                    </dependenciesToScan>
+                                    <includes>
+                                        <include>**/Test*.java</include>
+                                        <include>**/*Test.java</include>
+                                        <include>**/*Tests.java</include>
+                                        <include>**/*TestCase.java</include>
+                                    </includes>
+                                    <excludes combine.children="append">
+                                        <!-- tries to create|reach|read files on local filesystem -->
+                                        <exclude>org.jboss.as.test.integration.web.annotationsmodule.WebModuleDeploymentTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.jsp.taglib.external.ExternalTagLibTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.WebSecuritySimpleRoleMappingSecurityManagerTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.basic.WebSecurityBASICTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.digest.WebSecurityDIGESTTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.form.WebSecurityFORMTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.form.WebSecurityJBossWebSimpleRoleMappingTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.form.WebSecuritySimpleRoleMappingTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.jaspi.WebSecurityJaspiTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.websocket.WebSocketSecurityTestCase</exclude>
+
+                                        <!-- challenge file -->
+                                        <exclude>org.jboss.as.test.integration.web.handlers.RequestDumpingHandlerTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.cert.WebSecurityCERTTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.security.tg.TransportGuaranteeTestCase</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>ws</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <dependenciesToScan>
+                                        <dependency>org.jboss.eap:wildfly-ts-integ-ws</dependency>
+                                    </dependenciesToScan>
+                                    <includes>
+                                        <include>**/Test*.java</include>
+                                        <include>**/*Test.java</include>
+                                        <include>**/*Tests.java</include>
+                                        <include>**/*TestCase.java</include>
+                                    </includes>
+                                    <excludes combine.children="append">
+                                        <!-- challenge file -->
+                                        <exclude>org.jboss.as.test.integration.ws.wsa.TestNoAddressingTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ws.wsa.TestOptionalAddressingTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ws.wsa.TestRequiredAddressingTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ws.wsse.trust.WSTrustTestCase</exclude>
+
+                                        <exclude>org.jboss.as.test.integration.ws.basic.BasicTests</exclude>
+                                        <exclude>org.jboss.as.test.integration.ws.wsse.signencrypt.EJBSignEncryptMultipleClientsTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ws.wsse.signencrypt.EJBSignEncryptTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ws.wsse.signencrypt.SignEncryptMultipleClientsTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ws.wsse.signencrypt.SignEncryptTestCase</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>basic</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <dependenciesToScan>
+                                        <dependency>org.jboss.eap:wildfly-ts-integ-basic</dependency>
+                                    </dependenciesToScan>
+                                    <includes>
+                                        <include>**/*TestCase.java</include>
+                                   </includes>
+                                    <excludes combine.children="append">
+                                        <!-- EAP excludes these -->
+                                        <exclude>org/jboss/as/test/integration/**/*SecondTestCase.java</exclude>
+                                        <exclude>org/jboss/as/test/integration/security/loginmodules/Ldap*TestCase.java</exclude>
+
+                                        <!-- tries to create|reach|read files on local filesystem -->
+                                        <exclude>org.jboss.as.test.integration.deployment.jcedeployment.JCETestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.deployment.structure.war.symbolicLink.SymlinkingUnitTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ee.appclient.basic.SimpleApplicationClientTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ee.globalmodules.GlobalModulesTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.mdb.vaultedproperties.MDBWithVaultedPropertiesTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.singleton.dependson.mdb.MDBWhichDependsOnTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.singleton.dependson.session.StatefulBeanWhichDependsOnTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.singleton.dependson.session.StatelesBeanWhichDependsOnTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.timerservice.persistence.legacy.LegacyTimerFormatTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.security.workmanager.WildFlyActivationRaWithWMElytronSecurityDomainWorkManagerElytronDisabledTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.security.workmanager.WildFlyActivationRaWithWMElytronSecurityDomainWorkManagerElytronEnabledTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jdr.mgmt.JdrReportManagmentTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.management.cli.DeployURLTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.management.cli.DeploymentArchiveTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.management.cli.DeploymentScannerTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.aselytron.SecurityDomainAsElytronSecurityRealmTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.auditing.CustomAuditProviderModuleTest</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.auditing.SecurityAuditingTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.loginmodules.MultipleCustomLoginModulesTest</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.loginmodules.RemotingLoginModuleUseNewClientCertTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.loginmodules.RemotingLoginModuleTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.loginmodules.negotiation.AdvancedLdapLoginModuleTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.loginmodules.negotiation.SPNEGOLoginModuleTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.passwordmasking.PasswordMaskingInContainerTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.vault.ExternalPasswordCommandsTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.vault.VaultSystemPropertiesTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.extensions.cdiportableextensions.ExtensionTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.modules.CrossModuleAccessibilityTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.modules.MultipleJarInModuleTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.modules.PortableExtensionInExternalModuleTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.modules.access.BuiltInBeanWithPackagePrivateConstructorTest</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.modules.deployment.StaticModuleToDeploymentVisibilityEarTest</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.modules.deployment.StaticModuleToDeploymentVisibilityWarTest</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.modules.export.ExportedModuleTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.multideployment.WeldBundledLibraryDeploymentEarTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.multideployment.WeldBundledLibraryDeploymentTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.multideployment.WeldModuleDeploymentTestCase</exclude>
+                                        <exclude>org.wildfly.test.elytron.ElytronDomainTestCase</exclude>
+        
+                                        <!-- Uses a local db instance -->
+                                        <exclude>org.jboss.as.test.integration.security.credentialreference.CredentialReferenceDatasourceTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.loginmodules.DatabaseLoginModuleTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.security.vault.VaultDatasourceTestCase</exclude>
+        
+                                        <!-- Tries to add interface with local ipv6 address -->
+                                        <exclude>org.jboss.as.test.integration.management.api.SocketsAndInterfacesTestCase</exclude>
+        
+                                        <!-- Tries to access management console via http but this isn't enabled -->
+                                        <exclude>org.jboss.as.test.integration.management.console.XFrameOptionsHeaderTestCase</exclude>
+        
+                                        <!-- unsupported subsystems -->
+                                        <exclude>org.jboss.as.test.integration.ee.injection.resource.basic.ResourceInjectionTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.iiop.naming.IIOPNamingInContainerDDNameTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.iiop.naming.IIOPNamingInContainerTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.iiop.naming.IIOPNamingTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.mod_cluster.ModClusterSubsystemAddTestCase</exclude>
+        
+                                        <!-- ToDo -->
+                                        <!-- challenge file -->
+                                        <exclude>org.jboss.as.test.integration.deployment.SubDeploymentOperationsTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.deployment.deploymentoverlay.ear.OverlayExistingResourceTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.deployment.deploymentoverlay.ear.OverlayNonExistingResourceTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.deployment.deploymentoverlay.jar.OverlayExistingResourceTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.deployment.deploymentoverlay.jar.OverlayNonExistingResourceTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.deployment.deploymentoverlay.war.OverlayExistingResourceTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.deployment.deploymentoverlay.war.OverlayNonExistingResourceTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.container.interceptor.security.SwitchIdentityTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.container.interceptor.security.api.SwitchIdentityTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.descriptor.ejbnamewildcard.EJBNameWildcardTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.mapbased.MapBasedInitialContextEjbClientTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.mdb.cdi.MDBRAScopeCdiIntegrationTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.client.api.interceptor.annotation.ClientInterceptorsEJBAnnotationTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.client.api.tx.EJBClientUserTransactionTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.client.api.tx.EJBClientXidTransactionTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.invocationtimeout.EJBClientInvocationTimeoutTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.view.LocalViewRemoteInvocationTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.MixedSecurityAnnotationAuthorizationTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.runas.ejb2mdb.RunAsEjbMdbTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.stateful.exception.ExceptionEjbClientTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.stateful.undeploy.RemoveSFSBOnUndeployTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.transaction.exception.TxExceptionEjbClientTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.beanvalidation.NegativeValidationTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.tracer.TracerEnableTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jmx.full.JMXFilterTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.management.api.ClientCompatibilityUnitTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.management.cli.objectstore.TransactionObjectStoreTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.management.deploy.runtime.TimerEJBRuntimeNameTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.messaging.jms.context.VaultedInjectedJMSContextTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.messaging.jms.definitions.JMSResourceDefinitionsTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.naming.ObjectFactoryWithEnvironmentBindingTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.naming.connector.JMXConnectorTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.naming.ldap.LdapUrlInSearchBaseTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.sar.injection.SarInjectionTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.sar.injection.valuefactory.SarValueFactoryInjectionTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.weld.ejb.SessionObjectReferenceTestCase</exclude>
+                                        <exclude>org.wildfly.test.integration.web.VirtualHostTestCase</exclude>
+        
+                                        <!-- did not reload in imparted time -->
+                                        <exclude>org.jboss.as.test.integration.batch.analyzer.transactiontimeout.AnalyzerTransactionTimeoutTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.batch.transaction.BatchTransactionTimeoutTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.client.descriptor.EJBClientDescriptorTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.worker.NonDefaultRemoteWorkerTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.archive.ArchiveValidationDeploymentTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.bootstrap.CustomBootstrapContextTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.capacitypolicies.DatasourceCapacityPoliciesTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.capacitypolicies.XADatasourceCapacityPoliciesTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.datasource.DatasourceEnableAttributeTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.datasource.DatasourceXaEnableAttributeTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.datasource.DatasourceNonCcmTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.BasicFlatTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.BasicJarTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.InflowFlatTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.InflowJarTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.MultiActivationFlatTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.MultiActivationJarTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.MultiObjectActivationFlatTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.MultiObjectActivationJarTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.PartialObjectActivationFlatTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.PartialObjectActivationJarTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.PureFlatTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.PureJarTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.TwoModulesFlatTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.TwoModulesJarTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.TwoModulesOfDifferentTypeTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.TwoRaFlatTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.moduledeployment.TwoRaJarTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.poolattributes.DatasourcePoolAttributesTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.security.DsWithElytronAuthContextTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.security.DsWithMixedSecurityTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.security.IronJacamarActivationRaWithElytronAuthContextTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.security.WildFlyActivationRaWithElytronAuthContextTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.security.WildFlyActivationRaWithMixedSecurityTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.statistics.DataSourceJdbcStatisticsTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.statistics.DataSourcePoolStatisticsTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.statistics.xa.XaDataSourcePoolStatisticsTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.jca.workmanager.LongRunningThreadsCheckTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.messaging.mgmt.ExportImportJournalTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.messaging.mgmt.PooledConnectionFactoryStatisticsTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.web.response.RewriteLocationByDeplomentTestCase</exclude>
+
+
+                                        <!-- ToDo -->
+                                        <exclude>org.jboss.as.test.integration.ee.injection.mappedname.MappedNameInjectionTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.management.cli.DeploymentOverlayCLITestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.xerces.unit.XercesUsageTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.xerces.ws.unit.XercesUsageInWebServiceTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.client.api.tx.HTTPEJBClientXidTransactionTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.jndi.HttpRemoteEJBJndiBasedInvocationTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.security.HttpRemoteIdentityTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.RunAsPrincipalCustomDomainTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.naming.remote.simple.RemoteNamingHTTPTestCase</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
