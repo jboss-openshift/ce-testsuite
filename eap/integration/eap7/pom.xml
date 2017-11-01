@@ -688,12 +688,20 @@
                                         <exclude>org.jboss.as.test.integration.ejb.container.interceptor.security.SwitchIdentityTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.container.interceptor.security.api.SwitchIdentityTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.descriptor.ejbnamewildcard.EJBNameWildcardTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.management.deployments.EjbInvocationStatisticsTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.mapbased.MapBasedInitialContextEjbClientTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.mdb.cdi.MDBRAScopeCdiIntegrationTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.client.api.EJBClientAPIUsageTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.client.api.interceptor.EJBClientInterceptorTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.remote.client.api.interceptor.annotation.ClientInterceptorsEJBAnnotationTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.remote.client.api.tx.EJBClientUserTransactionTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.remote.client.api.tx.EJBClientXidTransactionTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.distinctname.EarDeploymentDistinctNameTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.distinctname.JarDeploymentDistinctNameTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.distinctname.defaultname.DefaultDistinctNameTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.remote.invocationtimeout.EJBClientInvocationTimeoutTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.jndi.RemoteEJBJndiBasedInvocationTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.remote.suspend.EjbRemoteSuspendTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.remote.view.LocalViewRemoteInvocationTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.security.MixedSecurityAnnotationAuthorizationTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.security.runas.ejb2mdb.RunAsEjbMdbTestCase</exclude>
@@ -770,6 +778,15 @@
                                         <exclude>org.jboss.as.test.integration.ejb.remote.security.HttpRemoteIdentityTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.security.RunAsPrincipalCustomDomainTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.naming.remote.simple.RemoteNamingHTTPTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.ejb2.reference.global.GlobalReferenceTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.InherritanceAnnSFSBTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.InjectionAnnSFSBtoSLSBTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSFSBTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSLSBTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSFSBTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.SingleMethodsAnnSLSBTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.messaging.mgmt.JMSQueueManagementTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.naming.remote.ejb.RemoteNamingEjbTestCase</exclude>
                                     </excludes>
                                 </configuration>
                             </execution>
