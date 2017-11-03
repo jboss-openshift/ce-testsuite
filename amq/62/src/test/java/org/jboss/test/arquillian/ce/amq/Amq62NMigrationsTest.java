@@ -50,7 +50,7 @@ import org.junit.runner.RunWith;
                 @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
                 @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),
                 @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp")})
-@RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
+@RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:amq-service-account")
 @OpenShiftResources({
         @OpenShiftResource("classpath:testrunner-secret.json")
 })

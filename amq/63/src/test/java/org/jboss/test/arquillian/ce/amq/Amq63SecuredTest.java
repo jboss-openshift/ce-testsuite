@@ -45,7 +45,6 @@ import java.io.IOException;
                 @TemplateParameter(name = "MQ_PROTOCOL", value = "openwire,amqp,mqtt,stomp"),
                 @TemplateParameter(name = "AMQ_TRUSTSTORE_PASSWORD", value = "password"),
                 @TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "password")})
-@RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
         @OpenShiftResource("https://raw.githubusercontent.com/${template.repository:jboss-openshift}/application-templates/${template.branch:master}/secrets/amq-app-secret.json"),
         @OpenShiftResource("classpath:testrunner-secret.json")
