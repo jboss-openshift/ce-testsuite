@@ -66,14 +66,12 @@ public class DatavirtLogTest extends DatavirtTestBase {
             String result = adapter.getLog(null, labels);
 
             assertFalse(result.contains("Failure"));
-            assertTrue(result.contains("JBoss Red Hat JBoss Data Virtualization 6.3.4 (AS 7.5.13.Final-redhat-2) started in"));
+            assertTrue(result.contains("JBoss Red Hat JBoss Data Virtualization 6.3.8 (AS 7.5.17.Final-redhat-4) started in"));
             assertTrue(result.contains("Deployed \"portfolio-vdb.xml\""));
             assertTrue(result.contains("Deployed \"hibernate-portfolio-vdb.xml\""));
             assertTrue(result.contains("Deployed \"teiid-olingo-odata4.war\""));
             assertTrue(result.contains("Deployed \"teiid-odata.war\""));
             assertTrue(result.contains("Deployed \"ModeShape.vdb\""));
-            assertTrue(result.contains("Deployed \"modeshape-cmis.war\""));
-            assertTrue(result.contains("Deployed \"modeshape-webdav.war\""));
             assertTrue(result.contains("Deployed \"modeshape-rest.war\""));
         } catch (Exception e) {
             e.printStackTrace();
