@@ -780,6 +780,8 @@
                                         <exclude>org.jboss.as.test.integration.naming.remote.simple.RemoteNamingHTTPTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.ejb2.reference.global.GlobalReferenceTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.security.InherritanceAnnSFSBTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.InherritanceAnnSLSBTestCase</exclude>
+                                        <exclude>org.jboss.as.test.integration.ejb.security.InjectionAnnSFSBtoSFSBTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.security.InjectionAnnSFSBtoSLSBTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSFSBTestCase</exclude>
                                         <exclude>org.jboss.as.test.integration.ejb.security.InjectionAnnSLSBtoSLSBTestCase</exclude>
