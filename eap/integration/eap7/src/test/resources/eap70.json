@@ -33,7 +33,7 @@
             }
           }
         },
-        "image": "jboss-eap-7/eap70-openshift:1.5",
+        "image": "jboss-eap-7/eap70-openshift:1.6",
         "ports": [
           {
             "containerPort": 8080,
