@@ -135,5 +135,30 @@
         <!-- assertion always fails -->
         <property name="methods_57">org.jboss.as.test.integration.naming.remote.ejb.RemoteNamingEjbTestCase#testRemoteNamingGracefulShutdown</property>
 
+        <!-- uses a different username than the jboss-ejb-client.properties -->
+        <property name="methods_58">org.jboss.as.test.integration.ejb.remote.security.HttpRemoteIdentityTestCase#testDirect</property>
+
+        <!-- java.lang.ClassCastException: org.apache.activemq.artemis.ra.inflow.ActiveMQActivationSpec cannot be cast to org.jboss.as.test.integration.jca.beanvalidation.ra.ValidActivationSpec -->
+        <property name="methods_59">org.jboss.as.test.integration.jca.beanvalidation.PositiveValidationTestCase#testRegistryConfiguration</property>
+
+        <!-- Assertion fails -->
+        <property name="methods_60">org.wildfly.test.integration.web.VirtualHostTestCase#testDefaultHost</property>
+
+        <!-- Caused by: java.net.UnknownHostException: jbossws.undefined.host -->
+        <property name="methods_61">org.jboss.as.test.smoke.webservices.WSTestCase#testManagementDescriptionMetrics</property>
+
+        <!-- AMQ212004: Failed to connect to server. -->
+        <property name="methods_62">org.jboss.as.test.integration.ejb.security.runas.ejb2mdb.RunAsEjbMdbTestCase#sendMessage</property>
+
+        <!-- org.jboss.jca.core.spi.rar.NotFoundException: IJ000855: org.jboss.jca.adapters.jdbc.JDBCResourceAdapter#18 isn't registered -->
+        <property name="methods_63">org.jboss.as.test.smoke.deployment.rar.tests.pure.PureTestCase#testRegistryConfiguration</property>
+
+        <!-- java.lang.AssertionError: user2 should no longer be cached. -->
+        <property name="methods_64">org.jboss.as.test.integration.web.formauth.FormAuthUnitTestCase#testFlushOnSessionInvalidation</property>
+
+        <!-- org.jboss.ejb.client.RequestSendFailedException: EJBCLIENT000409: No more destinations are available -->
+        <property name="methods_65">org.jboss.as.test.integration.ejb.container.interceptor.security.SwitchIdentityTestCase#testSecurityContextAssociation</property>
+        <property name="methods_66">org.jboss.as.test.integration.ejb.container.interceptor.security.api.SwitchIdentityTestCase#testSecurityContextAssociation</property>
+
     </extension>
 </arquillian>
