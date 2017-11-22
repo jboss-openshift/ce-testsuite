@@ -135,5 +135,19 @@
         <!-- assertion always fails -->
         <property name="methods_57">org.jboss.as.test.integration.naming.remote.ejb.RemoteNamingEjbTestCase#testRemoteNamingGracefulShutdown</property>
 
+        <!-- uses a different username than the jboss-ejb-client.properties -->
+        <property name="methods_58">org.jboss.as.test.integration.ejb.remote.security.HttpRemoteIdentityTestCase#testDirect</property>
+
+        <!-- java.lang.ClassCastException: org.apache.activemq.artemis.ra.inflow.ActiveMQActivationSpec cannot be cast to org.jboss.as.test.integration.jca.beanvalidation.ra.ValidActivationSpec -->
+        <property name="methods_59">org.jboss.as.test.integration.jca.beanvalidation.PositiveValidationTestCase#testRegistryConfiguration</property>
+
+        <!-- Assertion fails -->
+        <property name="methods_60">org.wildfly.test.integration.web.VirtualHostTestCase#testDefaultHost</property>
+
+        <!-- Caused by: java.net.UnknownHostException: jbossws.undefined.host -->
+        <property name="methods_61">org.jboss.as.test.smoke.webservices.WSTestCase#testManagementDescriptionMetrics</property>
+
+        <!-- AMQ212004: Failed to connect to server. -->
+        <property name="methods_62">org.jboss.as.test.integration.ejb.security.runas.ejb2mdb.RunAsEjbMdbTestCase#sendMessage</property>
     </extension>
 </arquillian>
