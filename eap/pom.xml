@@ -20,6 +20,10 @@
     <name>CE Testsuite -- EAP testsuite</name>
     <description>Cloud Enablement Testsuite -- EAP testsuite</description>
 
+    <properties>
+        <version.exec.maven.plugin>1.5.0</version.exec.maven.plugin>
+    </properties>
+
     <modules>
         <module>common</module>
         <module>eap64</module>
