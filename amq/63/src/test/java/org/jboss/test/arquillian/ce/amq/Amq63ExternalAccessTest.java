@@ -41,7 +41,6 @@ import org.junit.runner.RunWith;
                 @TemplateParameter(name = "AMQ_TRUSTSTORE_PASSWORD", value = "amq-test"),
                 @TemplateParameter(name = "AMQ_KEYSTORE", value = "amq-test.ks"),
                 @TemplateParameter(name = "AMQ_KEYSTORE_PASSWORD", value = "amq-test")})
-@RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
         @OpenShiftResource("classpath:amq-routes.json"),
         @OpenShiftResource("classpath:amq-app-secret.json"),

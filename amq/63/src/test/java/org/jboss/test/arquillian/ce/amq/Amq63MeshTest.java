@@ -52,7 +52,6 @@ import static org.junit.Assert.assertEquals;
                 @TemplateParameter(name = "MQ_QUEUES", value = "QUEUES.FOO"),
                 @TemplateParameter(name = "MQ_USERNAME", value = "${amq.username:amq-test}"),
                 @TemplateParameter(name = "MQ_PASSWORD", value = "${amq.password:redhat}"),})
-@RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:default")
 @OpenShiftResources({
         @OpenShiftResource("classpath:testrunner-secret.json")
 })
