@@ -29,9 +29,8 @@
 
     <!-- Properties -->
     <properties>
-        <version.ce-arq>1.3.0.Final</version.ce-arq>
-        <version.arquillian.cube>1.9.1</version.arquillian.cube>
-        <version.kubernetes_client>2.6.3</version.kubernetes_client>
+        <version.arquillian.cube>1.9.3-SNAPSHOT</version.arquillian.cube>
+        <version.fabric8>3.0.8</version.fabric8>
         <version.meta-inf>1.6</version.meta-inf>
         <version.arquillian>1.1.13.Final</version.arquillian>
         <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
@@ -251,81 +250,6 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- Deps -->
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-api</artifactId>
-                <version>${version.ce-arq}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-httpclient</artifactId>
-                <version>${version.ce-arq}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-shrinkwrap</artifactId>
-                <version>${version.ce-arq}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-openshift</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-fabric8</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-wildfly</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-web</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-template</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-utils</artifactId>
-                <version>${version.ce-arq}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-mgmtclient</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-ce-cube</artifactId>
-                <version>${version.ce-arq}</version>
-                <scope>test</scope>
-            </dependency>
-
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
@@ -386,32 +310,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <type>pom</type>
-                <scope>import</scope>
-                <version>${version.arquillian}</version>
-            </dependency>
-
-            <!-- Newer undertow, so that we don't need newer arq-cube -->
-            <dependency>
-                <groupId>io.undertow</groupId>
-                <artifactId>undertow-core</artifactId>
-                <version>${version.io.undertow}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.undertow</groupId>
-                <artifactId>undertow-servlet</artifactId>
-                <version>${version.io.undertow}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.undertow</groupId>
-                <artifactId>undertow-websockets-jsr</artifactId>
-                <version>${version.io.undertow}</version>
-            </dependency>
-
-            <!-- Use newest arquillian-cube -->
-            <dependency>
                 <groupId>org.arquillian.cube</groupId>
                 <artifactId>arquillian-cube-parent</artifactId>
                 <version>${version.arquillian.cube}</version>
@@ -421,9 +319,8 @@
 
             <dependency>
                 <groupId>io.fabric8</groupId>
-                <artifactId>kubernetes-openshift-uberjar</artifactId>
-                <version>${version.kubernetes_client}</version>
-                <classifier>versioned</classifier>
+                <artifactId>fabric8-utils</artifactId>
+                <version>${version.fabric8}</version>
             </dependency>
 
         </dependencies>

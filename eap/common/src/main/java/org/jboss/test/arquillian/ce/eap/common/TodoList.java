@@ -27,10 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
-import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
-import org.jboss.arquillian.ce.httpclient.HttpRequest;
-import org.jboss.arquillian.ce.httpclient.HttpResponse;
+import org.arquillian.cube.openshift.httpclient.HttpClientBuilder;
+import org.arquillian.cube.openshift.httpclient.HttpClientExecuteOptions;
+import org.arquillian.cube.openshift.httpclient.HttpRequest;
+import org.arquillian.cube.openshift.httpclient.HttpResponse;
 import org.junit.Assert;
 
 /**

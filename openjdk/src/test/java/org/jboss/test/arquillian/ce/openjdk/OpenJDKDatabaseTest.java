@@ -3,7 +3,7 @@ package org.jboss.test.arquillian.ce.openjdk;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
+import org.arquillian.cube.openshift.api.OpenShiftHandle;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;

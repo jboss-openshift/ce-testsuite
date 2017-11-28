@@ -22,40 +22,21 @@ package org.jboss.test.arquillian.ce.spark;
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-import org.jboss.arquillian.ce.api.*;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import static org.junit.Assert.assertEquals;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.arquillian.cube.openshift.api.ConfigurationHandle;
+import org.arquillian.cube.openshift.api.RoleBinding;
+import org.arquillian.cube.openshift.api.Template;
+import org.arquillian.cube.openshift.api.TemplateParameter;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import static junit.framework.Assert.assertEquals;
-
-import java.net.URL;
-import java.util.logging.Logger;
-
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.RoleBinding;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +51,6 @@ import org.junit.runner.RunWith;
 )
 @RoleBinding(roleRefName = "view", userName = "system:serviceaccount:${kubernetes.namespace}:jdg-service-account")
 public class SparkTest {
-    private static final Logger log = Logger.getLogger("spark-smoke");
 
     // New arquillian developer note...
     // To confirm that this test is working as expected, modify this to "201" and a failure will result in test failure.

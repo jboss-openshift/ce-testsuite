@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
+import org.arquillian.cube.openshift.api.OpenShiftHandle;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.test.api.ArquillianResource;
 

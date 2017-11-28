@@ -26,7 +26,7 @@ package org.jboss.test.arquillian.ce.processserver;
 import java.net.URL;
 
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.arquillian.cube.openshift.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.common.KieServerTestBase;

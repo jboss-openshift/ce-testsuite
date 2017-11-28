@@ -25,11 +25,11 @@ package org.jboss.test.arquillian.ce.decisionserver;
 
 import java.net.URL;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.arquillian.cube.openshift.api.OpenShiftResource;
+import org.arquillian.cube.openshift.api.OpenShiftResources;
+import org.arquillian.cube.openshift.api.Template;
+import org.arquillian.cube.openshift.api.TemplateParameter;
+import org.arquillian.cube.openshift.shrinkwrap.Libraries;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -60,7 +60,7 @@ public class DecisionServerHttpClientSecureAllInOneTest extends DecisionServerTe
     @Deployment
     public static WebArchive getDeployment() throws Exception {
         WebArchive war = getDeploymentInternal();
-        war.addAsLibraries(Libraries.single("org.jboss.arquillian.container", "arquillian-ce-httpclient"));
+        war.addAsLibraries(Libraries.transitive("org.arquillian.cube", "arquillian-cube-openshift-httpclient"));
         war.addAsLibraries(Libraries.transitive("org.apache.httpcomponents", "httpclient"));
         war.addClass(Base64Encoder.class);
         return war;

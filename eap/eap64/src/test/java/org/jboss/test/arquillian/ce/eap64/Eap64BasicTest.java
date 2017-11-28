@@ -23,7 +23,7 @@
 
 package org.jboss.test.arquillian.ce.eap64;
 
-import org.jboss.arquillian.ce.api.Template;
+import org.arquillian.cube.openshift.api.Template;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.test.arquillian.ce.eap.common.EapBasicTestBase;
 import org.junit.runner.RunWith;

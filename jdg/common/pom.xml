@@ -56,21 +56,12 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-shrinkwrap</artifactId>
-            <scope>compile</scope>
+            <groupId>org.arquillian.cube</groupId>
+            <artifactId>arquillian-cube-openshift</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-fabric8</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-cube</artifactId>
-            <scope>compile</scope>
+            <groupId>org.arquillian.cube</groupId>
+            <artifactId>arquillian-cube-openshift-shrinkwrap</artifactId>
         </dependency>
 
         <dependency>

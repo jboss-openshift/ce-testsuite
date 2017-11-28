@@ -23,7 +23,7 @@
 
 package org.jboss.test.arquillian.ce.processserver;
 
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.arquillian.cube.openshift.shrinkwrap.Libraries;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 

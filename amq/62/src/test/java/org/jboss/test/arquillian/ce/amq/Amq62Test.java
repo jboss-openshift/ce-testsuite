@@ -23,7 +23,7 @@
 
 package org.jboss.test.arquillian.ce.amq;
 
-import org.jboss.arquillian.ce.api.*;
+import org.arquillian.cube.openshift.api.*;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;

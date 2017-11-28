@@ -42,8 +42,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.xml.bind.DatatypeConverter;
 
-import org.jboss.arquillian.ce.shrinkwrap.Files;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.arquillian.cube.openshift.shrinkwrap.Files;
+import org.arquillian.cube.openshift.shrinkwrap.Libraries;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.decisionserver.DecisionServerTestBase;
@@ -95,7 +95,7 @@ public abstract class KieServerTestBase {
         war.addClass(DecisionServerTestBase.class);
         war.addPackage(Person.class.getPackage());
         war.addAsLibraries(Libraries.transitive("org.kie.server", "kie-server-client"));
-        war.addAsLibraries(Libraries.transitive("org.jboss.arquillian.container", "arquillian-ce-httpclient"));
+        war.addAsLibraries(Libraries.transitive("org.arquillian.cube", "arquillian-cube-openshift-httpclient"));
         Files.PropertiesHandle handle = Files.createPropertiesHandle(FILENAME);
         handle.addProperty("kie.username", KIE_USERNAME);
         handle.addProperty("kie.password", KIE_PASSWORD);

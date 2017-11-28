@@ -23,7 +23,7 @@
 
 package org.jboss.test.arquillian.ce.amq.support;
 
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
+import org.arquillian.cube.openshift.api.OpenShiftHandle;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Assert;

@@ -55,39 +55,23 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-shrinkwrap</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-fabric8</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-cube</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-container-remote</artifactId>
             <scope>test</scope>
-        </dependency>
+         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-api</artifactId>
-            <scope>test</scope>
+                <groupId>org.arquillian.cube</groupId>
+                <artifactId>arquillian-cube-openshift</artifactId>
+                <scope>test</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-httpclient</artifactId>
-            <scope>test</scope>
+                <groupId>org.arquillian.cube</groupId>
+                <artifactId>arquillian-cube-openshift-httpclient</artifactId>
+        </dependency>
+        <dependency>
+                <groupId>org.arquillian.cube</groupId>
+                <artifactId>arquillian-cube-openshift-shrinkwrap</artifactId>
         </dependency>
 
         <dependency>
@@ -95,6 +79,13 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+       <dependency>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+            <version>2.0.8.Final</version>
+        </dependency>
+
     </dependencies>
     
     <build>

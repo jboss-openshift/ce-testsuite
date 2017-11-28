@@ -25,7 +25,7 @@ package org.jboss.test.arquillian.ce.amq.support;
 
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.fusesource.mqtt.client.*;
-import org.jboss.arquillian.ce.api.Tools;
+import org.arquillian.cube.openshift.api.Tools;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.junit.Test;
 

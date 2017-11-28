@@ -23,7 +23,7 @@
 
 package org.jboss.test.arquillian.ce.webserver;
 
-import org.jboss.arquillian.ce.api.Template;
+import org.arquillian.cube.openshift.api.Template;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.test.arquillian.ce.webserver.common.WebServerTomcatPostgresqlDbPVTestBase;
 import org.junit.runner.RunWith;
