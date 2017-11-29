@@ -24,8 +24,8 @@
 package org.jboss.test.arquillian.ce.webserver.common;
 
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
+import org.arquillian.cube.openshift.api.OpenShiftResource;
+import org.arquillian.cube.openshift.api.OpenShiftResources;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.InSequence;
 import org.junit.Test;

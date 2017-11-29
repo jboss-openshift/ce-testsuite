@@ -62,27 +62,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-httpclient</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-shrinkwrap</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-ce-cube</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-container-remote</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+                <groupId>org.arquillian.cube</groupId>
+                <artifactId>arquillian-cube-openshift</artifactId>
         </dependency>
 
         <dependency>

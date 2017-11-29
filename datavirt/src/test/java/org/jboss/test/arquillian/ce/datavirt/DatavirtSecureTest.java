@@ -23,16 +23,16 @@
 
 package org.jboss.test.arquillian.ce.datavirt;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.arquillian.cube.openshift.api.OpenShiftResource;
+import org.arquillian.cube.openshift.api.OpenShiftResources;
+import org.arquillian.cube.openshift.api.Template;
+import org.arquillian.cube.openshift.api.TemplateParameter;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
-import org.jboss.arquillian.ce.httpclient.HttpClient;
-import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
-import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
-import org.jboss.arquillian.ce.httpclient.HttpRequest;
-import org.jboss.arquillian.ce.httpclient.HttpResponse;
+import org.arquillian.cube.openshift.httpclient.HttpClient;
+import org.arquillian.cube.openshift.httpclient.HttpClientBuilder;
+import org.arquillian.cube.openshift.httpclient.HttpClientExecuteOptions;
+import org.arquillian.cube.openshift.httpclient.HttpRequest;
+import org.arquillian.cube.openshift.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;

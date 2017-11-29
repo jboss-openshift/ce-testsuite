@@ -26,7 +26,7 @@ package org.jboss.test.arquillian.ce.amq.support;
 import org.apache.activemq.broker.SslContext;
 import org.apache.qpid.jms.transports.TransportSslOptions;
 import org.apache.qpid.jms.transports.TransportSupport;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.arquillian.cube.openshift.shrinkwrap.Libraries;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 

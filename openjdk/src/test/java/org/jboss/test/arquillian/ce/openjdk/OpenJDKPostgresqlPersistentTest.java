@@ -1,9 +1,9 @@
 package org.jboss.test.arquillian.ce.openjdk;
 
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.Template;
+import org.arquillian.cube.openshift.api.OpenShiftResource;
+import org.arquillian.cube.openshift.api.OpenShiftResources;
+import org.arquillian.cube.openshift.api.Template;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)

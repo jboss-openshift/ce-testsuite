@@ -3,11 +3,11 @@ package org.jboss.test.arquillian.ce.eap64;
 import java.io.IOException;
 import java.net.URL;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.RoleBinding;
-import org.jboss.arquillian.ce.api.RoleBindings;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.arquillian.cube.openshift.api.OpenShiftResource;
+import org.arquillian.cube.openshift.api.RoleBinding;
+import org.arquillian.cube.openshift.api.RoleBindings;
+import org.arquillian.cube.openshift.api.Template;
+import org.arquillian.cube.openshift.api.TemplateParameter;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;

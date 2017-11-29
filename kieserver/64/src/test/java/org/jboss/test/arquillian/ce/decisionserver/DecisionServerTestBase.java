@@ -42,11 +42,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.jboss.arquillian.ce.api.ConfigurationHandle;
-import org.jboss.arquillian.ce.httpclient.HttpClient;
-import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
-import org.jboss.arquillian.ce.httpclient.HttpRequest;
-import org.jboss.arquillian.ce.httpclient.HttpResponse;
+import org.arquillian.cube.openshift.api.ConfigurationHandle;
+import org.arquillian.cube.openshift.httpclient.HttpClient;
+import org.arquillian.cube.openshift.httpclient.HttpClientBuilder;
+import org.arquillian.cube.openshift.httpclient.HttpRequest;
+import org.arquillian.cube.openshift.httpclient.HttpResponse;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.test.arquillian.ce.common.KieServerTestBase;
 import org.junit.Assert;

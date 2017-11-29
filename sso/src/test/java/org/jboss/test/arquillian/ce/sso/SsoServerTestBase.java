@@ -29,11 +29,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.arquillian.ce.httpclient.HttpClient;
-import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
-import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
-import org.jboss.arquillian.ce.httpclient.HttpRequest;
-import org.jboss.arquillian.ce.httpclient.HttpResponse;
+import org.arquillian.cube.openshift.httpclient.HttpClient;
+import org.arquillian.cube.openshift.httpclient.HttpClientBuilder;
+import org.arquillian.cube.openshift.httpclient.HttpClientExecuteOptions;
+import org.arquillian.cube.openshift.httpclient.HttpRequest;
+import org.arquillian.cube.openshift.httpclient.HttpResponse;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.junit.Test;
 

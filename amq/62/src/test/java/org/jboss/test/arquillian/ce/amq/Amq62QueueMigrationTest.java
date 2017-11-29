@@ -25,12 +25,12 @@ package org.jboss.test.arquillian.ce.amq;
 
 import java.io.IOException;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.Replicas;
-import org.jboss.arquillian.ce.api.RoleBinding;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
+import org.arquillian.cube.openshift.api.OpenShiftResource;
+import org.arquillian.cube.openshift.api.OpenShiftResources;
+import org.arquillian.cube.openshift.api.Replicas;
+import org.arquillian.cube.openshift.api.RoleBinding;
+import org.arquillian.cube.openshift.api.Template;
+import org.arquillian.cube.openshift.api.TemplateParameter;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;

@@ -31,7 +31,7 @@ import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
-import org.jboss.arquillian.ce.api.Tools;
+import org.arquillian.cube.openshift.api.Tools;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.test.arquillian.ce.jdg.common.support.MemcachedCache;

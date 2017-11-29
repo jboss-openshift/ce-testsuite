@@ -23,18 +23,6 @@
 
 package org.jboss.test.arquillian.ce.webserver.common;
 
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.api.Tools;
-import org.jboss.arquillian.ce.httpclient.HttpClientBuilder;
-import org.jboss.arquillian.ce.httpclient.HttpClientExecuteOptions;
-import org.jboss.arquillian.ce.httpclient.HttpRequest;
-import org.jboss.arquillian.ce.httpclient.HttpResponse;
-import org.junit.Assert;
-
-import javax.websocket.ContainerProvider;
-import javax.websocket.MessageHandler;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +32,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.websocket.ContainerProvider;
+import javax.websocket.MessageHandler;
+import javax.websocket.Session;
+import javax.websocket.WebSocketContainer;
+
+import org.arquillian.cube.openshift.api.OpenShiftHandle;
+import org.arquillian.cube.openshift.api.Tools;
+import org.arquillian.cube.openshift.httpclient.HttpClientBuilder;
+import org.arquillian.cube.openshift.httpclient.HttpClientExecuteOptions;
+import org.arquillian.cube.openshift.httpclient.HttpRequest;
+import org.arquillian.cube.openshift.httpclient.HttpResponse;
+import org.junit.Assert;
 
 /**
  * @author fspolti

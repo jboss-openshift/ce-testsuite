@@ -24,10 +24,10 @@
 package org.jboss.test.arquillian.ce.amq.support;
 
 import org.fusesource.mqtt.codec.PINGREQ;
-import org.jboss.arquillian.ce.api.OpenShiftHandle;
-import org.jboss.arquillian.ce.api.Tools;
-import org.jboss.arquillian.ce.shrinkwrap.Files;
-import org.jboss.arquillian.ce.shrinkwrap.Libraries;
+import org.arquillian.cube.openshift.api.OpenShiftHandle;
+import org.arquillian.cube.openshift.api.Tools;
+import org.arquillian.cube.openshift.shrinkwrap.Files;
+import org.arquillian.cube.openshift.shrinkwrap.Libraries;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -84,8 +84,17 @@ public class AmqBase {
         routeString.append(scheme);
         routeString.append("://");
         routeString.append(routeUrl.getHost());
+
+        int port = routeUrl.getPort();
+        if (port == -1) {
+            if ("http".equals(routeUrl.getProtocol()))
+                port = 80;
+            else if ("https".equals(routeUrl.getProtocol()))
+                port = 443;
+        }
+
         routeString.append(":");
-        routeString.append(routeUrl.getPort());
+        routeString.append(port);
 
         return routeString.toString();
     }

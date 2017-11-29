@@ -22,12 +22,12 @@
  */
 package org.jboss.test.arquillian.ce.jdg;
 
-import org.jboss.arquillian.ce.api.OpenShiftResource;
-import org.jboss.arquillian.ce.api.OpenShiftResources;
-import org.jboss.arquillian.ce.api.RoleBinding;
-import org.jboss.arquillian.ce.api.Template;
-import org.jboss.arquillian.ce.api.TemplateParameter;
-import org.jboss.arquillian.ce.api.TemplateResources;
+import org.arquillian.cube.openshift.api.OpenShiftResource;
+import org.arquillian.cube.openshift.api.OpenShiftResources;
+import org.arquillian.cube.openshift.api.RoleBinding;
+import org.arquillian.cube.openshift.api.Template;
+import org.arquillian.cube.openshift.api.TemplateParameter;
+import org.arquillian.cube.openshift.api.TemplateResources;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.test.arquillian.ce.jdg.common.JdgMultTempTestBase;
 import org.junit.runner.RunWith;
