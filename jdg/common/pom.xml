@@ -21,7 +21,7 @@
 
     <properties>
         <!-- <version.spymemcached>2.8.1</version.spymemcached> -->
-        <version.commons.collections>3.2.2.redhat-2</version.commons.collections>
+        <version.commons.collections>3.2.2</version.commons.collections>
     </properties>
 
     <dependencies>
