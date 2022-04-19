@@ -30,7 +30,7 @@
         <version.org.jboss.xnio>3.1.0.Final</version.org.jboss.xnio>
         <version.alpn-boot>8.1.0.v20141016</version.alpn-boot>
         <!-- JPA -->
-        <version.org.hibernate3>3.6.6.Final</version.org.hibernate3>
+        <version.org.hibernate3>5.4.24.Final</version.org.hibernate3>
     </properties>
 
     <build>
