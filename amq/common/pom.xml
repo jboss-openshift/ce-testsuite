@@ -21,7 +21,7 @@
     
     <properties>
         <version.jms>1.1</version.jms>
-        <version.activemq>5.11.1</version.activemq>
+        <version.activemq>5.15.9</version.activemq>
         <version.qpid>0.8.0</version.qpid>
         <version.mqtt>1.10</version.mqtt>
         <version.stompjms>1.19</version.stompjms>
