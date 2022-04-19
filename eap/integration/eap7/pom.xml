@@ -361,7 +361,7 @@
                 <container.mode>suite</container.mode>
                 <version.eap7>7.0.3.GA-redhat-2</version.eap7> <!-- eap-7 downstream-->
                 <version.eap7.tests>7.0.3.GA-redhat-ce</version.eap7.tests>
-                <version.com.fasterxml.jackson>2.6.3</version.com.fasterxml.jackson>
+                <version.com.fasterxml.jackson>2.12.6.1</version.com.fasterxml.jackson>
                 <version.org.wildfly.core>2.1.10.Final-redhat-ce</version.org.wildfly.core>
             </properties>
             <dependencies>
