@@ -38,7 +38,7 @@
         <version.arquillian.governor>1.0.1.Final</version.arquillian.governor>
         <version.eap6>7.5.16.Final-redhat-ce</version.eap6> <!--eap 6.4.x downstream -->
         <org.jboss.bom.version>7.0.0.GA</org.jboss.bom.version>
-        <version.junit>4.12</version.junit>
+        <version.junit>4.13.1</version.junit>
         <version.javax.servlet.api>3.1.0</version.javax.servlet.api>
         <version.slf4j>1.7.22</version.slf4j>
         <version.org.jboss.as.arquillian.container>7.2.0.Final</version.org.jboss.as.arquillian.container>
